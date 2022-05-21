@@ -1,0 +1,2328 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP16" creationDateTime="2022-05-21T21:48:38.7625026" />
+  <contentHeader name="Plc Structured Text Cheatsheet" version="1.0" modificationDateTime="2022-05-21T21:47:07.9232082" organization="TK Automation" author="Toni Kucic">
+    <Comment>Cheatsheet for programming a PLC in IEC61131-3 Structured text. Contains usage of operators and common functions.</Comment>
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation>
+          <property name="Author" type="string">Toni Kucic</property>
+          <property name="Company" type="string">TK Automation</property>
+          <property name="CompiledLibraryCompatibilityVersion" type="string">CODESYS V3.5 SP16</property>
+          <property name="Description" type="string">Cheatsheet for programming a PLC in IEC61131-3 Structured text. Contains usage of operators and common functions.</property>
+          <property name="Project" type="string">codesys_code_execution_speedTests</property>
+          <property name="Title" type="string">Plc Structured Text Cheatsheet</property>
+          <property name="Version" type="version">1.0</property>
+        </ProjectInformation>
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes>
+      <dataType name="dtTestStruct">
+        <baseType>
+          <struct>
+            <variable name="dummy1">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="255" />
+              </initialValue>
+            </variable>
+            <variable name="Elem1">
+              <type>
+                <INT />
+              </type>
+              <initialValue>
+                <simpleValue value="-1" />
+              </initialValue>
+            </variable>
+            <variable name="Id">
+              <type>
+                <DWORD />
+              </type>
+              <initialValue>
+                <simpleValue value="215215126" />
+              </initialValue>
+            </variable>
+            <variable name="IdText">
+              <type>
+                <string />
+              </type>
+              <initialValue>
+                <simpleValue value="'Testing for speed'" />
+              </initialValue>
+            </variable>
+            <variable name="dummy2">
+              <type>
+                <array>
+                  <dimension lower="0" upper="11" />
+                  <baseType>
+                    <DWORD />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="dummy4">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+            <variable name="dummy5">
+              <type>
+                <string length="255" />
+              </type>
+              <initialValue>
+                <simpleValue value="'Big array'" />
+              </initialValue>
+            </variable>
+            <variable name="dummy6">
+              <type>
+                <LINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1211212723838939" />
+              </initialValue>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>974d87b5-4253-4dd8-af42-02d75fec12db</ObjectId>
+          </data>
+        </addData>
+      </dataType>
+    </dataTypes>
+    <pous>
+      <pou name="floatingPointOperations" pouType="program">
+        <interface>
+          <localVars constant="true">
+            <variable name="cNrRuns">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="5" />
+              </initialValue>
+            </variable>
+            <variable name="cRepeatCalcTimes">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1000000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Million times</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <localVars>
+            <variable name="vResultsA">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vResultsB">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsC">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsD">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsE">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsF">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsG">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsH">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsI">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsAAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsBAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsCAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsDAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsEAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsFAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsGAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsHAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsIAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayAOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayBOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayCOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayDOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayEOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayFOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayGOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayHOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayIOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayAExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayBExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayCExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayDExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayEExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayFExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayGExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayHExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayIExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="vRunsCompleted">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="vInteger1">
+              <type>
+                <INT />
+              </type>
+              <initialValue>
+                <simpleValue value="1234" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Test vars</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vInteger2">
+              <type>
+                <INT />
+              </type>
+              <initialValue>
+                <simpleValue value="4231" />
+              </initialValue>
+            </variable>
+            <variable name="vReal1">
+              <type>
+                <REAL />
+              </type>
+              <initialValue>
+                <simpleValue value="1234.4231" />
+              </initialValue>
+            </variable>
+            <variable name="vReal2">
+              <type>
+                <REAL />
+              </type>
+              <initialValue>
+                <simpleValue value="4231.1234" />
+              </initialValue>
+            </variable>
+            <variable name="vInteger3">
+              <type>
+                <DINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1234" />
+              </initialValue>
+            </variable>
+            <variable name="vInteger4">
+              <type>
+                <DINT />
+              </type>
+              <initialValue>
+                <simpleValue value="4231" />
+              </initialValue>
+            </variable>
+            <variable name="vResult1">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="vResult2">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="vResult3">
+              <type>
+                <DINT />
+              </type>
+            </variable>
+            <variable name="vResult4">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="vResult5">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="vResult6">
+              <type>
+                <DINT />
+              </type>
+            </variable>
+            <variable name="vResult7">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="vResult8">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="vResult9">
+              <type>
+                <DINT />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+	vResultsAAVG := calcAvg(vResultsA); //Time to add two integers 1 000 000 times
+	vResultsBAVG := calcAvg(vResultsB); //Time to add two reals 1 000 000 times
+	vResultsCAVG := calcAvg(vResultsC); //Time to add two DINTs (32b INT) 1 000 000 times
+	vResultsDAVG := calcAvg(vResultsD); //Time to multiply two integers 1 000 000 times
+	vResultsEAVG := calcAvg(vResultsE); //Time to multiply two reals 1 000 000 times
+	vResultsFAVG := calcAvg(vResultsF); //Time to multiply two DINTs (32b INT) 1 000 000 times
+	vResultsGAVG := calcAvg(vResultsG); //Time to divide two integers 1 000 000 times
+	vResultsHAVG := calcAvg(vResultsH); //Time to divide two reals 1 000 000 times
+	vResultsIAVG := calcAvg(vResultsI); //Time to divide two DINTs (32b INT) 1 000 000 times
+	RETURN;
+END_IF
+
+//------------CALCULATION A -------------------
+vWayAOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult1 := vInteger1 + vInteger2;
+END_FOR
+vWayAExecTime := LTIME() - vWayAOldTime;
+
+//------------CALCULATION B -------------------
+vWayBOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult2 := vReal1 + vReal2;
+END_FOR
+vWayBExecTime := LTIME() - vWayBOldTime;
+
+//------------CALCULATION C -------------------
+vWayCOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult3 := vInteger3 + vInteger4;
+END_FOR
+vWayCExecTime := LTIME() - vWayCOldTime;
+
+//------------CALCULATION D -------------------
+vWayDOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult4 := vInteger1 * vInteger2;
+END_FOR
+vWayDExecTime := LTIME() - vWayDOldTime;
+
+//------------CALCULATION E -------------------
+vWayEOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult5 := vReal1 * vReal2;
+END_FOR
+vWayEExecTime := LTIME() - vWayEOldTime;
+
+//------------CALCULATION F -------------------
+vWayFOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult6 := vInteger3 * vInteger4;
+END_FOR
+vWayFExecTime := LTIME() - vWayFOldTime;
+
+//------------CALCULATION G -------------------
+vWayGOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult7 := vInteger1 / vInteger2;
+END_FOR
+vWayGExecTime := LTIME() - vWayGOldTime;
+
+//------------CALCULATION H -------------------
+vWayHOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult8 := vReal1 / vReal2;
+END_FOR
+vWayHExecTime := LTIME() - vWayHOldTime;
+
+//------------CALCULATION I -------------------
+vWayIOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult9 := vInteger3 / vInteger4;
+END_FOR
+vWayIExecTime := LTIME() - vWayIOldTime;
+
+
+//------------CATCH RESULTS---------------------
+vResultsA[vRunsCompleted] := vWayAExecTime;
+vResultsB[vRunsCompleted] := vWayBExecTime;
+vResultsC[vRunsCompleted] := vWayCExecTime;
+vResultsD[vRunsCompleted] := vWayDExecTime;
+vResultsE[vRunsCompleted] := vWayEExecTime;
+vResultsF[vRunsCompleted] := vWayFExecTime;
+vResultsG[vRunsCompleted] := vWayGExecTime;
+vResultsH[vRunsCompleted] := vWayHExecTime;
+vResultsI[vRunsCompleted] := vWayIExecTime;
+vRunsCompleted := vRunsCompleted + 1;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>8ed00d68-6d21-479d-9bfa-1cbb591fa9aa</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="addTwoInts" pouType="function">
+        <interface>
+          <returnType>
+            <INT />
+          </returnType>
+          <inOutVars>
+            <variable name="int1">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="int2">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </inOutVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">addTwoInts := int1 + int2;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>80915059-aa71-49ba-b84f-ffb0a9f75549</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FunctionOverhead" pouType="program">
+        <interface>
+          <localVars constant="true">
+            <variable name="cNrRuns">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="4" />
+              </initialValue>
+            </variable>
+            <variable name="cRepeatCalcTimes">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="10000000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Million times</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <localVars>
+            <variable name="vResultsA">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vResultsB">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsC">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsAAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsBAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsCAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayAOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayBOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayCOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayAExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayBExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayCExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="vRunsCompleted">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="vInt1">
+              <type>
+                <INT />
+              </type>
+              <initialValue>
+                <simpleValue value="1" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Test vars</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vInt2">
+              <type>
+                <INT />
+              </type>
+              <initialValue>
+                <simpleValue value="2" />
+              </initialValue>
+            </variable>
+            <variable name="vResult1">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="vResult2">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="vResult3">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+	vResultsAAVG := calcAvg(vResultsA); //Operands
+	vResultsBAVG := calcAvg(vResultsB); //User function
+	vResultsCAVG := calcAvg(vResultsC); //PRG method
+	RETURN;
+END_IF
+	
+//------------CALCULATION A -------------------
+vWayAOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult1 := vInt1 + vInt2;
+END_FOR
+vWayAExecTime := LTIME() - vWayAOldTime;
+
+//------------CALCULATION B -------------------
+vWayBOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult2 := addTwoInts(vInt1, vInt2);
+END_FOR
+vWayBExecTime := LTIME() - vWayBOldTime;
+
+//------------CALCULATION C -------------------
+vWayCOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult3 := addTwoNumbers(vInt1, vInt2);
+END_FOR
+vWayCExecTime := LTIME() - vWayCOldTime;
+
+//------------CATCH RESULTS---------------------
+vResultsA[vRunsCompleted] := vWayAExecTime;
+vResultsB[vRunsCompleted] := vWayBExecTime;
+vResultsC[vRunsCompleted] := vWayCExecTime;
+vRunsCompleted := vRunsCompleted + 1;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="addTwoNumbers" ObjectId="bec361a3-b449-4cbd-b51d-cb8c313049d9">
+              <interface>
+                <returnType>
+                  <INT />
+                </returnType>
+                <inputVars>
+                  <variable name="int1">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <variable name="int2">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </inputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">addTwoNumbers := int1 + int2;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>832e84e3-169c-43aa-8871-b0ef2441ec37</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="ImpactOfDynamicArrays" pouType="program">
+        <interface>
+          <localVars constant="true">
+            <variable name="cNrRuns">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="4" />
+              </initialValue>
+            </variable>
+            <variable name="cRepeatCalcTimes">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1000000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Million times</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <localVars>
+            <variable name="vResultsA">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vResultsB">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsAAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsBAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayAOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayAExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayBOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayBExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="vRunsCompleted">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="vAvgTimeFun">
+              <type>
+                <derived name="LTIME" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Test vars</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vAvgTimeHardCoded">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTimes">
+              <type>
+                <array>
+                  <dimension lower="0" upper="9" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+              <initialValue>
+                <arrayValue>
+                  <value>
+                    <simpleValue value="LTIME#1ms0us0ns" />
+                  </value>
+                  <value>
+                    <simpleValue value="LTIME#2ms0us0ns" />
+                  </value>
+                  <value>
+                    <simpleValue value="LTIME#3ms0us0ns" />
+                  </value>
+                  <value>
+                    <simpleValue value="LTIME#4ms0us0ns" />
+                  </value>
+                  <value>
+                    <simpleValue value="LTIME#5ms0us0ns" />
+                  </value>
+                  <value>
+                    <simpleValue value="LTIME#6ms0us0ns" />
+                  </value>
+                  <value>
+                    <simpleValue value="LTIME#7ms0us0ns" />
+                  </value>
+                  <value>
+                    <simpleValue value="LTIME#8ms0us0ns" />
+                  </value>
+                  <value>
+                    <simpleValue value="LTIME#9ms0us0ns" />
+                  </value>
+                  <value>
+                    <simpleValue value="LTIME#10ms0us0ns" />
+                  </value>
+                </arrayValue>
+              </initialValue>
+            </variable>
+            <variable name="j">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+	vResultsAAVG := calcAvg(vResultsA);
+	vResultsBAVG := calcAvg(vResultsB);
+	RETURN;
+END_IF
+	
+//------------CALCULATION A -------------------
+vWayAOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vAvgTimeFun := calcAvg(vTimes);
+END_FOR
+vWayAExecTime := LTIME() - vWayAOldTime;
+
+//------------CALCULATION B -------------------
+vWayBOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vAvgTimeHardCoded := LTIME#0MS;
+	FOR j:= 0 TO 9 DO
+		vAvgTimeHardCoded := vAvgTimeHardCoded + vTimes[j];
+	END_FOR
+	vAvgTimeHardCoded := vAvgTimeHardCoded / j;
+END_FOR
+vWayBExecTime := LTIME() - vWayBOldTime;
+
+//------------CATCH RESULTS---------------------
+vResultsA[vRunsCompleted] := vWayAExecTime;
+vResultsB[vRunsCompleted] := vWayBExecTime;
+vRunsCompleted := vRunsCompleted + 1;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>c290fb28-c10d-4c88-ae7d-b83b30f2243a</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="ShlVsMemCpy" pouType="program">
+        <interface>
+          <localVars constant="true">
+            <variable name="cNrRuns">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="4" />
+              </initialValue>
+            </variable>
+            <variable name="cRepeatCalcTimes">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1000000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Million times</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <localVars>
+            <variable name="vResultsA">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vResultsB">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsAAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsBAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayAOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayAExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayBOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayBExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="vRunsCompleted">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="vSHRInteger">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Test vars</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vMcpyInteger">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="vBuffer">
+              <type>
+                <array>
+                  <dimension lower="0" upper="1" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </array>
+              </type>
+              <initialValue>
+                <arrayValue>
+                  <value>
+                    <simpleValue value="16#55" />
+                  </value>
+                  <value>
+                    <simpleValue value="16#AA" />
+                  </value>
+                </arrayValue>
+              </initialValue>
+            </variable>
+            <variable name="vSHLOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vMcpyOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vSHLExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vMcpyExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+	vResultsAAVG := calcAvg(vResultsA);
+	vResultsBAVG := calcAvg(vResultsB);
+	RETURN;
+END_IF
+	
+
+vWayAOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	//Assemble an UINT from two USINTs using SHR operator
+	vSHRInteger := vBuffer[0] + SHL(vBuffer[1],8);
+END_FOR
+vWayAExecTime := LTIME() - vWayAOldTime;
+
+vWayBOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	//Assemble an UINT from two USINTs using MemCpy
+	MEMUtils.MemCpy(pbyDest:= ADR(vMcpyInteger), pbySrc:= ADR(vBuffer) , dwSize:= SIZEOF(vMcpyInteger));
+END_FOR
+vWayBExecTime := LTIME() - vWayBOldTime;
+
+//Results
+vResultsA[vRunsCompleted] := vWayAExecTime;
+vResultsB[vRunsCompleted] := vWayBExecTime;
+vRunsCompleted := vRunsCompleted + 1;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>b1c49280-5ef1-440e-9136-31fd5aa516dc</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="calcAVG" pouType="function">
+        <interface>
+          <returnType>
+            <derived name="LTIME" />
+          </returnType>
+          <inputVars>
+            <variable name="Results">
+              <type>
+                <pointer>
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LTIME" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="i">
+              <type>
+                <DINT />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">FOR i:= LOWER_BOUND(Results,1) TO UPPER_BOUND(Results,1) DO
+	calcAvg := calcAvg + Results[i];
+END_FOR
+calcAvg := calcAvg / i;
+RETURN;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>d361f96d-b405-4f02-94e9-f0734c3f1811</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="MemSetVsDataZeero" pouType="program">
+        <interface>
+          <localVars constant="true">
+            <variable name="cNrRuns">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="4" />
+              </initialValue>
+            </variable>
+            <variable name="cRepeatCalcTimes">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1000000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Million times</xhtml>
+              </documentation>
+            </variable>
+            <variable name="cEmptyStruct">
+              <type>
+                <derived name="dtTestStruct" />
+              </type>
+            </variable>
+          </localVars>
+          <localVars>
+            <variable name="vResultsA">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vResultsB">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsAAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsBAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayAOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayAExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayBOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayBExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="vRunsCompleted">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="vResultStruct1">
+              <type>
+                <derived name="dtTestStruct" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Test variables</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vResultStruct2">
+              <type>
+                <derived name="dtTestStruct" />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+	vResultsAAVG := calcAvg(vResultsA);
+	vResultsBAVG := calcAvg(vResultsB);
+	RETURN;
+END_IF
+	
+//------------CALCULATION A -------------------
+vWayAOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	//RESET STRUCT WITH A EMPTY STRUCT
+	vResultStruct1 := cEmptyStruct;
+END_FOR
+vWayAExecTime := LTIME() - vWayAOldTime;
+
+//------------CALCULATION B -------------------
+vWayBOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	//RESET STRUCT WITH MEM SET
+	MEMUtils.MemSet(pbyBuffer:= ADR(vResultStruct2), byValue:= 16#0 , dwSize:= SIZEOF(vResultStruct2));
+END_FOR
+vWayBExecTime := LTIME() - vWayBOldTime;
+
+//------------CATCH RESULTS---------------------
+vResultsA[vRunsCompleted] := vWayAExecTime;
+vResultsB[vRunsCompleted] := vWayBExecTime;
+vRunsCompleted := vRunsCompleted + 1;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>b6f25e2b-ec5a-4a35-909a-0f893387acef</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="execSpeedOfLanguageTypes" pouType="program">
+        <interface>
+          <localVars constant="true">
+            <variable name="cNrRuns">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="4" />
+              </initialValue>
+            </variable>
+            <variable name="cRepeatCalcTimes">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="10000000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Million times</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <localVars>
+            <variable name="vResultsA">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vResultsB">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsC">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsAAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsBAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vResultsCAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayAOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayBOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayCOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayAExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayBExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayCExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="vRunsCompleted">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="vInt1">
+              <type>
+                <INT />
+              </type>
+              <initialValue>
+                <simpleValue value="1" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Test vars</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vInt2">
+              <type>
+                <INT />
+              </type>
+              <initialValue>
+                <simpleValue value="2" />
+              </initialValue>
+            </variable>
+            <variable name="vResult1">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="vResult2">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="vResult3">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+	vResultsAAVG := calcAvg(vResultsA); //User function Ladder
+	vResultsBAVG := calcAvg(vResultsB); //User function ST
+	vResultsCAVG := calcAvg(vResultsC); //User function FBD
+	RETURN;
+END_IF
+	
+//------------CALCULATION A -------------------
+vWayAOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult1 := addTwoIntsLadder(vInt1, vInt2);
+END_FOR
+vWayAExecTime := LTIME() - vWayAOldTime;
+
+//------------CALCULATION B -------------------
+vWayBOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult2 := addTwoIntsST(vInt1, vInt2);
+END_FOR
+vWayBExecTime := LTIME() - vWayBOldTime;
+
+//------------CALCULATION C -------------------
+vWayCOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult3 := addTwoIntsFBD(vInt1, vInt2);
+END_FOR
+vWayCExecTime := LTIME() - vWayCOldTime;
+
+//------------CATCH RESULTS---------------------
+vResultsA[vRunsCompleted] := vWayAExecTime;
+vResultsB[vRunsCompleted] := vWayBExecTime;
+vResultsC[vRunsCompleted] := vWayCExecTime;
+vRunsCompleted := vRunsCompleted + 1;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>8b838563-ffa0-4f7f-88df-fdf5ef838e0b</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="addTwoIntsLadder" pouType="function">
+        <interface>
+          <returnType>
+            <INT />
+          </returnType>
+          <inputVars>
+            <variable name="Int1">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="Int2">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <LD>
+            <leftPowerRail localId="0">
+              <position x="0" y="0" />
+              <connectionPointOut formalParameter="none" />
+            </leftPowerRail>
+            <comment localId="1" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </content>
+            </comment>
+            <vendorElement localId="2">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="4" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>TRUE</variable>
+            </contact>
+            <inVariable localId="5">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>Int1</expression>
+            </inVariable>
+            <inVariable localId="6">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>Int2</expression>
+            </inVariable>
+            <block localId="3" typeName="ADD">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="4" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="5" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In3">
+                  <connectionPointIn>
+                    <connection refLocalId="6" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut />
+                </variable>
+                <variable formalParameter="Out2">
+                  <connectionPointOut>
+                    <expression>addTwoIntsLadder</expression>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <rightPowerRail localId="2147483646">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="3" formalParameter="">
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/ldbranchid" handleUnknown="implementation">
+                      <BranchId xmlns="">2</BranchId>
+                    </data>
+                  </addData>
+                </connection>
+              </connectionPointIn>
+            </rightPowerRail>
+          </LD>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>81976c27-bae7-4ac7-b3be-5a289cfec6a1</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="addTwoIntsST" pouType="function">
+        <interface>
+          <returnType>
+            <INT />
+          </returnType>
+          <inputVars>
+            <variable name="int1">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="int2">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">addTwoIntsST := int1 + int2;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>2b669961-88b5-4e2c-8aa0-fcd5ea1dc9c6</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="addTwoIntsFBD" pouType="function">
+        <interface>
+          <returnType>
+            <INT />
+          </returnType>
+          <inputVars>
+            <variable name="int1">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="int2">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <FBD>
+            <vendorElement localId="10000000000">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">FBD Implementation Attributes</xhtml>
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbd/implementationattributes" handleUnknown="implementation">
+                  <fbdattributes xmlns="">
+                    <attribute name="BoxInputFlagsSupported" value="true" />
+                  </fbdattributes>
+                </data>
+              </addData>
+            </vendorElement>
+            <inVariable localId="10000000001">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>int1</expression>
+            </inVariable>
+            <inVariable localId="10000000002">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>int2</expression>
+            </inVariable>
+            <block localId="10000000003" typeName="ADD">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="In1">
+                  <connectionPointIn>
+                    <connection refLocalId="10000000001" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="10000000002" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="Out1">
+                  <connectionPointOut />
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/inputparamtypes" handleUnknown="implementation">
+                  <InputParamTypes xmlns="" />
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/outputparamtypes" handleUnknown="implementation">
+                  <OutputParamTypes xmlns="">INT</OutputParamTypes>
+                </data>
+              </addData>
+            </block>
+            <outVariable localId="10000000004">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="10000000003" formalParameter="Out1" />
+              </connectionPointIn>
+              <expression>addTwoIntsFBD</expression>
+            </outVariable>
+          </FBD>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>ff1bd7ca-f894-4734-8c56-cab7f420d3e0</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="stringOperations" pouType="program">
+        <interface>
+          <localVars constant="true">
+            <variable name="cNrRuns">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="4" />
+              </initialValue>
+            </variable>
+            <variable name="cRepeatCalcTimes">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Million times</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <localVars>
+            <variable name="vResultsA">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vResultsB">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsC">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsD">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsE">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsF">
+              <type>
+                <array>
+                  <dimension lower="0" upper="cNrRuns" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResultsAAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time to copy a string[255] 1000 times</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vResultsBAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time to copy a string 1000 times</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vResultsCAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time to concatenate 1000 characters with STRING</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vResultsDAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time to concatenate 1000 characters with STRING[255]</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vResultsEAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time to copy a BYTE 1000 times</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vResultsFAVG">
+              <type>
+                <derived name="LTIME" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time to copy an array of 255 BYTE 1000 times</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vWayAOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayBOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayCOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayDOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayEOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayFOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayAExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayBExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayCExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayDExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayEExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vWayFExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="vRunsCompleted">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="vString1">
+              <type>
+                <string length="255" />
+              </type>
+              <initialValue>
+                <simpleValue value="'Test string1'" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Test vars</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vString2">
+              <type>
+                <string />
+              </type>
+              <initialValue>
+                <simpleValue value="'Test string2'" />
+              </initialValue>
+            </variable>
+            <variable name="vString3">
+              <type>
+                <string />
+              </type>
+              <initialValue>
+                <simpleValue value="'a'" />
+              </initialValue>
+            </variable>
+            <variable name="vString4">
+              <type>
+                <string />
+              </type>
+              <initialValue>
+                <simpleValue value="'a'" />
+              </initialValue>
+            </variable>
+            <variable name="vByte">
+              <type>
+                <BYTE />
+              </type>
+              <initialValue>
+                <simpleValue value="16#FF" />
+              </initialValue>
+            </variable>
+            <variable name="vArrByte">
+              <type>
+                <array>
+                  <dimension lower="0" upper="255" />
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vResult1">
+              <type>
+                <string length="255" />
+              </type>
+            </variable>
+            <variable name="vResult2">
+              <type>
+                <string />
+              </type>
+            </variable>
+            <variable name="vResult3">
+              <type>
+                <string />
+              </type>
+            </variable>
+            <variable name="vResult4">
+              <type>
+                <string length="255" />
+              </type>
+            </variable>
+            <variable name="vResult5">
+              <type>
+                <BYTE />
+              </type>
+            </variable>
+            <variable name="vResult6">
+              <type>
+                <array>
+                  <dimension lower="0" upper="255" />
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vSizes">
+              <type>
+                <array>
+                  <dimension lower="0" upper="3" />
+                  <baseType>
+                    <UDINT />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+	vResultsAAVG := calcAvg(vResultsA); //Time to copy a string[255] 1000 times
+	vResultsBAVG := calcAvg(vResultsB); //Time to copy a string 1000 times
+	vResultsCAVG := calcAvg(vResultsC); //Time to concatenate 1000 characters with STRING
+	vResultsDAVG := calcAvg(vResultsD); //Time to concatenate 1000  characters with STRING[255]
+	vResultsEAVG := calcAvg(vResultsE); //Time to move a byte 1000 times
+	vResultsFAVG := calcAvg(vResultsF); //Time to copy an array of 255 BYTE 1000 times
+	RETURN;
+END_IF
+
+vSizes[0] := SIZEOF(vString1); //Size is 255 characters + zero char
+vSizes[1] := SIZEOF(vString2); //Size is 80 characters + zero char, default if no size specified
+vSizes[2] := SIZEOF(vResult3); //Size is 81, even though we concatenated 1000 characters. The rest were chopped off
+vSizes[3] := SIZEOF(vResult4); //Size is expected 256, other 744 characters chopped off
+
+//------------CALCULATION A -------------------
+vWayAOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult1 := vString1;
+END_FOR
+vWayAExecTime := LTIME() - vWayAOldTime;
+
+//------------CALCULATION B -------------------
+vWayBOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult2 := vString2;
+END_FOR
+vWayBExecTime := LTIME() - vWayBOldTime;
+
+//------------CALCULATION C -------------------
+vWayCOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult3 := CONCAT(vResult3, vString3);
+END_FOR
+vWayCExecTime := LTIME() - vWayCOldTime;
+
+//------------CALCULATION D -------------------
+vWayDOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult4 := CONCAT(vResult4, vString4);
+END_FOR
+vWayDExecTime := LTIME() - vWayDOldTime;
+
+//------------CALCULATION E -------------------
+vWayEOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult5 := vByte;
+END_FOR
+vWayEExecTime := LTIME() - vWayEOldTime;
+
+//------------CALCULATION F -------------------
+vWayFOldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult6 := vArrByte;
+END_FOR
+vWayFExecTime := LTIME() - vWayFOldTime;
+
+//------------CATCH RESULTS---------------------
+vResultsA[vRunsCompleted] := vWayAExecTime;
+vResultsB[vRunsCompleted] := vWayBExecTime;
+vResultsC[vRunsCompleted] := vWayCExecTime;
+vResultsD[vRunsCompleted] := vWayDExecTime;
+vResultsE[vRunsCompleted] := vWayEExecTime;
+vResultsF[vRunsCompleted] := vWayFExecTime;
+vRunsCompleted := vRunsCompleted + 1;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>51d6aac5-a3cf-4c60-a30b-f6b3d35ff875</ObjectId>
+          </data>
+        </addData>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations>
+      <configuration name="CODESYS_Control_Win_V3_x64">
+        <resource name="Application">
+          <task name="Task" interval="PT0.1S" priority="1">
+            <pouInstance name="floatingPointOperations" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Cyclic" Interval="100" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>591d0ab5-40ee-4175-8001-64d855a3b523</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
+              <Libraries>
+                <Library Name="#IoStandard" Namespace="IoStandard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="true" DefaultResolution="IoStandard, 3.5.16.0 (System)" />
+                <Library Name="#3SLicense" Namespace="_3S_LICENSE" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="3SLicense, 0.0.0.0 (3S - Smart Software Solutions GmbH)" ResolverGuid="97c3b452-d9fa-4ac2-9d0c-3d420aa6d95b" />
+                <Library Name="#CAA Device Diagnosis" Namespace="DED" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="CAA Device Diagnosis, 3.5.15.0 (CAA Technical Workgroup)" />
+                <Library Name="#BreakpointLogging" Namespace="BPLog" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="Breakpoint Logging Functions, 3.5.5.0 (3S - Smart Software Solutions GmbH)" />
+                <Library Name="MemoryUtils, 3.5.15.0 (3S - Smart Software Solutions GmbH)" Namespace="MEMUtils" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" />
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>37339690-22b8-4955-9037-8c248729b2b7</ObjectId>
+                  </data>
+                </addData>
+              </Libraries>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+              <ObjectId>9b73d673-0d3d-4761-a178-a18fbf2ba16b</ObjectId>
+            </data>
+          </addData>
+        </resource>
+        <addData>
+          <data name="Device" handleUnknown="discard">
+            <Device xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="">
+              <DeviceType>
+                <DeviceIdentification>
+                  <Type>4097</Type>
+                  <Id>0000 000a</Id>
+                  <Version>3.5.16.0</Version>
+                </DeviceIdentification>
+                <Connector moduleType="256" interface="Common.PCI" connectorId="0">
+                  <HostParameterSet />
+                </Connector>
+                <Connector moduleType="769" interface="SafetyInterface" connectorId="1">
+                  <HostParameterSet />
+                </Connector>
+                <DeviceParameterSet />
+              </DeviceType>
+            </Device>
+          </data>
+          <data name="configurations" handleUnknown="discard">
+            <configurations />
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>26264239-25d9-42f6-bfbc-405ae47d66cf</ObjectId>
+          </data>
+        </addData>
+      </configuration>
+    </configurations>
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
+      <Libraries>
+        <Library Name="#IecSfc" Namespace="IecSfc" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="IecSfc, 3.4.2.0 (System)" />
+        <Library Name="#Analyzation" Namespace="Analyzation" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="Analyzation, 3.5.2.0 (System)">
+          <Parameters>
+            <Parameter Name="TABLE_UPPER_BOUND" Value="15" />
+            <Parameter Name="STRING_LENGTH_EXP" Value="255" />
+            <Parameter Name="STRING_LENGTH_ADDRESS" Value="20" />
+            <Parameter Name="STRING_LENGTH_COMMENT" Value="255" />
+            <Parameter Name="STRING_LENGTH_OUTSTRING" Value="255" />
+            <Parameter Name="TABLE_SHOW_VALID_ITEMS" Value="FALSE" />
+          </Parameters>
+        </Library>
+        <Library Name="#Standard" Namespace="Standard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Standard, * (System)" />
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>70bdb135-fcf9-4a3b-ac8e-dcd6fe2b15b6</ObjectId>
+          </data>
+        </addData>
+      </Libraries>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
+      <ProjectStructure>
+        <Object Name="Project Information" ObjectId="11c0fc3a-9bcf-4dd8-ac38-efb93363e521" />
+        <Object Name="CODESYS_Control_Win_V3_x64" ObjectId="26264239-25d9-42f6-bfbc-405ae47d66cf">
+          <Object Name="Application" ObjectId="9b73d673-0d3d-4761-a178-a18fbf2ba16b">
+            <Object Name="Library Manager" ObjectId="37339690-22b8-4955-9037-8c248729b2b7" />
+            <Object Name="Task" ObjectId="591d0ab5-40ee-4175-8001-64d855a3b523" />
+          </Object>
+        </Object>
+        <Object Name="Library Manager" ObjectId="70bdb135-fcf9-4a3b-ac8e-dcd6fe2b15b6" />
+        <Object Name="floatingPointOperations" ObjectId="8ed00d68-6d21-479d-9bfa-1cbb591fa9aa" />
+        <Object Name="addTwoInts" ObjectId="80915059-aa71-49ba-b84f-ffb0a9f75549" />
+        <Object Name="FunctionOverhead" ObjectId="832e84e3-169c-43aa-8871-b0ef2441ec37">
+          <Object Name="addTwoNumbers" ObjectId="bec361a3-b449-4cbd-b51d-cb8c313049d9" />
+        </Object>
+        <Object Name="ImpactOfDynamicArrays" ObjectId="c290fb28-c10d-4c88-ae7d-b83b30f2243a" />
+        <Object Name="ShlVsMemCpy" ObjectId="b1c49280-5ef1-440e-9136-31fd5aa516dc" />
+        <Object Name="calcAVG" ObjectId="d361f96d-b405-4f02-94e9-f0734c3f1811" />
+        <Object Name="MemSetVsDataZeero" ObjectId="b6f25e2b-ec5a-4a35-909a-0f893387acef" />
+        <Object Name="dtTestStruct" ObjectId="974d87b5-4253-4dd8-af42-02d75fec12db" />
+        <Object Name="execSpeedOfLanguageTypes" ObjectId="8b838563-ffa0-4f7f-88df-fdf5ef838e0b" />
+        <Object Name="addTwoIntsLadder" ObjectId="81976c27-bae7-4ac7-b3be-5a289cfec6a1" />
+        <Object Name="addTwoIntsST" ObjectId="2b669961-88b5-4e2c-8aa0-fcd5ea1dc9c6" />
+        <Object Name="addTwoIntsFBD" ObjectId="ff1bd7ca-f894-4734-8c56-cab7f420d3e0" />
+        <Object Name="stringOperations" ObjectId="51d6aac5-a3cf-4c60-a30b-f6b3d35ff875" />
+      </ProjectStructure>
+    </data>
+  </addData>
+</project>
