@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP16" creationDateTime="2022-05-27T13:55:14.4433933" />
-  <contentHeader name="Plc Structured Text Cheatsheet" version="1.0" modificationDateTime="2022-05-27T13:55:00.8059953" organization="TK Automation" author="Toni Kucic">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 2" creationDateTime="2022-07-20T23:45:32.9286958" />
+  <contentHeader name="Plc Structured Text Cheatsheet" version="1.0" modificationDateTime="2022-07-20T23:45:23.0488007" organization="TK Automation" author="Toni Kucic">
     <Comment>Cheatsheet for programming a PLC in IEC61131-3 Structured text. Contains usage of operators and common functions.</Comment>
     <coordinateInfo>
       <fbd>
@@ -107,14 +107,146 @@
           </data>
         </addData>
       </dataType>
+      <dataType name="dtBitStruct">
+        <baseType>
+          <struct>
+            <variable name="bit1">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit2">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit3">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit4">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit5">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit6">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit7">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit8">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit9">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit10">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit11">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit12">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit13">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit14">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit15">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+            <variable name="bit16">
+              <type>
+                <derived name="BIT" />
+              </type>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>18cca70b-ac98-43f3-8ffb-8a51e2e4f4e7</ObjectId>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="dtSpeedTest">
+        <baseType>
+          <struct>
+            <variable name="Results">
+              <type>
+                <array>
+                  <dimension lower="0" upper="9" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="AverageExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="OldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="ExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>65385f20-c9b3-4afb-b91b-9f5b6a5e2eb7</ObjectId>
+          </data>
+        </addData>
+      </dataType>
     </dataTypes>
     <pous>
-      <pou name="floatingPointOperations" pouType="program">
+      <pou name="x03_FloatingPointOperations" pouType="program">
         <interface>
           <localVars constant="true">
             <variable name="cNrRuns">
               <type>
-                <USINT />
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
               </type>
               <initialValue>
                 <simpleValue value="5" />
@@ -125,247 +257,14 @@
                 <UDINT />
               </type>
               <initialValue>
-                <simpleValue value="10000000" />
+                <simpleValue value="1000000" />
               </initialValue>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">10 Million times</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
               </documentation>
             </variable>
           </localVars>
           <localVars>
-            <variable name="vResultsA">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vResultsB">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsC">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsD">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsE">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsF">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsG">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsH">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsI">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsAAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsBAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsCAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsDAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsEAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsFAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsGAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsHAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsIAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayCOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayDOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayEOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayFOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayGOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayHOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayIOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayCExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayDExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayEExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayFExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayGExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayHExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayIExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="i">
-              <type>
-                <UDINT />
-              </type>
-            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -373,6 +272,64 @@
               <initialValue>
                 <simpleValue value="0" />
               </initialValue>
+            </variable>
+            <variable name="vRunDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest3">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest4">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest5">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest6">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest7">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest8">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest9">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
             </variable>
             <variable name="vInteger1">
               <type>
@@ -475,92 +432,93 @@
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
-	vResultsAAVG := calcAvg(vResultsA); //Time to add two integers 10 milion times
-	vResultsBAVG := calcAvg(vResultsB); //Time to add two reals 10 milion times
-	vResultsCAVG := calcAvg(vResultsC); //Time to add two DINTs (32b INT) 10 milion times
-	vResultsDAVG := calcAvg(vResultsD); //Time to multiply two integers 10 milion times
-	vResultsEAVG := calcAvg(vResultsE); //Time to multiply two reals 10 milion times
-	vResultsFAVG := calcAvg(vResultsF); //Time to multiply two DINTs (32b INT) 10 milion times
-	vResultsGAVG := calcAvg(vResultsG); //Time to divide two integers 10 milion times
-	vResultsHAVG := calcAvg(vResultsH); //Time to divide two reals 10 milion times
-	vResultsIAVG := calcAvg(vResultsI); //Time to divide two DINTs (32b INT) 10 milion times
+	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to add two integers 1 milion times
+	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to add two reals 1 milion times
+	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to add two DINTs (32b INT) 1 milion times
+	vTest4.AverageExecTime := calcAvg(vTest4.Results); //Time to multiply two integers 1 milion times
+	vTest5.AverageExecTime := calcAvg(vTest5.Results); //Time to multiply two reals 1 milion times
+	vTest6.AverageExecTime := calcAvg(vTest6.Results); //Time to multiply two DINTs (32b INT) 1 milion times
+	vTest7.AverageExecTime := calcAvg(vTest7.Results); //Time to divide two integers 1 milion times
+	vTest8.AverageExecTime := calcAvg(vTest8.Results); //Time to divide two reals 1 milion times
+	vTest9.AverageExecTime := calcAvg(vTest9.Results); //Time to divide two DINTs (32b INT) 1 milion times
+	vRunDone := TRUE;	
 	RETURN;
 END_IF
 
 //------------CALCULATION A -------------------
-vWayAOldTime := LTIME();
+vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult1 := vInteger1 + vInteger2;
 END_FOR
-vWayAExecTime := LTIME() - vWayAOldTime;
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
 
 //------------CALCULATION B -------------------
-vWayBOldTime := LTIME();
+vTest2.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult2 := vReal1 + vReal2;
 END_FOR
-vWayBExecTime := LTIME() - vWayBOldTime;
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
 //------------CALCULATION C -------------------
-vWayCOldTime := LTIME();
+vTest3.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult3 := vInteger3 + vInteger4;
 END_FOR
-vWayCExecTime := LTIME() - vWayCOldTime;
+vTest3.ExecTime := LTIME() - vTest3.OldTime;
 
 //------------CALCULATION D -------------------
-vWayDOldTime := LTIME();
+vTest4.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult4 := vInteger1 * vInteger2;
 END_FOR
-vWayDExecTime := LTIME() - vWayDOldTime;
+vTest4.ExecTime := LTIME() - vTest4.OldTime;
 
 //------------CALCULATION E -------------------
-vWayEOldTime := LTIME();
+vTest5.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult5 := vReal1 * vReal2;
 END_FOR
-vWayEExecTime := LTIME() - vWayEOldTime;
+vTest5.ExecTime := LTIME() - vTest5.OldTime;
 
 //------------CALCULATION F -------------------
-vWayFOldTime := LTIME();
+vTest6.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult6 := vInteger3 * vInteger4;
 END_FOR
-vWayFExecTime := LTIME() - vWayFOldTime;
+vTest6.ExecTime := LTIME() - vTest6.OldTime;
 
 //------------CALCULATION G -------------------
-vWayGOldTime := LTIME();
+vTest7.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult7 := vInteger1 / vInteger2;
 END_FOR
-vWayGExecTime := LTIME() - vWayGOldTime;
+vTest7.ExecTime := LTIME() - vTest7.OldTime;
 
 //------------CALCULATION H -------------------
-vWayHOldTime := LTIME();
+vTest8.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult8 := vReal1 / vReal2;
 END_FOR
-vWayHExecTime := LTIME() - vWayHOldTime;
+vTest8.ExecTime := LTIME() - vTest8.OldTime;
 
 //------------CALCULATION I -------------------
-vWayIOldTime := LTIME();
+vTest9.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult9 := vInteger3 / vInteger4;
 END_FOR
-vWayIExecTime := LTIME() - vWayIOldTime;
+vTest9.ExecTime := LTIME() - vTest9.OldTime;
 
 
 //------------CATCH RESULTS---------------------
-vResultsA[vRunsCompleted] := vWayAExecTime;
-vResultsB[vRunsCompleted] := vWayBExecTime;
-vResultsC[vRunsCompleted] := vWayCExecTime;
-vResultsD[vRunsCompleted] := vWayDExecTime;
-vResultsE[vRunsCompleted] := vWayEExecTime;
-vResultsF[vRunsCompleted] := vWayFExecTime;
-vResultsG[vRunsCompleted] := vWayGExecTime;
-vResultsH[vRunsCompleted] := vWayHExecTime;
-vResultsI[vRunsCompleted] := vWayIExecTime;
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+vTest4.Results[vRunsCompleted] := vTest4.ExecTime;
+vTest5.Results[vRunsCompleted] := vTest5.ExecTime;
+vTest6.Results[vRunsCompleted] := vTest6.ExecTime;
+vTest7.Results[vRunsCompleted] := vTest7.ExecTime;
+vTest8.Results[vRunsCompleted] := vTest8.ExecTime;
+vTest9.Results[vRunsCompleted] := vTest9.ExecTime;
 vRunsCompleted := vRunsCompleted + 1;
 </xhtml>
           </ST>
@@ -600,15 +558,20 @@ vRunsCompleted := vRunsCompleted + 1;
           </data>
         </addData>
       </pou>
-      <pou name="FunctionOverhead" pouType="program">
+      <pou name="x04_FunctionOverhead" pouType="program">
         <interface>
           <localVars constant="true">
             <variable name="cNrRuns">
               <type>
-                <USINT />
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
               </type>
               <initialValue>
-                <simpleValue value="4" />
+                <simpleValue value="5" />
               </initialValue>
             </variable>
             <variable name="cRepeatCalcTimes">
@@ -616,97 +579,14 @@ vRunsCompleted := vRunsCompleted + 1;
                 <UDINT />
               </type>
               <initialValue>
-                <simpleValue value="10000000" />
+                <simpleValue value="1000000" />
               </initialValue>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Million times</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
               </documentation>
             </variable>
           </localVars>
           <localVars>
-            <variable name="vResultsA">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vResultsB">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsC">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsAAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsBAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsCAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayCOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayCExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="i">
-              <type>
-                <UDINT />
-              </type>
-            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -714,6 +594,34 @@ vRunsCompleted := vRunsCompleted + 1;
               <initialValue>
                 <simpleValue value="0" />
               </initialValue>
+            </variable>
+            <variable name="vRunDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest3">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
             </variable>
             <variable name="vInt1">
               <type>
@@ -754,37 +662,38 @@ vRunsCompleted := vRunsCompleted + 1;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
-	vResultsAAVG := calcAvg(vResultsA); //Operands
-	vResultsBAVG := calcAvg(vResultsB); //User function
-	vResultsCAVG := calcAvg(vResultsC); //PRG method
+	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Operands
+	vTest2.AverageExecTime := calcAvg(vTest2.Results); //User function
+	vTest3.AverageExecTime := calcAvg(vTest3.Results); //PRG method
+	vRunDone := TRUE;
 	RETURN;
 END_IF
 	
 //------------CALCULATION A -------------------
-vWayAOldTime := LTIME();
+vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult1 := vInt1 + vInt2;
 END_FOR
-vWayAExecTime := LTIME() - vWayAOldTime;
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
 
 //------------CALCULATION B -------------------
-vWayBOldTime := LTIME();
+vTest2.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult2 := addTwoInts(vInt1, vInt2);
 END_FOR
-vWayBExecTime := LTIME() - vWayBOldTime;
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
 //------------CALCULATION C -------------------
-vWayCOldTime := LTIME();
+vTest3.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult3 := addTwoNumbers(vInt1, vInt2);
 END_FOR
-vWayCExecTime := LTIME() - vWayCOldTime;
+vTest3.ExecTime := LTIME() - vTest3.OldTime;
 
 //------------CATCH RESULTS---------------------
-vResultsA[vRunsCompleted] := vWayAExecTime;
-vResultsB[vRunsCompleted] := vWayBExecTime;
-vResultsC[vRunsCompleted] := vWayCExecTime;
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
 vRunsCompleted := vRunsCompleted + 1;
 </xhtml>
           </ST>
@@ -822,15 +731,20 @@ vRunsCompleted := vRunsCompleted + 1;
           </data>
         </addData>
       </pou>
-      <pou name="ImpactOfDynamicArrays" pouType="program">
+      <pou name="x01_ImpactOfDynamicArrays" pouType="program">
         <interface>
           <localVars constant="true">
             <variable name="cNrRuns">
               <type>
-                <USINT />
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
               </type>
               <initialValue>
-                <simpleValue value="4" />
+                <simpleValue value="5" />
               </initialValue>
             </variable>
             <variable name="cRepeatCalcTimes">
@@ -841,69 +755,11 @@ vRunsCompleted := vRunsCompleted + 1;
                 <simpleValue value="1000000" />
               </initialValue>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Million times</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
               </documentation>
             </variable>
           </localVars>
           <localVars>
-            <variable name="vResultsA">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vResultsB">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsAAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsBAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="i">
-              <type>
-                <UDINT />
-              </type>
-            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -911,6 +767,29 @@ vRunsCompleted := vRunsCompleted + 1;
               <initialValue>
                 <simpleValue value="0" />
               </initialValue>
+            </variable>
+            <variable name="vRunDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
             </variable>
             <variable name="vAvgTimeFun">
               <type>
@@ -979,20 +858,21 @@ vRunsCompleted := vRunsCompleted + 1;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
-	vResultsAAVG := calcAvg(vResultsA);
-	vResultsBAVG := calcAvg(vResultsB);
+	vTest1.AverageExecTime := calcAvg(vTest1.Results);
+	vTest2.AverageExecTime := calcAvg(vTest2.Results);
+	vRunDone := TRUE;
 	RETURN;
 END_IF
 	
 //------------CALCULATION A -------------------
-vWayAOldTime := LTIME();
+vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vAvgTimeFun := calcAvg(vTimes);
 END_FOR
-vWayAExecTime := LTIME() - vWayAOldTime;
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
 
 //------------CALCULATION B -------------------
-vWayBOldTime := LTIME();
+vTest2.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vAvgTimeHardCoded := LTIME#0MS;
 	FOR j:= 0 TO 9 DO
@@ -1000,11 +880,11 @@ FOR i:= 0 TO cRepeatCalcTimes DO
 	END_FOR
 	vAvgTimeHardCoded := vAvgTimeHardCoded / j;
 END_FOR
-vWayBExecTime := LTIME() - vWayBOldTime;
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
 //------------CATCH RESULTS---------------------
-vResultsA[vRunsCompleted] := vWayAExecTime;
-vResultsB[vRunsCompleted] := vWayBExecTime;
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
 vRunsCompleted := vRunsCompleted + 1;
 </xhtml>
           </ST>
@@ -1015,15 +895,20 @@ vRunsCompleted := vRunsCompleted + 1;
           </data>
         </addData>
       </pou>
-      <pou name="ShlVsMemCpy" pouType="program">
+      <pou name="x06_ShlVsMemCpy" pouType="program">
         <interface>
           <localVars constant="true">
             <variable name="cNrRuns">
               <type>
-                <USINT />
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
               </type>
               <initialValue>
-                <simpleValue value="4" />
+                <simpleValue value="5" />
               </initialValue>
             </variable>
             <variable name="cRepeatCalcTimes">
@@ -1034,69 +919,11 @@ vRunsCompleted := vRunsCompleted + 1;
                 <simpleValue value="1000000" />
               </initialValue>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Million times</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
               </documentation>
             </variable>
           </localVars>
           <localVars>
-            <variable name="vResultsA">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vResultsB">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsAAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsBAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="i">
-              <type>
-                <UDINT />
-              </type>
-            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -1104,6 +931,29 @@ vRunsCompleted := vRunsCompleted + 1;
               <initialValue>
                 <simpleValue value="0" />
               </initialValue>
+            </variable>
+            <variable name="vRunDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
             </variable>
             <variable name="vSHRInteger">
               <type>
@@ -1163,29 +1013,30 @@ vRunsCompleted := vRunsCompleted + 1;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
-	vResultsAAVG := calcAvg(vResultsA);
-	vResultsBAVG := calcAvg(vResultsB);
+	vTest1.AverageExecTime := calcAvg(vTest1.Results);
+	vTest2.AverageExecTime := calcAvg(vTest2.Results);
+	vRunDone := TRUE;
 	RETURN;
 END_IF
 	
 
-vWayAOldTime := LTIME();
+vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	//Assemble an UINT from two USINTs using SHR operator
 	vSHRInteger := vBuffer[0] + SHL(vBuffer[1],8);
 END_FOR
-vWayAExecTime := LTIME() - vWayAOldTime;
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
 
-vWayBOldTime := LTIME();
+vTest2.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	//Assemble an UINT from two USINTs using MemCpy
 	MEMUtils.MemCpy(pbyDest:= ADR(vMcpyInteger), pbySrc:= ADR(vBuffer) , dwSize:= SIZEOF(vMcpyInteger));
 END_FOR
-vWayBExecTime := LTIME() - vWayBOldTime;
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
 //Results
-vResultsA[vRunsCompleted] := vWayAExecTime;
-vResultsB[vRunsCompleted] := vWayBExecTime;
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
 vRunsCompleted := vRunsCompleted + 1;
 </xhtml>
           </ST>
@@ -1213,6 +1064,7 @@ vRunsCompleted := vRunsCompleted + 1;
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
                     <Attribute Name="variable_length_array" Value="ARRAY[*] OF LTIME" />
                     <Attribute Name="Dimensions" Value="1" />
                   </Attributes>
@@ -1243,15 +1095,20 @@ RETURN;</xhtml>
           </data>
         </addData>
       </pou>
-      <pou name="MemSetVsDataZeero" pouType="program">
+      <pou name="x05_MemSetVsDataZeero" pouType="program">
         <interface>
           <localVars constant="true">
             <variable name="cNrRuns">
               <type>
-                <USINT />
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
               </type>
               <initialValue>
-                <simpleValue value="4" />
+                <simpleValue value="5" />
               </initialValue>
             </variable>
             <variable name="cRepeatCalcTimes">
@@ -1262,7 +1119,7 @@ RETURN;</xhtml>
                 <simpleValue value="1000000" />
               </initialValue>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Million times</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
               </documentation>
             </variable>
             <variable name="cEmptyStruct">
@@ -1272,64 +1129,6 @@ RETURN;</xhtml>
             </variable>
           </localVars>
           <localVars>
-            <variable name="vResultsA">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vResultsB">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsAAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsBAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="i">
-              <type>
-                <UDINT />
-              </type>
-            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -1337,6 +1136,29 @@ RETURN;</xhtml>
               <initialValue>
                 <simpleValue value="0" />
               </initialValue>
+            </variable>
+            <variable name="vRunDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
             </variable>
             <variable name="vResultStruct1">
               <type>
@@ -1356,30 +1178,31 @@ RETURN;</xhtml>
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
-	vResultsAAVG := calcAvg(vResultsA);
-	vResultsBAVG := calcAvg(vResultsB);
+	vTest1.AverageExecTime := calcAvg(vTest1.Results);
+	vTest2.AverageExecTime := calcAvg(vTest2.Results);
+	vRunDone := TRUE;
 	RETURN;
 END_IF
 	
 //------------CALCULATION A -------------------
-vWayAOldTime := LTIME();
+vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	//RESET STRUCT WITH A EMPTY STRUCT
 	vResultStruct1 := cEmptyStruct;
 END_FOR
-vWayAExecTime := LTIME() - vWayAOldTime;
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
 
 //------------CALCULATION B -------------------
-vWayBOldTime := LTIME();
+vTest2.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	//RESET STRUCT WITH MEM SET
 	MEMUtils.MemSet(pbyBuffer:= ADR(vResultStruct2), byValue:= 16#0 , dwSize:= SIZEOF(vResultStruct2));
 END_FOR
-vWayBExecTime := LTIME() - vWayBOldTime;
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
 //------------CATCH RESULTS---------------------
-vResultsA[vRunsCompleted] := vWayAExecTime;
-vResultsB[vRunsCompleted] := vWayBExecTime;
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
 vRunsCompleted := vRunsCompleted + 1;
 </xhtml>
           </ST>
@@ -1390,15 +1213,20 @@ vRunsCompleted := vRunsCompleted + 1;
           </data>
         </addData>
       </pou>
-      <pou name="execSpeedOfLanguageTypes" pouType="program">
+      <pou name="x02_ExecSpeedOfLanguageTypes" pouType="program">
         <interface>
           <localVars constant="true">
             <variable name="cNrRuns">
               <type>
-                <USINT />
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
               </type>
               <initialValue>
-                <simpleValue value="4" />
+                <simpleValue value="5" />
               </initialValue>
             </variable>
             <variable name="cRepeatCalcTimes">
@@ -1406,97 +1234,14 @@ vRunsCompleted := vRunsCompleted + 1;
                 <UDINT />
               </type>
               <initialValue>
-                <simpleValue value="10000000" />
+                <simpleValue value="1000000" />
               </initialValue>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Million times</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
               </documentation>
             </variable>
           </localVars>
           <localVars>
-            <variable name="vResultsA">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vResultsB">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsC">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsAAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsBAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsCAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayCOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayCExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="i">
-              <type>
-                <UDINT />
-              </type>
-            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -1504,6 +1249,34 @@ vRunsCompleted := vRunsCompleted + 1;
               <initialValue>
                 <simpleValue value="0" />
               </initialValue>
+            </variable>
+            <variable name="vRunDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest3">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
             </variable>
             <variable name="vInt1">
               <type>
@@ -1544,37 +1317,38 @@ vRunsCompleted := vRunsCompleted + 1;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
-	vResultsAAVG := calcAvg(vResultsA); //User function Ladder
-	vResultsBAVG := calcAvg(vResultsB); //User function ST
-	vResultsCAVG := calcAvg(vResultsC); //User function FBD
+	vTest1.AverageExecTime := calcAvg(vTest1.Results); //User function Ladder
+	vTest2.AverageExecTime := calcAvg(vTest2.Results); //User function ST
+	vTest3.AverageExecTime := calcAvg(vTest3.Results); //User function FBD
+	vRunDone := TRUE;
 	RETURN;
 END_IF
 	
 //------------CALCULATION A -------------------
-vWayAOldTime := LTIME();
+vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult1 := addTwoIntsLadder(vInt1, vInt2);
 END_FOR
-vWayAExecTime := LTIME() - vWayAOldTime;
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
 
 //------------CALCULATION B -------------------
-vWayBOldTime := LTIME();
+vTest2.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult2 := addTwoIntsST(vInt1, vInt2);
 END_FOR
-vWayBExecTime := LTIME() - vWayBOldTime;
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
 //------------CALCULATION C -------------------
-vWayCOldTime := LTIME();
+vTest3.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult3 := addTwoIntsFBD(vInt1, vInt2);
 END_FOR
-vWayCExecTime := LTIME() - vWayCOldTime;
+vTest3.ExecTime := LTIME() - vTest3.OldTime;
 
 //------------CATCH RESULTS---------------------
-vResultsA[vRunsCompleted] := vWayAExecTime;
-vResultsB[vRunsCompleted] := vWayBExecTime;
-vResultsC[vRunsCompleted] := vWayCExecTime;
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
 vRunsCompleted := vRunsCompleted + 1;
 </xhtml>
           </ST>
@@ -1819,15 +1593,20 @@ vRunsCompleted := vRunsCompleted + 1;
           </data>
         </addData>
       </pou>
-      <pou name="stringOperations" pouType="program">
+      <pou name="x07_StringOperations" pouType="program">
         <interface>
           <localVars constant="true">
             <variable name="cNrRuns">
               <type>
-                <USINT />
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
               </type>
               <initialValue>
-                <simpleValue value="4" />
+                <simpleValue value="5" />
               </initialValue>
             </variable>
             <variable name="cRepeatCalcTimes">
@@ -1835,190 +1614,14 @@ vRunsCompleted := vRunsCompleted + 1;
                 <UDINT />
               </type>
               <initialValue>
-                <simpleValue value="1000" />
+                <simpleValue value="1000000" />
               </initialValue>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Million times</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
               </documentation>
             </variable>
           </localVars>
           <localVars>
-            <variable name="vResultsA">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vResultsB">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsC">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsD">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsE">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsF">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsAAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time to copy a string[255] 1000 times</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vResultsBAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time to copy a string 1000 times</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vResultsCAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time to concatenate 1000 characters with STRING</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vResultsDAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time to concatenate 1000 characters with STRING[255]</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vResultsEAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time to copy a BYTE 1000 times</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vResultsFAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time to copy an array of 255 BYTE 1000 times</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vWayAOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayCOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayDOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayEOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayFOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayCExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayDExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayEExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayFExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="i">
-              <type>
-                <UDINT />
-              </type>
-            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -2026,6 +1629,49 @@ vRunsCompleted := vRunsCompleted + 1;
               <initialValue>
                 <simpleValue value="0" />
               </initialValue>
+            </variable>
+            <variable name="vRunDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest3">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest4">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest5">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest6">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
             </variable>
             <variable name="vString1">
               <type>
@@ -2130,69 +1776,70 @@ vRunsCompleted := vRunsCompleted + 1;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
-	vResultsAAVG := calcAvg(vResultsA); //Time to copy a string[255] 1000 times
-	vResultsBAVG := calcAvg(vResultsB); //Time to copy a string 1000 times
-	vResultsCAVG := calcAvg(vResultsC); //Time to concatenate 1000 characters with STRING
-	vResultsDAVG := calcAvg(vResultsD); //Time to concatenate 1000  characters with STRING[255]
-	vResultsEAVG := calcAvg(vResultsE); //Time to move a byte 1000 times
-	vResultsFAVG := calcAvg(vResultsF); //Time to copy an array of 255 BYTE 1000 times
+	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to copy a string[255] 1 Million times
+	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to copy a string 1 Million times
+	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to concatenate 1 Million times characters with STRING
+	vTest4.AverageExecTime := calcAvg(vTest4.Results); //Time to concatenate 1 Million times  characters with STRING[255]
+	vTest5.AverageExecTime := calcAvg(vTest5.Results); //Time to move a byte 1 Million times
+	vTest6.AverageExecTime := calcAvg(vTest6.Results); //Time to copy an array of 255 BYTE 1 Million times
+	vRunDone := TRUE;
 	RETURN;
 END_IF
 
 vSizes[0] := SIZEOF(vString1); //Size is 255 characters + zero char
 vSizes[1] := SIZEOF(vString2); //Size is 80 characters + zero char, default if no size specified
-vSizes[2] := SIZEOF(vResult3); //Size is 81, even though we concatenated 1000 characters. The rest were chopped off
+vSizes[2] := SIZEOF(vResult3); //Size is 81, even though we concatenated 1 Million characters. The rest were chopped off
 vSizes[3] := SIZEOF(vResult4); //Size is expected 256, other 744 characters chopped off
 
 //------------CALCULATION A -------------------
-vWayAOldTime := LTIME();
+vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult1 := vString1;
 END_FOR
-vWayAExecTime := LTIME() - vWayAOldTime;
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
 
 //------------CALCULATION B -------------------
-vWayBOldTime := LTIME();
+vTest2.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult2 := vString2;
 END_FOR
-vWayBExecTime := LTIME() - vWayBOldTime;
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
 //------------CALCULATION C -------------------
-vWayCOldTime := LTIME();
+vTest3.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult3 := CONCAT(vResult3, vString3);
 END_FOR
-vWayCExecTime := LTIME() - vWayCOldTime;
+vTest3.ExecTime := LTIME() - vTest3.OldTime;
 
 //------------CALCULATION D -------------------
-vWayDOldTime := LTIME();
+vTest4.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult4 := CONCAT(vResult4, vString4);
 END_FOR
-vWayDExecTime := LTIME() - vWayDOldTime;
+vTest4.ExecTime := LTIME() - vTest4.OldTime;
 
 //------------CALCULATION E -------------------
-vWayEOldTime := LTIME();
+vTest5.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult5 := vByte;
 END_FOR
-vWayEExecTime := LTIME() - vWayEOldTime;
+vTest5.ExecTime := LTIME() - vTest5.OldTime;
 
 //------------CALCULATION F -------------------
-vWayFOldTime := LTIME();
+vTest6.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult6 := vArrByte;
 END_FOR
-vWayFExecTime := LTIME() - vWayFOldTime;
+vTest6.ExecTime := LTIME() - vTest6.OldTime;
 
 //------------CATCH RESULTS---------------------
-vResultsA[vRunsCompleted] := vWayAExecTime;
-vResultsB[vRunsCompleted] := vWayBExecTime;
-vResultsC[vRunsCompleted] := vWayCExecTime;
-vResultsD[vRunsCompleted] := vWayDExecTime;
-vResultsE[vRunsCompleted] := vWayEExecTime;
-vResultsF[vRunsCompleted] := vWayFExecTime;
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+vTest4.Results[vRunsCompleted] := vTest4.ExecTime;
+vTest5.Results[vRunsCompleted] := vTest5.ExecTime;
+vTest6.Results[vRunsCompleted] := vTest6.ExecTime;
 vRunsCompleted := vRunsCompleted + 1;
 </xhtml>
           </ST>
@@ -2203,12 +1850,17 @@ vRunsCompleted := vRunsCompleted + 1;
           </data>
         </addData>
       </pou>
-      <pou name="checkingBools" pouType="program">
+      <pou name="x08_CheckingBools" pouType="program">
         <interface>
           <localVars constant="true">
             <variable name="cNrRuns">
               <type>
-                <USINT />
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
               </type>
               <initialValue>
                 <simpleValue value="5" />
@@ -2219,147 +1871,14 @@ vRunsCompleted := vRunsCompleted + 1;
                 <UDINT />
               </type>
               <initialValue>
-                <simpleValue value="10000" />
+                <simpleValue value="1000000" />
               </initialValue>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">10 Million times</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
               </documentation>
             </variable>
           </localVars>
           <localVars>
-            <variable name="vResultsA">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vResultsB">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsC">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsD">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsE">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsAAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsBAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsCAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsDAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsEAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayCOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayDOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayEOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayCExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayDExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayEExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="i">
-              <type>
-                <UDINT />
-              </type>
-            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -2367,6 +1886,44 @@ vRunsCompleted := vRunsCompleted + 1;
               <initialValue>
                 <simpleValue value="0" />
               </initialValue>
+            </variable>
+            <variable name="vRunDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest3">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest4">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest5">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
             </variable>
             <variable name="vBool">
               <type>
@@ -2402,61 +1959,62 @@ vRunsCompleted := vRunsCompleted + 1;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
-	vResultsAAVG := calcAvg(vResultsA); //Time to run IF vBool = TRUE THEN 1 000 000 times
-	vResultsBAVG := calcAvg(vResultsB); //Time to run IF vBool THEN 1 000 000 times
-	vResultsCAVG := calcAvg(vResultsC); //Time to increment a counter using if sentence 1 000 000 times
-	vResultsDAVG := calcAvg(vResultsD); //Time to increment a counter using bool to UINT 1 000 000 times
-	vResultsEAVG := calcAvg(vResultsE); //Time to cast a bool to UINT 1 000 000 times
+	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to run IF vBool = TRUE THEN 1 Million times
+	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to run IF vBool THEN 1 Million times
+	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to increment a counter using if sentence 1 Million times
+	vTest4.AverageExecTime := calcAvg(vTest4.Results); //Time to increment a counter using bool to UINT 1 Million times
+	vTest5.AverageExecTime := calcAvg(vTest5.Results); //Time to cast a bool to UINT 1 Million times
+	vRunDone := TRUE;
 	RETURN;
 END_IF
 
 //------------CALCULATION A -------------------
-vWayAOldTime := LTIME();
+vTest1.OldTime := LTIME();
 //FOR i:= 0 TO cRepeatCalcTimes DO
 	IF vBool = TRUE THEN
 		vResult := vBool;
 	END_IF
 //END_FOR
-vWayAExecTime := LTIME() - vWayAOldTime;
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
 
 //------------CALCULATION B -------------------
-vWayBOldTime := LTIME();
+vTest2.OldTime := LTIME();
 //FOR i:= 0 TO cRepeatCalcTimes DO
 	IF vBool THEN
 		vResult := vBool;
 	END_IF
 //END_FOR
-vWayBExecTime := LTIME() - vWayBOldTime;
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
 //------------CALCULATION C -------------------
-vWayCOldTime := LTIME();
+vTest3.OldTime := LTIME();
 //FOR i:= 0 TO cRepeatCalcTimes DO
 	IF vBool THEN
 		vCounter := vCounter + 1;
 	END_IF
 //END_FOR
-vWayCExecTime := LTIME() - vWayCOldTime;
+vTest3.ExecTime := LTIME() - vTest3.OldTime;
 
 //------------CALCULATION D -------------------
-vWayDOldTime := LTIME();
+vTest4.OldTime := LTIME();
 //FOR i:= 0 TO cRepeatCalcTimes DO
 	vCounter := vCounter + BOOL_TO_UINT(vBool);
 //END_FOR
-vWayDExecTime := LTIME() - vWayDOldTime;
+vTest4.ExecTime := LTIME() - vTest4.OldTime;
 
 //------------CALCULATION D -------------------
-vWayEOldTime := LTIME();
+vTest5.OldTime := LTIME();
 //FOR i:= 0 TO cRepeatCalcTimes DO
 	;vCastedUint := BOOL_TO_UINT(vBool);
 //END_FOR
-vWayEExecTime := LTIME() - vWayEOldTime;
+vTest5.ExecTime := LTIME() - vTest5.OldTime;
 
 //------------CATCH RESULTS---------------------
-vResultsA[vRunsCompleted] := vWayAExecTime;
-vResultsB[vRunsCompleted] := vWayBExecTime;
-vResultsC[vRunsCompleted] := vWayCExecTime;
-vResultsD[vRunsCompleted] := vWayDExecTime;
-vResultsE[vRunsCompleted] := vWayEExecTime;
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+vTest4.Results[vRunsCompleted] := vTest4.ExecTime;
+vTest5.Results[vRunsCompleted] := vTest5.ExecTime;
 vRunsCompleted := vRunsCompleted + 1;
 </xhtml>
           </ST>
@@ -2467,12 +2025,17 @@ vRunsCompleted := vRunsCompleted + 1;
           </data>
         </addData>
       </pou>
-      <pou name="caseVsIfElsif" pouType="program">
+      <pou name="x09_CaseVsIfElsif" pouType="program">
         <interface>
           <localVars constant="true">
             <variable name="cNrRuns">
               <type>
-                <USINT />
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
               </type>
               <initialValue>
                 <simpleValue value="5" />
@@ -2483,172 +2046,14 @@ vRunsCompleted := vRunsCompleted + 1;
                 <UDINT />
               </type>
               <initialValue>
-                <simpleValue value="10000000" />
+                <simpleValue value="1000000" />
               </initialValue>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">10 Million times</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
               </documentation>
             </variable>
           </localVars>
           <localVars>
-            <variable name="vResultsA">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Boiler plate variables for test</xhtml>
-              </documentation>
-            </variable>
-            <variable name="vResultsB">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsC">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsD">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsE">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsF">
-              <type>
-                <array>
-                  <dimension lower="0" upper="cNrRuns" />
-                  <baseType>
-                    <derived name="LTIME" />
-                  </baseType>
-                </array>
-              </type>
-            </variable>
-            <variable name="vResultsAAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsBAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsCAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsDAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsEAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vResultsFAVG">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayCOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayDOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayEOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayFOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayAExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayBExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayCExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayDExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayEExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="vWayFExecTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
-            <variable name="i">
-              <type>
-                <UDINT />
-              </type>
-            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -2656,6 +2061,49 @@ vRunsCompleted := vRunsCompleted + 1;
               <initialValue>
                 <simpleValue value="0" />
               </initialValue>
+            </variable>
+            <variable name="vRunDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest3">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest4">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest5">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest6">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
             </variable>
             <variable name="vFirstIndex">
               <type>
@@ -2713,64 +2161,65 @@ vRunsCompleted := vRunsCompleted + 1;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
-	vResultsAAVG := calcAvg(vResultsA); //Time to run first branch of IF ELSIF 1 000 000 times
-	vResultsBAVG := calcAvg(vResultsB); //Time to run middle branch of IF ELSIF 1 000 000 times
-	vResultsCAVG := calcAvg(vResultsC); //Time to run last branch of IF ELSIF 1 000 000 times
-	vResultsDAVG := calcAvg(vResultsD); //Time to run first branch of CASE 1 000 000 times
-	vResultsEAVG := calcAvg(vResultsE); //Time to run middle branch of CASE 1 000 000 times
-	vResultsFAVG := calcAvg(vResultsF); //Time to run last branch of CASE 1 000 000 times
+	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to run first branch of IF ELSIF 1 Million times
+	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to run middle branch of IF ELSIF 1 Million times
+	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to run last branch of IF ELSIF 1 Million times
+	vTest4.AverageExecTime := calcAvg(vTest4.Results); //Time to run first branch of CASE 1 Million times
+	vTest5.AverageExecTime := calcAvg(vTest5.Results); //Time to run middle branch of CASE 1 Million times
+	vTest6.AverageExecTime := calcAvg(vTest6.Results); //Time to run last branch of CASE 1 Million times
+	vRunDone := TRUE;
 	RETURN;
 END_IF
 
 //------------CALCULATION A -------------------
-vWayAOldTime := LTIME();
+vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResultFirst := returnIndexIfElsif(vFirstIndex);
 END_FOR
-vWayAExecTime := LTIME() - vWayAOldTime;
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
 
 //------------CALCULATION B -------------------
-vWayBOldTime := LTIME();
+vTest2.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResultMiddle := returnIndexIfElsif(vMiddleIndex);
 END_FOR
-vWayBExecTime := LTIME() - vWayBOldTime;
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
 //------------CALCULATION C -------------------
-vWayCOldTime := LTIME();
+vTest3.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResultLast := returnIndexIfElsif(vLastIndex);
 END_FOR
-vWayCExecTime := LTIME() - vWayCOldTime;
+vTest3.ExecTime := LTIME() - vTest3.OldTime;
 
 //------------CALCULATION D -------------------
-vWayDOldTime := LTIME();
+vTest4.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResultFirst := returnIndexCase(vFirstIndex);
 END_FOR
-vWayDExecTime := LTIME() - vWayDOldTime;
+vTest4.ExecTime := LTIME() - vTest4.OldTime;
 
 //------------CALCULATION E -------------------
-vWayEOldTime := LTIME();
+vTest5.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResultMiddle := returnIndexCase(vMiddleIndex);
 END_FOR
-vWayEExecTime := LTIME() - vWayEOldTime;
+vTest5.ExecTime := LTIME() - vTest5.OldTime;
 
 //------------CALCULATION F -------------------
-vWayFOldTime := LTIME();
+vTest6.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResultLast := returnIndexCase(vLastIndex);
 END_FOR
-vWayFExecTime := LTIME() - vWayFOldTime;
+vTest6.ExecTime := LTIME() - vTest6.OldTime;
 
 //------------CATCH RESULTS---------------------
-vResultsA[vRunsCompleted] := vWayAExecTime;
-vResultsB[vRunsCompleted] := vWayBExecTime;
-vResultsC[vRunsCompleted] := vWayCExecTime;
-vResultsD[vRunsCompleted] := vWayDExecTime;
-vResultsE[vRunsCompleted] := vWayEExecTime;
-vResultsF[vRunsCompleted] := vWayFExecTime;
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+vTest4.Results[vRunsCompleted] := vTest4.ExecTime;
+vTest5.Results[vRunsCompleted] := vTest5.ExecTime;
+vTest6.Results[vRunsCompleted] := vTest6.ExecTime;
 
 vRunsCompleted := vRunsCompleted + 1;
 </xhtml>
@@ -3538,21 +2987,1047 @@ END_CASE</xhtml>
           </data>
         </addData>
       </pou>
+      <pou name="x10_1_BitAccess" pouType="program">
+        <interface>
+          <localVars constant="true">
+            <variable name="cNrRuns">
+              <type>
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
+              </type>
+              <initialValue>
+                <simpleValue value="5" />
+              </initialValue>
+            </variable>
+            <variable name="cRepeatCalcTimes">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1000000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <localVars>
+            <variable name="vRunsCompleted">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="vRunDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest3">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="vCodesysBits">
+              <type>
+                <derived name="dtBitStruct" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Test vars</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vNormalInt">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="16#5555" />
+              </initialValue>
+            </variable>
+            <variable name="vResult1">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="vResult2">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="vResult3">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to access bit 3 1 Million times in codesys bit struct
+	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to access bit 3 1 Million times in normal integer using . notation
+	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to access bit 3 1 Million times in normal integer using bit masking
+	vRunDone := TRUE;
+	RETURN;
+END_IF
+
+//------------CALCULATION A -------------------
+vTest1.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult1 := checkBit_bitStruct(vCodesysBits,2);
+END_FOR
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
+
+//------------CALCULATION B -------------------
+vTest2.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult2 := checkBit_dotNot(vNormalInt,2);
+END_FOR
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
+
+//------------CALCULATION C -------------------
+vTest3.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult3 := checkBit_bitmask(vNormalInt, 2);
+END_FOR
+vTest3.ExecTime := LTIME() - vTest3.OldTime;
+
+//------------CATCH RESULTS---------------------
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+
+vRunsCompleted := vRunsCompleted + 1;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>55b1e25e-0d71-42e6-8b7f-259c215c353b</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="x10_3_BitMath" pouType="program">
+        <interface>
+          <localVars constant="true">
+            <variable name="cNrRuns">
+              <type>
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
+              </type>
+              <initialValue>
+                <simpleValue value="5" />
+              </initialValue>
+            </variable>
+            <variable name="cRepeatCalcTimes">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1000000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <localVars>
+            <variable name="vRunsCompleted">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="vRunDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest3">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="vCodesysBits">
+              <type>
+                <derived name="dtBitStruct" />
+              </type>
+              <initialValue>
+                <structValue>
+                  <value member="bit1">
+                    <simpleValue value="TRUE" />
+                  </value>
+                  <value member="bit2">
+                    <simpleValue value="TRUE" />
+                  </value>
+                  <value member="bit3">
+                    <simpleValue value="FALSE" />
+                  </value>
+                </structValue>
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Test vars</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vNormalInt">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="2#11" />
+              </initialValue>
+            </variable>
+            <variable name="vNormalInt2">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="2#11" />
+              </initialValue>
+            </variable>
+            <variable name="vNormalInt3">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="2#11" />
+              </initialValue>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to and two bits and save it to another bit 1 Million times using codesys bit struct
+	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to and two bits and save it to another bit 1 Million times using . notation
+	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to and two bits and save it to another bit 1 Million times using bit masking
+	vRunDone := TRUE;
+	RETURN;
+END_IF
+
+//------------CALCULATION A -------------------
+vTest1.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	setBitToValue_bitStruct(vCodesysBits, 2, checkBit_bitStruct(vCodesysBits, 0) AND checkBit_bitStruct(vCodesysBits, 1));
+END_FOR
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
+
+//------------CALCULATION B -------------------
+vTest2.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	setBitToValue_dotNot(vNormalInt, 2, checkBit_dotNot(vNormalInt, 0) AND checkBit_dotNot(vNormalInt, 1));
+END_FOR
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
+
+//------------CALCULATION C -------------------
+vTest3.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	setBitTovalue_bitmask(vNormalInt2, 2, checkBit_bitmask(vNormalInt2, 0) AND checkBit_bitmask(vNormalInt2, 1));
+END_FOR
+vTest3.ExecTime := LTIME() - vTest3.OldTime;
+
+
+//------------CATCH RESULTS---------------------
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+
+vRunsCompleted := vRunsCompleted + 1;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>07b9ee7c-3208-404a-96fe-4da4d87dcecd</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="x10_2_BitSet" pouType="program">
+        <interface>
+          <localVars constant="true">
+            <variable name="cNrRuns">
+              <type>
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
+              </type>
+              <initialValue>
+                <simpleValue value="5" />
+              </initialValue>
+            </variable>
+            <variable name="cRepeatCalcTimes">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1000000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <localVars>
+            <variable name="vRunsCompleted">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="vRunDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest3">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="vCodesysBits">
+              <type>
+                <derived name="dtBitStruct" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Test vars</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vNormalInt">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="16#0" />
+              </initialValue>
+            </variable>
+            <variable name="vNormalInt2">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="16#0" />
+              </initialValue>
+            </variable>
+            <variable name="vNormalInt3">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="16#0" />
+              </initialValue>
+            </variable>
+            <variable name="vResult1">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="vResult2">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="vResult3">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to set bit 3 1 Million times in codesys bit struct
+	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to set bit 3 1 Million times in normal integer using . notation
+	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to set bit 3 1 Million times in normal integer using bit masking
+	vRunDone := TRUE;
+	RETURN;
+END_IF
+
+//------------CALCULATION A -------------------
+vTest1.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	setBit_bitStruct(vCodesysBits, 2);
+END_FOR
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
+
+//------------CALCULATION B -------------------
+vTest2.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	setBit_dotNot(vNormalInt, 2);
+END_FOR
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
+
+//------------CALCULATION C -------------------
+vTest3.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	setBit_bitmask(vNormalInt2, 2);
+END_FOR
+vTest3.ExecTime := LTIME() - vTest3.OldTime;
+
+//------------CATCH RESULTS---------------------
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+
+vRunsCompleted := vRunsCompleted + 1;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>ff2e3e10-a7bd-4ef8-992f-e201ee8b44f5</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="checkBit_bitmask" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="bits">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="bitToCheck">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">checkBit_bitmask := (bits AND SHL(1, bitToCheck)) &lt;&gt; 0;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>1410a64b-5933-4e93-81df-c546f078612e</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="setBit_bitmask" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inOutVars>
+            <variable name="bits">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </inOutVars>
+          <inputVars>
+            <variable name="bitToSet">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">bits := bits OR SHL(UINT#1, bitToSet);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>08e5ad85-d29d-43b7-84f8-ef01e7d5504b</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="clearBit_bitmask" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inOutVars>
+            <variable name="bits">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </inOutVars>
+          <inputVars>
+            <variable name="bitToClear">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">bits := bits AND NOT SHL(UINT#1, bitToClear-1);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>a5ac315e-6fee-41fd-9fe0-b5d61f96492b</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="setBitToValue_bitmask" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inOutVars>
+            <variable name="bits">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </inOutVars>
+          <inputVars>
+            <variable name="bitToSet">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+            <variable name="value">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF value THEN
+	setBit_bitmask(bits, bitToSet);
+ELSE
+	clearBit_bitmask(bits, bitToSet);
+END_IF</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>67294dfb-3392-43d5-801e-1d31b7ad7628</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="setBit_dotNot" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inOutVars>
+            <variable name="bits">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </inOutVars>
+          <inputVars>
+            <variable name="bitToSet">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">CASE bitToSet OF
+	0: bits.0 := TRUE;
+	1: bits.1 := TRUE;
+	2: bits.2 := TRUE;
+	3: bits.3 := TRUE;
+	4: bits.4 := TRUE;
+	5: bits.5 := TRUE;
+	6: bits.6 := TRUE;
+	7: bits.7 := TRUE;
+	8: bits.8 := TRUE;
+	9: bits.9 := TRUE;
+	10: bits.10 := TRUE;
+	11: bits.11 := TRUE;
+	12: bits.12 := TRUE;
+	13: bits.13 := TRUE;
+	14: bits.14 := TRUE;
+	15: bits.15 := TRUE;
+END_CASE</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>d6c6c8e6-a8cc-4650-93c7-93548a570652</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="checkBit_dotNot" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="bits">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="bitToCheck">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">CASE bitToCheck OF
+	0: checkBit_dotNot := bits.0;
+	1: checkBit_dotNot := bits.1;
+	2: checkBit_dotNot := bits.2;
+	3: checkBit_dotNot := bits.3;
+	4: checkBit_dotNot := bits.4;
+	5: checkBit_dotNot := bits.5;
+	6: checkBit_dotNot := bits.6;
+	7: checkBit_dotNot := bits.7;
+	8: checkBit_dotNot := bits.8;
+	9: checkBit_dotNot := bits.9;
+	10: checkBit_dotNot := bits.10;
+	11: checkBit_dotNot := bits.11;
+	12: checkBit_dotNot := bits.12;
+	13: checkBit_dotNot := bits.13;
+	14: checkBit_dotNot := bits.14;
+	15: checkBit_dotNot := bits.15;
+END_CASE</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>b12efb6a-31f4-4685-9b74-6773013cef76</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="clearBit_dotNot" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inOutVars>
+            <variable name="bits">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </inOutVars>
+          <inputVars>
+            <variable name="bitToClear">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">CASE bitToClear OF
+	0: bits.0 := FALSE;
+	1: bits.1 := FALSE;
+	2: bits.2 := FALSE;
+	3: bits.3 := FALSE;
+	4: bits.4 := FALSE;
+	5: bits.5 := FALSE;
+	6: bits.6 := FALSE;
+	7: bits.7 := FALSE;
+	8: bits.8 := FALSE;
+	9: bits.9 := FALSE;
+	10: bits.10 := FALSE;
+	11: bits.11 := FALSE;
+	12: bits.12 := FALSE;
+	13: bits.13 := FALSE;
+	14: bits.14 := FALSE;
+	15: bits.15 := FALSE;
+END_CASE</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>1e488c7a-35c5-4876-9f6f-248de83ba132</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="checkBit_bitStruct" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="bits">
+              <type>
+                <derived name="dtBitStruct" />
+              </type>
+            </variable>
+            <variable name="bitToCheck">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">CASE bitToCheck OF
+	0: checkBit_bitStruct := bits.bit1;
+	1: checkBit_bitStruct := bits.bit2;
+	2: checkBit_bitStruct := bits.bit3;
+	3: checkBit_bitStruct := bits.bit4;
+	4: checkBit_bitStruct := bits.bit5;
+	5: checkBit_bitStruct := bits.bit6;
+	6: checkBit_bitStruct := bits.bit7;
+	7: checkBit_bitStruct := bits.bit8;
+	8: checkBit_bitStruct := bits.bit9;
+	9: checkBit_bitStruct := bits.bit10;
+	10: checkBit_bitStruct := bits.bit11;
+	11: checkBit_bitStruct := bits.bit12;
+	12: checkBit_bitStruct := bits.bit13;
+	13: checkBit_bitStruct := bits.bit14;
+	14: checkBit_bitStruct := bits.bit15;
+	15: checkBit_bitStruct := bits.bit16;
+END_CASE</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>dd822e65-2c99-4348-a2c9-652be475a596</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="clearBit_bitStruct" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inOutVars>
+            <variable name="bits">
+              <type>
+                <derived name="dtBitStruct" />
+              </type>
+            </variable>
+          </inOutVars>
+          <inputVars>
+            <variable name="bitToClear">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">CASE bitToClear OF
+	0: bits.bit1 := FALSE;
+	1: bits.bit2 := FALSE;
+	2: bits.bit3 := FALSE;
+	3: bits.bit4 := FALSE;
+	4: bits.bit5 := FALSE;
+	5: bits.bit6 := FALSE;
+	6: bits.bit7 := FALSE;
+	7: bits.bit8 := FALSE;
+	8: bits.bit9 := FALSE;
+	9: bits.bit10 := FALSE;
+	10: bits.bit11 := FALSE;
+	11: bits.bit12 := FALSE;
+	12: bits.bit13 := FALSE;
+	13: bits.bit14 := FALSE;
+	14: bits.bit15 := FALSE;
+	15: bits.bit16 := FALSE;
+END_CASE</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>5cac58e1-cd70-470f-8830-a8d7f4f859bc</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="setBit_bitStruct" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inOutVars>
+            <variable name="bits">
+              <type>
+                <derived name="dtBitStruct" />
+              </type>
+            </variable>
+          </inOutVars>
+          <inputVars>
+            <variable name="bitToSet">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">CASE bitToSet OF
+	0: bits.bit1 := TRUE;
+	1: bits.bit2 := TRUE;
+	2: bits.bit3 := TRUE;
+	3: bits.bit4 := TRUE;
+	4: bits.bit5 := TRUE;
+	5: bits.bit6 := TRUE;
+	6: bits.bit7 := TRUE;
+	7: bits.bit8 := TRUE;
+	8: bits.bit9 := TRUE;
+	9: bits.bit10 := TRUE;
+	10: bits.bit11 := TRUE;
+	11: bits.bit12 := TRUE;
+	12: bits.bit13 := TRUE;
+	13: bits.bit14 := TRUE;
+	14: bits.bit15 := TRUE;
+	15: bits.bit16 := TRUE;
+END_CASE</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>e2299132-fdf6-41ce-a918-94975bae8dca</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="setBitToValue_bitStruct" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inOutVars>
+            <variable name="bits">
+              <type>
+                <derived name="dtBitStruct" />
+              </type>
+            </variable>
+          </inOutVars>
+          <inputVars>
+            <variable name="bitToSet">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+            <variable name="value">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF value THEN
+	setBit_bitStruct(bits, bitToSet);
+ELSE
+	clearBit_bitStruct(bits, bitToSet);
+END_IF</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>8301b7b6-0574-4fd5-8ec5-2a574edf7903</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="setBitToValue_dotNot" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inOutVars>
+            <variable name="bits">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </inOutVars>
+          <inputVars>
+            <variable name="bitToSet">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+            <variable name="value">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF value THEN
+	setBit_dotNot(bits, bitToSet);
+ELSE
+	clearBit_dotNot(bits, bitToSet);
+END_IF</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>79f63c46-1373-4270-b495-53c4d47f0d90</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="speedRunner" pouType="program">
+        <interface>
+          <localVars>
+            <variable name="vOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTimeToRunTests">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="TRUE" />
+              </initialValue>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vOldTime := LTIME();
+	vStart := FALSE;
+END_IF
+
+(*Run tests one by one*)
+x01_ImpactOfDynamicArrays();
+x02_ExecSpeedOfLanguageTypes();
+x03_FloatingPointOperations();
+x04_FunctionOverhead();
+x05_MemSetVsDataZeero();
+x06_ShlVsMemCpy();
+x07_StringOperations();
+x08_CheckingBools();
+x09_CaseVsIfElsif();
+x10_1_BitAccess();
+x10_2_BitSet();
+x10_3_BitMath();
+
+IF x01_ImpactOfDynamicArrays.vRunDone
+AND x02_ExecSpeedOfLanguageTypes.vRunDone
+AND x03_FloatingPointOperations.vRunDone
+AND x04_FunctionOverhead.vRunDone
+AND x05_MemSetVsDataZeero.vRunDone
+AND x06_ShlVsMemCpy.vRunDone
+AND x07_StringOperations.vRunDone
+AND x08_CheckingBools.vRunDone
+AND x09_CaseVsIfElsif.vRunDone
+AND x10_1_BitAccess.vRunDone
+AND x10_2_BitSet.vRunDone
+AND x10_3_BitMath.vRunDone
+AND vTimeToRunTests = LTIME#0S
+ THEN
+	vTimeToRunTests := LTIME() - vOldTime;
+END_IF</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>45bae081-d3b4-42ae-ac00-ec9afd7d0163</ObjectId>
+          </data>
+        </addData>
+      </pou>
     </pous>
   </types>
   <instances>
     <configurations>
       <configuration name="CODESYS_Control_Win_V3_x64">
         <resource name="Application">
-          <task name="Task" interval="PT0.1S" priority="1">
-            <pouInstance name="checkingBools" typeName="">
+          <task name="Task" interval="PT0.2S" priority="1">
+            <pouInstance name="speedRunner" typeName="">
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml" />
               </documentation>
             </pouInstance>
             <addData>
               <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
-                <TaskSettings KindOfTask="Cyclic" Interval="100" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                <TaskSettings KindOfTask="Cyclic" Interval="200" IntervalUnit="ms" WithinSPSTimeSlicing="true">
                   <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
                 </TaskSettings>
               </data>
@@ -3564,11 +4039,11 @@ END_CASE</xhtml>
           <addData>
             <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
               <Libraries>
-                <Library Name="#IoStandard" Namespace="IoStandard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="true" DefaultResolution="IoStandard, 3.5.16.0 (System)" />
+                <Library Name="MemoryUtils, 3.5.18.0 (3S - Smart Software Solutions GmbH)" Namespace="MEMUtils" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" />
+                <Library Name="#IoStandard" Namespace="IoStandard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="true" DefaultResolution="IoStandard, 3.5.17.0 (System)" />
                 <Library Name="#3SLicense" Namespace="_3S_LICENSE" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="3SLicense, 0.0.0.0 (3S - Smart Software Solutions GmbH)" ResolverGuid="97c3b452-d9fa-4ac2-9d0c-3d420aa6d95b" />
-                <Library Name="#CAA Device Diagnosis" Namespace="DED" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="CAA Device Diagnosis, 3.5.15.0 (CAA Technical Workgroup)" />
-                <Library Name="#BreakpointLogging" Namespace="BPLog" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="Breakpoint Logging Functions, 3.5.5.0 (3S - Smart Software Solutions GmbH)" />
-                <Library Name="MemoryUtils, 3.5.15.0 (3S - Smart Software Solutions GmbH)" Namespace="MEMUtils" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" />
+                <Library Name="#CAA Device Diagnosis" Namespace="DED" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="CAA Device Diagnosis, 3.5.18.0 (CAA Technical Workgroup)" />
+                <Library Name="#BreakpointLogging" Namespace="BPLog" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="Breakpoint Logging Functions, * (3S - Smart Software Solutions GmbH)" />
                 <addData>
                   <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
                     <ObjectId>37339690-22b8-4955-9037-8c248729b2b7</ObjectId>
@@ -3588,7 +4063,7 @@ END_CASE</xhtml>
                 <DeviceIdentification>
                   <Type>4097</Type>
                   <Id>0000 000a</Id>
-                  <Version>3.5.16.0</Version>
+                  <Version>3.5.18.20</Version>
                 </DeviceIdentification>
                 <Connector moduleType="256" interface="Common.PCI" connectorId="0">
                   <HostParameterSet />
@@ -3605,6 +4080,69 @@ END_CASE</xhtml>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
             <ObjectId>26264239-25d9-42f6-bfbc-405ae47d66cf</ObjectId>
+          </data>
+        </addData>
+      </configuration>
+      <configuration name="CODESYS_Control_RTE_V3_x64">
+        <resource name="Application">
+          <task name="Task" interval="PT0.2S" priority="1">
+            <pouInstance name="speedRunner" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Cyclic" Interval="200" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>7bef0129-d2f5-4ad2-836a-24db0908f824</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
+              <Libraries>
+                <Library Name="#IoStandard" Namespace="IoStandard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="true" DefaultResolution="IoStandard, 3.5.17.0 (System)" />
+                <Library Name="#3SLicense" Namespace="_3S_LICENSE" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="3SLicense, 0.0.0.0 (3S - Smart Software Solutions GmbH)" ResolverGuid="97c3b452-d9fa-4ac2-9d0c-3d420aa6d95b" />
+                <Library Name="#CAA Device Diagnosis" Namespace="DED" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="CAA Device Diagnosis, 3.5.18.0 (CAA Technical Workgroup)" />
+                <Library Name="#BreakpointLogging" Namespace="BPLog" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="Breakpoint Logging Functions, * (3S - Smart Software Solutions GmbH)" />
+                <Library Name="MemoryUtils, 3.5.18.0 (3S - Smart Software Solutions GmbH)" Namespace="MEMUtils" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" />
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>7ba61702-9b9d-46af-bab0-2dbc535d117f</ObjectId>
+                  </data>
+                </addData>
+              </Libraries>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+              <ObjectId>ac4c5ade-dbfe-4184-babc-18a2fa2912b0</ObjectId>
+            </data>
+          </addData>
+        </resource>
+        <addData>
+          <data name="Device" handleUnknown="discard">
+            <Device xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="">
+              <DeviceType>
+                <DeviceIdentification>
+                  <Type>4097</Type>
+                  <Id>0000 000a</Id>
+                  <Version>3.5.18.20</Version>
+                </DeviceIdentification>
+                <Connector moduleType="256" interface="Common.PCI" connectorId="0">
+                  <HostParameterSet />
+                </Connector>
+                <DeviceParameterSet />
+              </DeviceType>
+            </Device>
+          </data>
+          <data name="configurations" handleUnknown="discard">
+            <configurations />
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>bc840afb-a9d6-47f1-b7d8-3629266ececc</ObjectId>
           </data>
         </addData>
       </configuration>
@@ -3642,25 +4180,71 @@ END_CASE</xhtml>
           </Object>
         </Object>
         <Object Name="Library Manager" ObjectId="70bdb135-fcf9-4a3b-ac8e-dcd6fe2b15b6" />
-        <Object Name="floatingPointOperations" ObjectId="8ed00d68-6d21-479d-9bfa-1cbb591fa9aa" />
-        <Object Name="addTwoInts" ObjectId="80915059-aa71-49ba-b84f-ffb0a9f75549" />
-        <Object Name="FunctionOverhead" ObjectId="832e84e3-169c-43aa-8871-b0ef2441ec37">
-          <Object Name="addTwoNumbers" ObjectId="bec361a3-b449-4cbd-b51d-cb8c313049d9" />
-        </Object>
-        <Object Name="ImpactOfDynamicArrays" ObjectId="c290fb28-c10d-4c88-ae7d-b83b30f2243a" />
-        <Object Name="ShlVsMemCpy" ObjectId="b1c49280-5ef1-440e-9136-31fd5aa516dc" />
-        <Object Name="calcAVG" ObjectId="d361f96d-b405-4f02-94e9-f0734c3f1811" />
-        <Object Name="MemSetVsDataZeero" ObjectId="b6f25e2b-ec5a-4a35-909a-0f893387acef" />
-        <Object Name="dtTestStruct" ObjectId="974d87b5-4253-4dd8-af42-02d75fec12db" />
-        <Object Name="execSpeedOfLanguageTypes" ObjectId="8b838563-ffa0-4f7f-88df-fdf5ef838e0b" />
-        <Object Name="addTwoIntsLadder" ObjectId="81976c27-bae7-4ac7-b3be-5a289cfec6a1" />
-        <Object Name="addTwoIntsST" ObjectId="2b669961-88b5-4e2c-8aa0-fcd5ea1dc9c6" />
-        <Object Name="addTwoIntsFBD" ObjectId="ff1bd7ca-f894-4734-8c56-cab7f420d3e0" />
-        <Object Name="stringOperations" ObjectId="51d6aac5-a3cf-4c60-a30b-f6b3d35ff875" />
-        <Object Name="checkingBools" ObjectId="ed37ab8c-e858-41dc-a5e4-96d815c1c338" />
-        <Object Name="caseVsIfElsif" ObjectId="0f0586c3-201e-474f-b21b-0093897de039">
-          <Object Name="returnIndexIfElsif" ObjectId="eb9df3a9-9018-4dac-98aa-4ff0ea2db28c" />
-          <Object Name="returnIndexCase" ObjectId="7b9ab763-7b82-4534-9222-af160d259531" />
+        <Folder Name="03 - Floating point operations">
+          <Object Name="x03_FloatingPointOperations" ObjectId="8ed00d68-6d21-479d-9bfa-1cbb591fa9aa" />
+        </Folder>
+        <Folder Name="04 - Function overhead">
+          <Object Name="x04_FunctionOverhead" ObjectId="832e84e3-169c-43aa-8871-b0ef2441ec37">
+            <Object Name="addTwoNumbers" ObjectId="bec361a3-b449-4cbd-b51d-cb8c313049d9" />
+          </Object>
+          <Object Name="addTwoInts" ObjectId="80915059-aa71-49ba-b84f-ffb0a9f75549" />
+        </Folder>
+        <Folder Name="01 - Impact of dynamic arrays">
+          <Object Name="x01_ImpactOfDynamicArrays" ObjectId="c290fb28-c10d-4c88-ae7d-b83b30f2243a" />
+        </Folder>
+        <Folder Name="06 - SHL over MemCpy">
+          <Object Name="x06_ShlVsMemCpy" ObjectId="b1c49280-5ef1-440e-9136-31fd5aa516dc" />
+        </Folder>
+        <Folder Name="TestFramework">
+          <Object Name="calcAVG" ObjectId="d361f96d-b405-4f02-94e9-f0734c3f1811" />
+          <Object Name="dtSpeedTest" ObjectId="65385f20-c9b3-4afb-b91b-9f5b6a5e2eb7" />
+          <Object Name="speedRunner" ObjectId="45bae081-d3b4-42ae-ac00-ec9afd7d0163" />
+        </Folder>
+        <Folder Name="05 - MemSet over Data Zero">
+          <Object Name="x05_MemSetVsDataZeero" ObjectId="b6f25e2b-ec5a-4a35-909a-0f893387acef" />
+          <Object Name="dtTestStruct" ObjectId="974d87b5-4253-4dd8-af42-02d75fec12db" />
+        </Folder>
+        <Folder Name="02 - Execution speed of PLC languages">
+          <Object Name="x02_ExecSpeedOfLanguageTypes" ObjectId="8b838563-ffa0-4f7f-88df-fdf5ef838e0b" />
+          <Object Name="addTwoIntsFBD" ObjectId="ff1bd7ca-f894-4734-8c56-cab7f420d3e0" />
+          <Object Name="addTwoIntsLadder" ObjectId="81976c27-bae7-4ac7-b3be-5a289cfec6a1" />
+          <Object Name="addTwoIntsST" ObjectId="2b669961-88b5-4e2c-8aa0-fcd5ea1dc9c6" />
+        </Folder>
+        <Folder Name="07 - String operations">
+          <Object Name="x07_StringOperations" ObjectId="51d6aac5-a3cf-4c60-a30b-f6b3d35ff875" />
+        </Folder>
+        <Folder Name="08 - Operations with booleans">
+          <Object Name="x08_CheckingBools" ObjectId="ed37ab8c-e858-41dc-a5e4-96d815c1c338" />
+        </Folder>
+        <Folder Name="09 - Case versus IF ELSIF">
+          <Object Name="x09_CaseVsIfElsif" ObjectId="0f0586c3-201e-474f-b21b-0093897de039">
+            <Object Name="returnIndexIfElsif" ObjectId="eb9df3a9-9018-4dac-98aa-4ff0ea2db28c" />
+            <Object Name="returnIndexCase" ObjectId="7b9ab763-7b82-4534-9222-af160d259531" />
+          </Object>
+        </Folder>
+        <Folder Name="10 - Bit operations">
+          <Object Name="checkBit_bitmask" ObjectId="1410a64b-5933-4e93-81df-c546f078612e" />
+          <Object Name="clearBit_bitmask" ObjectId="a5ac315e-6fee-41fd-9fe0-b5d61f96492b" />
+          <Object Name="setBit_bitmask" ObjectId="08e5ad85-d29d-43b7-84f8-ef01e7d5504b" />
+          <Object Name="x10_1_BitAccess" ObjectId="55b1e25e-0d71-42e6-8b7f-259c215c353b" />
+          <Object Name="x10_3_BitMath" ObjectId="07b9ee7c-3208-404a-96fe-4da4d87dcecd" />
+          <Object Name="x10_2_BitSet" ObjectId="ff2e3e10-a7bd-4ef8-992f-e201ee8b44f5" />
+          <Object Name="dtBitStruct" ObjectId="18cca70b-ac98-43f3-8ffb-8a51e2e4f4e7" />
+          <Object Name="setBit_dotNot" ObjectId="d6c6c8e6-a8cc-4650-93c7-93548a570652" />
+          <Object Name="checkBit_dotNot" ObjectId="b12efb6a-31f4-4685-9b74-6773013cef76" />
+          <Object Name="clearBit_dotNot" ObjectId="1e488c7a-35c5-4876-9f6f-248de83ba132" />
+          <Object Name="checkBit_bitStruct" ObjectId="dd822e65-2c99-4348-a2c9-652be475a596" />
+          <Object Name="clearBit_bitStruct" ObjectId="5cac58e1-cd70-470f-8830-a8d7f4f859bc" />
+          <Object Name="setBit_bitStruct" ObjectId="e2299132-fdf6-41ce-a918-94975bae8dca" />
+          <Object Name="setBitToValue_bitmask" ObjectId="67294dfb-3392-43d5-801e-1d31b7ad7628" />
+          <Object Name="setBitToValue_bitStruct" ObjectId="8301b7b6-0574-4fd5-8ec5-2a574edf7903" />
+          <Object Name="setBitToValue_dotNot" ObjectId="79f63c46-1373-4270-b495-53c4d47f0d90" />
+        </Folder>
+        <Object Name="CODESYS_Control_RTE_V3_x64" ObjectId="bc840afb-a9d6-47f1-b7d8-3629266ececc">
+          <Object Name="Application" ObjectId="ac4c5ade-dbfe-4184-babc-18a2fa2912b0">
+            <Object Name="Library Manager" ObjectId="7ba61702-9b9d-46af-bab0-2dbc535d117f" />
+            <Object Name="Task" ObjectId="7bef0129-d2f5-4ad2-836a-24db0908f824" />
+          </Object>
         </Object>
       </ProjectStructure>
     </data>
