@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 2" creationDateTime="2022-07-20T23:45:32.9286958" />
-  <contentHeader name="Plc Structured Text Cheatsheet" version="1.0" modificationDateTime="2022-07-20T23:45:23.0488007" organization="TK Automation" author="Toni Kucic">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 2" creationDateTime="2022-07-22T22:34:42.3523773" />
+  <contentHeader name="Plc Structured Text Cheatsheet" version="1.0" modificationDateTime="2022-07-22T22:34:32.0667325" organization="TK Automation" author="Toni Kucic">
     <Comment>Cheatsheet for programming a PLC in IEC61131-3 Structured text. Contains usage of operators and common functions.</Comment>
     <coordinateInfo>
       <fbd>
@@ -273,12 +273,22 @@
                 <simpleValue value="0" />
               </initialValue>
             </variable>
-            <variable name="vRunDone">
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
               <type>
                 <BOOL />
               </type>
               <initialValue>
-                <simpleValue value="FALSE" />
+                <simpleValue value="TRUE" />
               </initialValue>
             </variable>
             <variable name="vTest1">
@@ -431,7 +441,14 @@
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
 	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to add two integers 1 milion times
 	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to add two reals 1 milion times
 	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to add two DINTs (32b INT) 1 milion times
@@ -441,7 +458,7 @@
 	vTest7.AverageExecTime := calcAvg(vTest7.Results); //Time to divide two integers 1 milion times
 	vTest8.AverageExecTime := calcAvg(vTest8.Results); //Time to divide two reals 1 milion times
 	vTest9.AverageExecTime := calcAvg(vTest9.Results); //Time to divide two DINTs (32b INT) 1 milion times
-	vRunDone := TRUE;	
+		
 	RETURN;
 END_IF
 
@@ -595,12 +612,22 @@ vRunsCompleted := vRunsCompleted + 1;
                 <simpleValue value="0" />
               </initialValue>
             </variable>
-            <variable name="vRunDone">
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
               <type>
                 <BOOL />
               </type>
               <initialValue>
-                <simpleValue value="FALSE" />
+                <simpleValue value="TRUE" />
               </initialValue>
             </variable>
             <variable name="vTest1">
@@ -661,11 +688,18 @@ vRunsCompleted := vRunsCompleted + 1;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
 	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Operands
 	vTest2.AverageExecTime := calcAvg(vTest2.Results); //User function
 	vTest3.AverageExecTime := calcAvg(vTest3.Results); //PRG method
-	vRunDone := TRUE;
+	
 	RETURN;
 END_IF
 	
@@ -768,12 +802,22 @@ vRunsCompleted := vRunsCompleted + 1;
                 <simpleValue value="0" />
               </initialValue>
             </variable>
-            <variable name="vRunDone">
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
               <type>
                 <BOOL />
               </type>
               <initialValue>
-                <simpleValue value="FALSE" />
+                <simpleValue value="TRUE" />
               </initialValue>
             </variable>
             <variable name="vTest1">
@@ -857,10 +901,16 @@ vRunsCompleted := vRunsCompleted + 1;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
 	vTest1.AverageExecTime := calcAvg(vTest1.Results);
 	vTest2.AverageExecTime := calcAvg(vTest2.Results);
-	vRunDone := TRUE;
 	RETURN;
 END_IF
 	
@@ -932,12 +982,22 @@ vRunsCompleted := vRunsCompleted + 1;
                 <simpleValue value="0" />
               </initialValue>
             </variable>
-            <variable name="vRunDone">
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
               <type>
                 <BOOL />
               </type>
               <initialValue>
-                <simpleValue value="FALSE" />
+                <simpleValue value="TRUE" />
               </initialValue>
             </variable>
             <variable name="vTest1">
@@ -1012,10 +1072,17 @@ vRunsCompleted := vRunsCompleted + 1;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
 	vTest1.AverageExecTime := calcAvg(vTest1.Results);
 	vTest2.AverageExecTime := calcAvg(vTest2.Results);
-	vRunDone := TRUE;
+
 	RETURN;
 END_IF
 	
@@ -1137,12 +1204,22 @@ RETURN;</xhtml>
                 <simpleValue value="0" />
               </initialValue>
             </variable>
-            <variable name="vRunDone">
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
               <type>
                 <BOOL />
               </type>
               <initialValue>
-                <simpleValue value="FALSE" />
+                <simpleValue value="TRUE" />
               </initialValue>
             </variable>
             <variable name="vTest1">
@@ -1177,10 +1254,17 @@ RETURN;</xhtml>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
 	vTest1.AverageExecTime := calcAvg(vTest1.Results);
 	vTest2.AverageExecTime := calcAvg(vTest2.Results);
-	vRunDone := TRUE;
+	
 	RETURN;
 END_IF
 	
@@ -1250,12 +1334,22 @@ vRunsCompleted := vRunsCompleted + 1;
                 <simpleValue value="0" />
               </initialValue>
             </variable>
-            <variable name="vRunDone">
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
               <type>
                 <BOOL />
               </type>
               <initialValue>
-                <simpleValue value="FALSE" />
+                <simpleValue value="TRUE" />
               </initialValue>
             </variable>
             <variable name="vTest1">
@@ -1316,11 +1410,18 @@ vRunsCompleted := vRunsCompleted + 1;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
 	vTest1.AverageExecTime := calcAvg(vTest1.Results); //User function Ladder
 	vTest2.AverageExecTime := calcAvg(vTest2.Results); //User function ST
 	vTest3.AverageExecTime := calcAvg(vTest3.Results); //User function FBD
-	vRunDone := TRUE;
+
 	RETURN;
 END_IF
 	
@@ -1630,12 +1731,22 @@ vRunsCompleted := vRunsCompleted + 1;
                 <simpleValue value="0" />
               </initialValue>
             </variable>
-            <variable name="vRunDone">
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
               <type>
                 <BOOL />
               </type>
               <initialValue>
-                <simpleValue value="FALSE" />
+                <simpleValue value="TRUE" />
               </initialValue>
             </variable>
             <variable name="vTest1">
@@ -1775,14 +1886,21 @@ vRunsCompleted := vRunsCompleted + 1;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
 	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to copy a string[255] 1 Million times
 	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to copy a string 1 Million times
 	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to concatenate 1 Million times characters with STRING
 	vTest4.AverageExecTime := calcAvg(vTest4.Results); //Time to concatenate 1 Million times  characters with STRING[255]
 	vTest5.AverageExecTime := calcAvg(vTest5.Results); //Time to move a byte 1 Million times
 	vTest6.AverageExecTime := calcAvg(vTest6.Results); //Time to copy an array of 255 BYTE 1 Million times
-	vRunDone := TRUE;
+	
 	RETURN;
 END_IF
 
@@ -1887,12 +2005,22 @@ vRunsCompleted := vRunsCompleted + 1;
                 <simpleValue value="0" />
               </initialValue>
             </variable>
-            <variable name="vRunDone">
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
               <type>
                 <BOOL />
               </type>
               <initialValue>
-                <simpleValue value="FALSE" />
+                <simpleValue value="TRUE" />
               </initialValue>
             </variable>
             <variable name="vTest1">
@@ -1958,13 +2086,20 @@ vRunsCompleted := vRunsCompleted + 1;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
 	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to run IF vBool = TRUE THEN 1 Million times
 	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to run IF vBool THEN 1 Million times
 	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to increment a counter using if sentence 1 Million times
 	vTest4.AverageExecTime := calcAvg(vTest4.Results); //Time to increment a counter using bool to UINT 1 Million times
 	vTest5.AverageExecTime := calcAvg(vTest5.Results); //Time to cast a bool to UINT 1 Million times
-	vRunDone := TRUE;
+	
 	RETURN;
 END_IF
 
@@ -2062,12 +2197,22 @@ vRunsCompleted := vRunsCompleted + 1;
                 <simpleValue value="0" />
               </initialValue>
             </variable>
-            <variable name="vRunDone">
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
               <type>
                 <BOOL />
               </type>
               <initialValue>
-                <simpleValue value="FALSE" />
+                <simpleValue value="TRUE" />
               </initialValue>
             </variable>
             <variable name="vTest1">
@@ -2160,14 +2305,21 @@ vRunsCompleted := vRunsCompleted + 1;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
 	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to run first branch of IF ELSIF 1 Million times
 	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to run middle branch of IF ELSIF 1 Million times
 	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to run last branch of IF ELSIF 1 Million times
 	vTest4.AverageExecTime := calcAvg(vTest4.Results); //Time to run first branch of CASE 1 Million times
 	vTest5.AverageExecTime := calcAvg(vTest5.Results); //Time to run middle branch of CASE 1 Million times
 	vTest6.AverageExecTime := calcAvg(vTest6.Results); //Time to run last branch of CASE 1 Million times
-	vRunDone := TRUE;
+	
 	RETURN;
 END_IF
 
@@ -3024,12 +3176,22 @@ END_CASE</xhtml>
                 <simpleValue value="0" />
               </initialValue>
             </variable>
-            <variable name="vRunDone">
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
               <type>
                 <BOOL />
               </type>
               <initialValue>
-                <simpleValue value="FALSE" />
+                <simpleValue value="TRUE" />
               </initialValue>
             </variable>
             <variable name="vTest1">
@@ -3087,11 +3249,18 @@ END_CASE</xhtml>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
 	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to access bit 3 1 Million times in codesys bit struct
 	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to access bit 3 1 Million times in normal integer using . notation
 	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to access bit 3 1 Million times in normal integer using bit masking
-	vRunDone := TRUE;
+	
 	RETURN;
 END_IF
 
@@ -3168,12 +3337,22 @@ vRunsCompleted := vRunsCompleted + 1;
                 <simpleValue value="0" />
               </initialValue>
             </variable>
-            <variable name="vRunDone">
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
               <type>
                 <BOOL />
               </type>
               <initialValue>
-                <simpleValue value="FALSE" />
+                <simpleValue value="TRUE" />
               </initialValue>
             </variable>
             <variable name="vTest1">
@@ -3245,11 +3424,18 @@ vRunsCompleted := vRunsCompleted + 1;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
 	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to and two bits and save it to another bit 1 Million times using codesys bit struct
 	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to and two bits and save it to another bit 1 Million times using . notation
 	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to and two bits and save it to another bit 1 Million times using bit masking
-	vRunDone := TRUE;
+	
 	RETURN;
 END_IF
 
@@ -3327,12 +3513,22 @@ vRunsCompleted := vRunsCompleted + 1;
                 <simpleValue value="0" />
               </initialValue>
             </variable>
-            <variable name="vRunDone">
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
               <type>
                 <BOOL />
               </type>
               <initialValue>
-                <simpleValue value="FALSE" />
+                <simpleValue value="TRUE" />
               </initialValue>
             </variable>
             <variable name="vTest1">
@@ -3406,11 +3602,18 @@ vRunsCompleted := vRunsCompleted + 1;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vRunsCompleted &gt; cNrRuns THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
 	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to set bit 3 1 Million times in codesys bit struct
 	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to set bit 3 1 Million times in normal integer using . notation
 	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to set bit 3 1 Million times in normal integer using bit masking
-	vRunDone := TRUE;
+	
 	RETURN;
 END_IF
 
@@ -3948,68 +4151,214 @@ END_IF</xhtml>
       <pou name="speedRunner" pouType="program">
         <interface>
           <localVars>
-            <variable name="vOldTime">
-              <type>
-                <derived name="LTIME" />
-              </type>
-            </variable>
             <variable name="vTimeToRunTests">
               <type>
                 <derived name="LTIME" />
               </type>
             </variable>
-            <variable name="vStart">
+            <variable name="vMIPS">
               <type>
-                <BOOL />
+                <REAL />
               </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
+            </variable>
+            <variable name="vFLOPS">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="vkFLOPS">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="vMFLOPS">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="vGFLOPS">
+              <type>
+                <REAL />
+              </type>
             </variable>
           </localVars>
         </interface>
+        <actions>
+          <action name="calcFlopsMips">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>5cc92120-421b-4895-87cf-4e927f78c7dc</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vOldTime := LTIME();
-	vStart := FALSE;
-END_IF
-
-(*Run tests one by one*)
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Run tests one by one*)
 x01_ImpactOfDynamicArrays();
-x02_ExecSpeedOfLanguageTypes();
-x03_FloatingPointOperations();
-x04_FunctionOverhead();
-x05_MemSetVsDataZeero();
-x06_ShlVsMemCpy();
-x07_StringOperations();
-x08_CheckingBools();
-x09_CaseVsIfElsif();
-x10_1_BitAccess();
-x10_2_BitSet();
-x10_3_BitMath();
+//x02_ExecSpeedOfLanguageTypes();
+//x03_FloatingPointOperations();
+//x04_FunctionOverhead();
+//x05_MemSetVsDataZeero();
+//x06_ShlVsMemCpy();
+//x07_StringOperations();
+//x08_CheckingBools();
+//x09_CaseVsIfElsif();
+//x10_1_BitAccess();
+//x10_2_BitSet();
+//x10_3_BitMath();
 
-IF x01_ImpactOfDynamicArrays.vRunDone
-AND x02_ExecSpeedOfLanguageTypes.vRunDone
-AND x03_FloatingPointOperations.vRunDone
-AND x04_FunctionOverhead.vRunDone
-AND x05_MemSetVsDataZeero.vRunDone
-AND x06_ShlVsMemCpy.vRunDone
-AND x07_StringOperations.vRunDone
-AND x08_CheckingBools.vRunDone
-AND x09_CaseVsIfElsif.vRunDone
-AND x10_1_BitAccess.vRunDone
-AND x10_2_BitSet.vRunDone
-AND x10_3_BitMath.vRunDone
-AND vTimeToRunTests = LTIME#0S
- THEN
-	vTimeToRunTests := LTIME() - vOldTime;
-END_IF</xhtml>
+vTimeToRunTests :=  x01_ImpactOfDynamicArrays.vTotalTime + x02_ExecSpeedOfLanguageTypes.vTotalTime
+				+ x03_FloatingPointOperations.vTotalTime + x04_FunctionOverhead.vTotalTime
+				+ x05_MemSetVsDataZeero.vTotalTime + x06_ShlVsMemCpy.vTotalTime
+				+ x07_StringOperations.vTotalTime + x08_CheckingBools.vTotalTime
+				+ x09_CaseVsIfElsif.vTotalTime + x10_1_BitAccess.vTotalTime
+				+ x10_2_BitSet.vTotalTime + x10_3_BitMath.vTotalTime;
+				
+(*If done running other tests, calculate MIPS and FLOPS of this machine
+	PS: These calcs are not 100% accurate but more to compare machine to machine*)
+(*
+System spec:
+- OS Name	Microsoft Windows 10 Home	
+- Version	10.0.19044 Build 19044	
+- OS Manufacturer	Microsoft Corporation	
+- System Manufacturer	SAMSUNG ELECTRONICS CO., LTD.	
+- System Model	3570R/370R/470R/450R/510R/4450RV	
+- System Type	x64-based PC	
+- Processor	Intel(R) Core(TM) i5-3210M CPU @ 2.50GHz, 2501 Mhz, 2 Core(s), 4 Logical Processor(s)	
+- Installed Physical Memory (RAM)	8,00 GB	
+- Total Physical Memory	7,89 GB	
+- Available Physical Memory	3,80 GB	
+- Total Virtual Memory	9,75 GB	
+- Available Virtual Memory	5,66 GB	
+
+MIPS 	-&gt; 407
+FLOPS 	-&gt; 3.32e+08
+kFLOPS 	-&gt; 3.32e+05
+MFLOPS 	-&gt; 332
+GFLOPS 	-&gt; 0.332
+*)
+IF vTimeToRunTests &lt;&gt; LTIME#0S THEN
+	IF vMIPS &gt; 0 OR vFLOPS &gt; 0 THEN
+		RETURN;
+	ELSE
+		vMIPS 	:= calcMIPS();
+		vFLOPS	:= calcFLOPS();
+		vkFLOPS := vFLOPS / 1000.0;
+		vMFLOPS := vFLOPS / 1000000.0;
+		vGFLOPS := vFLOPS / (1000.0 * 1000000.0);
+	END_IF
+END_IF
+</xhtml>
           </ST>
         </body>
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
             <ObjectId>45bae081-d3b4-42ae-ac00-ec9afd7d0163</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="calcMIPS" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <localVars>
+            <variable name="vMIPSOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <DINT />
+              </type>
+            </variable>
+            <variable name="vTestInt">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="vMIPSExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Calculate MIPS*)
+vMIPSOldTime := LTIME();
+FOR i:=1 TO 1000000 DO
+	vTestInt := vTestInt + 1;
+END_FOR
+vMIPSExecTime := LTIME() - vMIPSOldTime;
+
+(*Take a ratio of how long it took to add 1 milion integers, against 1 second, then divide by a milion to get MIPS(milion of integer additions per sec*)
+calcMIPS := (vTestInt *  (1000000000.0 / LTIME_TO_REAL(vMIPSExecTime))) / 1000000.0;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>62bde692-16ea-41fa-843c-03c01b127ac5</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="calcFLOPS" pouType="function">
+        <interface>
+          <returnType>
+            <REAL />
+          </returnType>
+          <localVars>
+            <variable name="vFLOPSOldTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTestReal">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="vFLOPSExecTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vMIPSAsReal">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <DINT />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Calculate FLOPS*)
+vFLOPSOldTime := LTIME();
+FOR i:=1 TO 1000000 DO
+	vTestReal := vTestReal + 1.0;
+END_FOR
+vFLOPSExecTime := LTIME() - vFLOPSOldTime;
+
+(*Take a ratio of how long it took to add 1 milion reals, against 1 second, then divide by a milion to get FLOPS(milion of floating point additions per sec*)
+calcFLOPS := vTestReal *  (1000000000.0 / LTIME_TO_REAL(vFLOPSExecTime));</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>035c77cc-f4dd-431c-b736-ab56a3b26207</ObjectId>
           </data>
         </addData>
       </pou>
@@ -4032,24 +4381,68 @@ END_IF</xhtml>
                 </TaskSettings>
               </data>
               <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-                <ObjectId>591d0ab5-40ee-4175-8001-64d855a3b523</ObjectId>
+                <ObjectId>ee0318c6-770b-4de6-8bcd-235016305f87</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="VISU_TASK" interval="PT0.1S" priority="31">
+            <pouInstance name="VisuElems.Visu_Prg" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Cyclic" Interval="100" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>80ce9d12-d3fa-4a2c-9e8f-7949dca4019a</ObjectId>
               </data>
             </addData>
           </task>
           <addData>
             <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
               <Libraries>
-                <Library Name="MemoryUtils, 3.5.18.0 (3S - Smart Software Solutions GmbH)" Namespace="MEMUtils" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" />
                 <Library Name="#IoStandard" Namespace="IoStandard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="true" DefaultResolution="IoStandard, 3.5.17.0 (System)" />
                 <Library Name="#3SLicense" Namespace="_3S_LICENSE" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="3SLicense, 0.0.0.0 (3S - Smart Software Solutions GmbH)" ResolverGuid="97c3b452-d9fa-4ac2-9d0c-3d420aa6d95b" />
                 <Library Name="#CAA Device Diagnosis" Namespace="DED" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="CAA Device Diagnosis, 3.5.18.0 (CAA Technical Workgroup)" />
                 <Library Name="#BreakpointLogging" Namespace="BPLog" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="Breakpoint Logging Functions, * (3S - Smart Software Solutions GmbH)" />
+                <Library Name="MemoryUtils, 3.5.18.0 (3S - Smart Software Solutions GmbH)" Namespace="MEMUtils" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" />
+                <Library Name="#System_VisuElems" Namespace="VisuElems" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElems, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemMeter" Namespace="VisuElemMeter" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemMeter, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemsSpecialControls" Namespace="VisuElemsSpecialControls" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsSpecialControls, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemsWinControls" Namespace="VisuElemsWinControls" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsWinControls, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemTextEditor" Namespace="VisuElemTextEditor" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemTextEditor, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemTrace" Namespace="VisuElemTrace" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemTrace, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuNativeControl" Namespace="VisuNativeControl" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuNativeControl, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemsAlarm" Namespace="VisuElemsAlarm" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsAlarm, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemCamDisplayer" Namespace="VisuElemCamDisplayer" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemCamDisplayer, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae">
+                  <Parameters>
+                    <Parameter Name="GC_POINTS_PER_CAM" Value="100" />
+                  </Parameters>
+                </Library>
+                <Library Name="#System_VisuElem3DPath" Namespace="VisuElem3DPath" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElem3DPath, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae">
+                  <Parameters>
+                    <Parameter Name="GC_POINTS_PER_POLYGON" Value="100" />
+                  </Parameters>
+                </Library>
+                <Library Name="#System_VisuElemsDateTime" Namespace="VisuElemsDateTime" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsDateTime, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemXYChart" Namespace="VisuElemXYChart" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemXYChart, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#system_visuinputs" Namespace="visuinputs" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="visuinputs, 4.1.0.0 (system)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#VisuDialogs" Namespace="VisuDialogs" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="VisuDialogs, * (System)" />
                 <addData>
                   <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-                    <ObjectId>37339690-22b8-4955-9037-8c248729b2b7</ObjectId>
+                    <ObjectId>2c026f2c-4f21-4d50-afba-ff7714b58459</ObjectId>
                   </data>
                 </addData>
               </Libraries>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/buildproperties" handleUnknown="implementation">
+              <BuildProperties>
+                <CompilerDefines>GENERATE_OVERLAY_VISU</CompilerDefines>
+              </BuildProperties>
             </data>
             <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
               <ObjectId>9b73d673-0d3d-4761-a178-a18fbf2ba16b</ObjectId>
@@ -4102,6 +4495,23 @@ END_IF</xhtml>
               </data>
             </addData>
           </task>
+          <task name="VISU_TASK" interval="PT0.1S" priority="31">
+            <pouInstance name="VisuElems.Visu_Prg" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Cyclic" Interval="100" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>8a1906e0-0313-4fe2-937c-29f0bb7b12c1</ObjectId>
+              </data>
+            </addData>
+          </task>
           <addData>
             <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
               <Libraries>
@@ -4110,12 +4520,39 @@ END_IF</xhtml>
                 <Library Name="#CAA Device Diagnosis" Namespace="DED" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="CAA Device Diagnosis, 3.5.18.0 (CAA Technical Workgroup)" />
                 <Library Name="#BreakpointLogging" Namespace="BPLog" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="Breakpoint Logging Functions, * (3S - Smart Software Solutions GmbH)" />
                 <Library Name="MemoryUtils, 3.5.18.0 (3S - Smart Software Solutions GmbH)" Namespace="MEMUtils" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" />
+                <Library Name="#System_VisuElems" Namespace="VisuElems" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElems, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemMeter" Namespace="VisuElemMeter" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemMeter, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemsSpecialControls" Namespace="VisuElemsSpecialControls" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsSpecialControls, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemsWinControls" Namespace="VisuElemsWinControls" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsWinControls, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemTextEditor" Namespace="VisuElemTextEditor" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemTextEditor, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemTrace" Namespace="VisuElemTrace" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemTrace, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuNativeControl" Namespace="VisuNativeControl" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuNativeControl, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemsAlarm" Namespace="VisuElemsAlarm" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsAlarm, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemCamDisplayer" Namespace="VisuElemCamDisplayer" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemCamDisplayer, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae">
+                  <Parameters>
+                    <Parameter Name="GC_POINTS_PER_CAM" Value="100" />
+                  </Parameters>
+                </Library>
+                <Library Name="#System_VisuElem3DPath" Namespace="VisuElem3DPath" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElem3DPath, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae">
+                  <Parameters>
+                    <Parameter Name="GC_POINTS_PER_POLYGON" Value="100" />
+                  </Parameters>
+                </Library>
+                <Library Name="#System_VisuElemsDateTime" Namespace="VisuElemsDateTime" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsDateTime, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#System_VisuElemXYChart" Namespace="VisuElemXYChart" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemXYChart, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#system_visuinputs" Namespace="visuinputs" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="visuinputs, 4.1.0.0 (system)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+                <Library Name="#VisuDialogs" Namespace="VisuDialogs" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="VisuDialogs, * (System)" />
                 <addData>
                   <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
                     <ObjectId>7ba61702-9b9d-46af-bab0-2dbc535d117f</ObjectId>
                   </data>
                 </addData>
               </Libraries>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/buildproperties" handleUnknown="implementation">
+              <BuildProperties>
+                <CompilerDefines>GENERATE_OVERLAY_VISU</CompilerDefines>
+              </BuildProperties>
             </data>
             <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
               <ObjectId>ac4c5ade-dbfe-4184-babc-18a2fa2912b0</ObjectId>
@@ -4163,6 +4600,29 @@ END_IF</xhtml>
           </Parameters>
         </Library>
         <Library Name="#Standard" Namespace="Standard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Standard, * (System)" />
+        <Library Name="#VisuSymbols" Namespace="VisuSymbols" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="VisuSymbols, 4.1.0.0 (System)" />
+        <Library Name="#System_VisuElems" Namespace="VisuElems" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElems, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+        <Library Name="#System_VisuElemMeter" Namespace="VisuElemMeter" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemMeter, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+        <Library Name="#System_VisuElemsSpecialControls" Namespace="VisuElemsSpecialControls" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsSpecialControls, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+        <Library Name="#System_VisuElemsWinControls" Namespace="VisuElemsWinControls" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsWinControls, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+        <Library Name="#System_VisuElemTextEditor" Namespace="VisuElemTextEditor" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemTextEditor, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+        <Library Name="#System_VisuElemTrace" Namespace="VisuElemTrace" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemTrace, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+        <Library Name="#System_VisuNativeControl" Namespace="VisuNativeControl" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuNativeControl, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+        <Library Name="#System_VisuElemsAlarm" Namespace="VisuElemsAlarm" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsAlarm, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+        <Library Name="#System_VisuElemCamDisplayer" Namespace="VisuElemCamDisplayer" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemCamDisplayer, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae">
+          <Parameters>
+            <Parameter Name="GC_POINTS_PER_CAM" Value="100" />
+          </Parameters>
+        </Library>
+        <Library Name="#System_VisuElem3DPath" Namespace="VisuElem3DPath" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElem3DPath, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae">
+          <Parameters>
+            <Parameter Name="GC_POINTS_PER_POLYGON" Value="100" />
+          </Parameters>
+        </Library>
+        <Library Name="#System_VisuElemsDateTime" Namespace="VisuElemsDateTime" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsDateTime, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+        <Library Name="#System_VisuElemXYChart" Namespace="VisuElemXYChart" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemXYChart, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+        <Library Name="#system_visuinputs" Namespace="visuinputs" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="visuinputs, 4.1.0.0 (system)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+        <Library Name="#VisuDialogs" Namespace="VisuDialogs" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="VisuDialogs, * (System)" />
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
             <ObjectId>70bdb135-fcf9-4a3b-ac8e-dcd6fe2b15b6</ObjectId>
@@ -4175,8 +4635,9 @@ END_IF</xhtml>
         <Object Name="Project Information" ObjectId="11c0fc3a-9bcf-4dd8-ac38-efb93363e521" />
         <Object Name="CODESYS_Control_Win_V3_x64" ObjectId="26264239-25d9-42f6-bfbc-405ae47d66cf">
           <Object Name="Application" ObjectId="9b73d673-0d3d-4761-a178-a18fbf2ba16b">
-            <Object Name="Library Manager" ObjectId="37339690-22b8-4955-9037-8c248729b2b7" />
-            <Object Name="Task" ObjectId="591d0ab5-40ee-4175-8001-64d855a3b523" />
+            <Object Name="Library Manager" ObjectId="2c026f2c-4f21-4d50-afba-ff7714b58459" />
+            <Object Name="Task" ObjectId="ee0318c6-770b-4de6-8bcd-235016305f87" />
+            <Object Name="VISU_TASK" ObjectId="80ce9d12-d3fa-4a2c-9e8f-7949dca4019a" />
           </Object>
         </Object>
         <Object Name="Library Manager" ObjectId="70bdb135-fcf9-4a3b-ac8e-dcd6fe2b15b6" />
@@ -4198,7 +4659,11 @@ END_IF</xhtml>
         <Folder Name="TestFramework">
           <Object Name="calcAVG" ObjectId="d361f96d-b405-4f02-94e9-f0734c3f1811" />
           <Object Name="dtSpeedTest" ObjectId="65385f20-c9b3-4afb-b91b-9f5b6a5e2eb7" />
-          <Object Name="speedRunner" ObjectId="45bae081-d3b4-42ae-ac00-ec9afd7d0163" />
+          <Object Name="speedRunner" ObjectId="45bae081-d3b4-42ae-ac00-ec9afd7d0163">
+            <Object Name="calcFlopsMips" ObjectId="5cc92120-421b-4895-87cf-4e927f78c7dc" />
+          </Object>
+          <Object Name="calcMIPS" ObjectId="62bde692-16ea-41fa-843c-03c01b127ac5" />
+          <Object Name="calcFLOPS" ObjectId="035c77cc-f4dd-431c-b736-ab56a3b26207" />
         </Folder>
         <Folder Name="05 - MemSet over Data Zero">
           <Object Name="x05_MemSetVsDataZeero" ObjectId="b6f25e2b-ec5a-4a35-909a-0f893387acef" />
@@ -4244,6 +4709,7 @@ END_IF</xhtml>
           <Object Name="Application" ObjectId="ac4c5ade-dbfe-4184-babc-18a2fa2912b0">
             <Object Name="Library Manager" ObjectId="7ba61702-9b9d-46af-bab0-2dbc535d117f" />
             <Object Name="Task" ObjectId="7bef0129-d2f5-4ad2-836a-24db0908f824" />
+            <Object Name="VISU_TASK" ObjectId="8a1906e0-0313-4fe2-937c-29f0bb7b12c1" />
           </Object>
         </Object>
       </ProjectStructure>
