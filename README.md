@@ -16,4 +16,4 @@ System spec:
 - Available Virtual Memory	5,66 GB	
 
 ## Documentation
-Accessible by browsing this repositories [docs folder](docs/index.md). 
+Accessible by browsing this repositories [docs folder](docs/index_st.md). 
