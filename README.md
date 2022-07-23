@@ -14,3 +14,6 @@ System spec:
 - Available Physical Memory	3,80 GB	
 - Total Virtual Memory	9,75 GB	
 - Available Virtual Memory	5,66 GB	
+
+## Documentation
+Accessible by browsing this repositories [docs folder](docs/index.md). 
