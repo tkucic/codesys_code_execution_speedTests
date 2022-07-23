@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 2" creationDateTime="2022-07-22T22:34:42.3523773" />
-  <contentHeader name="Plc Structured Text Cheatsheet" version="1.0" modificationDateTime="2022-07-22T22:34:32.0667325" organization="TK Automation" author="Toni Kucic">
-    <Comment>Cheatsheet for programming a PLC in IEC61131-3 Structured text. Contains usage of operators and common functions.</Comment>
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 2" creationDateTime="2022-07-23T15:23:25.3862361" />
+  <contentHeader name="Codesys Code Execution Speed Tests" version="1.0" modificationDateTime="2022-07-23T15:23:12.1346618" organization="TK Automation" author="Toni Kucic">
+    <Comment>A collection of programs that measure various execution speeds of code.</Comment>
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -20,9 +20,9 @@
           <property name="Author" type="string">Toni Kucic</property>
           <property name="Company" type="string">TK Automation</property>
           <property name="CompiledLibraryCompatibilityVersion" type="string">CODESYS V3.5 SP16</property>
-          <property name="Description" type="string">Cheatsheet for programming a PLC in IEC61131-3 Structured text. Contains usage of operators and common functions.</property>
+          <property name="Description" type="string">A collection of programs that measure various execution speeds of code.</property>
           <property name="Project" type="string">codesys_code_execution_speedTests</property>
-          <property name="Title" type="string">Plc Structured Text Cheatsheet</property>
+          <property name="Title" type="string">Codesys Code Execution Speed Tests</property>
           <property name="Version" type="version">1.0</property>
         </ProjectInformation>
       </data>
@@ -4645,10 +4645,10 @@ calcFLOPS := vTestReal *  (1000000000.0 / LTIME_TO_REAL(vFLOPSExecTime));</xhtml
           <Object Name="x03_FloatingPointOperations" ObjectId="8ed00d68-6d21-479d-9bfa-1cbb591fa9aa" />
         </Folder>
         <Folder Name="04 - Function overhead">
+          <Object Name="addTwoInts" ObjectId="80915059-aa71-49ba-b84f-ffb0a9f75549" />
           <Object Name="x04_FunctionOverhead" ObjectId="832e84e3-169c-43aa-8871-b0ef2441ec37">
             <Object Name="addTwoNumbers" ObjectId="bec361a3-b449-4cbd-b51d-cb8c313049d9" />
           </Object>
-          <Object Name="addTwoInts" ObjectId="80915059-aa71-49ba-b84f-ffb0a9f75549" />
         </Folder>
         <Folder Name="01 - Impact of dynamic arrays">
           <Object Name="x01_ImpactOfDynamicArrays" ObjectId="c290fb28-c10d-4c88-ae7d-b83b30f2243a" />
@@ -4671,9 +4671,9 @@ calcFLOPS := vTestReal *  (1000000000.0 / LTIME_TO_REAL(vFLOPSExecTime));</xhtml
         </Folder>
         <Folder Name="02 - Execution speed of PLC languages">
           <Object Name="x02_ExecSpeedOfLanguageTypes" ObjectId="8b838563-ffa0-4f7f-88df-fdf5ef838e0b" />
-          <Object Name="addTwoIntsFBD" ObjectId="ff1bd7ca-f894-4734-8c56-cab7f420d3e0" />
           <Object Name="addTwoIntsLadder" ObjectId="81976c27-bae7-4ac7-b3be-5a289cfec6a1" />
           <Object Name="addTwoIntsST" ObjectId="2b669961-88b5-4e2c-8aa0-fcd5ea1dc9c6" />
+          <Object Name="addTwoIntsFBD" ObjectId="ff1bd7ca-f894-4734-8c56-cab7f420d3e0" />
         </Folder>
         <Folder Name="07 - String operations">
           <Object Name="x07_StringOperations" ObjectId="51d6aac5-a3cf-4c60-a30b-f6b3d35ff875" />
@@ -4688,20 +4688,20 @@ calcFLOPS := vTestReal *  (1000000000.0 / LTIME_TO_REAL(vFLOPSExecTime));</xhtml
           </Object>
         </Folder>
         <Folder Name="10 - Bit operations">
-          <Object Name="checkBit_bitmask" ObjectId="1410a64b-5933-4e93-81df-c546f078612e" />
-          <Object Name="clearBit_bitmask" ObjectId="a5ac315e-6fee-41fd-9fe0-b5d61f96492b" />
-          <Object Name="setBit_bitmask" ObjectId="08e5ad85-d29d-43b7-84f8-ef01e7d5504b" />
           <Object Name="x10_1_BitAccess" ObjectId="55b1e25e-0d71-42e6-8b7f-259c215c353b" />
+          <Object Name="dtBitStruct" ObjectId="18cca70b-ac98-43f3-8ffb-8a51e2e4f4e7" />
           <Object Name="x10_3_BitMath" ObjectId="07b9ee7c-3208-404a-96fe-4da4d87dcecd" />
           <Object Name="x10_2_BitSet" ObjectId="ff2e3e10-a7bd-4ef8-992f-e201ee8b44f5" />
-          <Object Name="dtBitStruct" ObjectId="18cca70b-ac98-43f3-8ffb-8a51e2e4f4e7" />
+          <Object Name="checkBit_bitmask" ObjectId="1410a64b-5933-4e93-81df-c546f078612e" />
+          <Object Name="setBit_bitmask" ObjectId="08e5ad85-d29d-43b7-84f8-ef01e7d5504b" />
+          <Object Name="clearBit_bitmask" ObjectId="a5ac315e-6fee-41fd-9fe0-b5d61f96492b" />
+          <Object Name="setBitToValue_bitmask" ObjectId="67294dfb-3392-43d5-801e-1d31b7ad7628" />
           <Object Name="setBit_dotNot" ObjectId="d6c6c8e6-a8cc-4650-93c7-93548a570652" />
           <Object Name="checkBit_dotNot" ObjectId="b12efb6a-31f4-4685-9b74-6773013cef76" />
           <Object Name="clearBit_dotNot" ObjectId="1e488c7a-35c5-4876-9f6f-248de83ba132" />
           <Object Name="checkBit_bitStruct" ObjectId="dd822e65-2c99-4348-a2c9-652be475a596" />
           <Object Name="clearBit_bitStruct" ObjectId="5cac58e1-cd70-470f-8830-a8d7f4f859bc" />
           <Object Name="setBit_bitStruct" ObjectId="e2299132-fdf6-41ce-a918-94975bae8dca" />
-          <Object Name="setBitToValue_bitmask" ObjectId="67294dfb-3392-43d5-801e-1d31b7ad7628" />
           <Object Name="setBitToValue_bitStruct" ObjectId="8301b7b6-0574-4fd5-8ec5-2a574edf7903" />
           <Object Name="setBitToValue_dotNot" ObjectId="79f63c46-1373-4270-b495-53c4d47f0d90" />
         </Folder>
