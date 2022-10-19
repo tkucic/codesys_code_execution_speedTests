@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 2" creationDateTime="2022-07-23T15:23:25.3862361" />
-  <contentHeader name="Codesys Code Execution Speed Tests" version="1.0" modificationDateTime="2022-07-23T15:23:12.1346618" organization="TK Automation" author="Toni Kucic">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 2" creationDateTime="2022-10-19T23:42:42.6533325" />
+  <contentHeader name="Codesys Code Execution Speed Tests" version="1.0" modificationDateTime="2022-10-19T23:42:26.4123666" organization="TK Automation" author="Toni Kucic">
     <Comment>A collection of programs that measure various execution speeds of code.</Comment>
     <coordinateInfo>
       <fbd>
@@ -1149,10 +1149,13 @@ vRunsCompleted := vRunsCompleted + 1;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">FOR i:= LOWER_BOUND(Results,1) TO UPPER_BOUND(Results,1) DO
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">FOR i:=LOWER_BOUND(Results,1) TO UPPER_BOUND(Results,1) DO
+	IF Results[i] = LTIME#0S THEN
+		EXIT;
+	END_IF
 	calcAvg := calcAvg + Results[i];
 END_FOR
-calcAvg := calcAvg / i;
+calcAvg := calcAvg / MAX(1,i);
 RETURN;</xhtml>
           </ST>
         </body>
@@ -4201,24 +4204,29 @@ END_IF</xhtml>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Run tests one by one*)
 x01_ImpactOfDynamicArrays();
-//x02_ExecSpeedOfLanguageTypes();
-//x03_FloatingPointOperations();
-//x04_FunctionOverhead();
-//x05_MemSetVsDataZeero();
-//x06_ShlVsMemCpy();
-//x07_StringOperations();
-//x08_CheckingBools();
-//x09_CaseVsIfElsif();
-//x10_1_BitAccess();
-//x10_2_BitSet();
-//x10_3_BitMath();
+x02_ExecSpeedOfLanguageTypes();
+x03_FloatingPointOperations();
+x04_FunctionOverhead();
+x05_MemSetVsDataZeero();
+x06_ShlVsMemCpy();
+x07_StringOperations();
+x08_CheckingBools();
+x09_CaseVsIfElsif();
+x10_1_BitAccess();
+x10_2_BitSet();
+x10_3_BitMath();
+x11_CalcInForLoppDecl();
+x12_BoolArrayToByteArray();
+x13_ByteArrayToBool32();
+
 
 vTimeToRunTests :=  x01_ImpactOfDynamicArrays.vTotalTime + x02_ExecSpeedOfLanguageTypes.vTotalTime
 				+ x03_FloatingPointOperations.vTotalTime + x04_FunctionOverhead.vTotalTime
 				+ x05_MemSetVsDataZeero.vTotalTime + x06_ShlVsMemCpy.vTotalTime
 				+ x07_StringOperations.vTotalTime + x08_CheckingBools.vTotalTime
 				+ x09_CaseVsIfElsif.vTotalTime + x10_1_BitAccess.vTotalTime
-				+ x10_2_BitSet.vTotalTime + x10_3_BitMath.vTotalTime;
+				+ x10_2_BitSet.vTotalTime + x10_3_BitMath.vTotalTime + x11_CalcInForLoppDecl.vTotalTime
+				+ x12_BoolArrayToByteArray.vTotalTime + x13_ByteArrayToBool32.vTotalTime;
 				
 (*If done running other tests, calculate MIPS and FLOPS of this machine
 	PS: These calcs are not 100% accurate but more to compare machine to machine*)
@@ -4359,6 +4367,1139 @@ calcFLOPS := vTestReal *  (1000000000.0 / LTIME_TO_REAL(vFLOPSExecTime));</xhtml
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
             <ObjectId>035c77cc-f4dd-431c-b736-ab56a3b26207</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="x11_CalcInForLoppDecl" pouType="program">
+        <interface>
+          <localVars constant="true">
+            <variable name="cNrRuns">
+              <type>
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
+              </type>
+              <initialValue>
+                <simpleValue value="5" />
+              </initialValue>
+            </variable>
+            <variable name="cRepeatCalcTimes">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1000000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <localVars>
+            <variable name="vRunsCompleted">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="TRUE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest3">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="j">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="vLongString">
+              <type>
+                <string length="108" />
+              </type>
+              <initialValue>
+                <simpleValue value="'123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789'" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Test vars</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vResult">
+              <type>
+                <BYTE />
+              </type>
+            </variable>
+            <variable name="vLenOfString">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
+	//Time to iterate over bytes of a string[100] using known size, milion times
+	vTest1.AverageExecTime := calcAvg(vTest1.Results);
+	//Time to iterate over bytes of a string[100] using calculation in declaration, milion times
+	vTest2.AverageExecTime := calcAvg(vTest2.Results);
+	//Time to iterate over bytes of a string[100] using calculation outside of the declaration, milion times
+	vTest3.AverageExecTime := calcAvg(vTest3.Results);
+	RETURN;
+END_IF
+
+//------------CALCULATION A -------------------
+vTest1.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	FOR j:= 0 TO 108 DO
+		vResult := vLongString[j];
+	END_FOR
+END_FOR
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
+
+//------------CALCULATION B -------------------
+vTest2.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	FOR j:= 0 TO LEN(vLongString) DO
+		vResult := vLongString[j];
+	END_FOR
+END_FOR
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
+
+//------------CALCULATION C -------------------
+vTest3.OldTime := LTIME();
+vLenOfString := LEN(vLongString);
+FOR i:= 0 TO cRepeatCalcTimes DO
+	FOR j:= 0 TO vLenOfString DO
+		vResult := vLongString[j];
+	END_FOR
+END_FOR
+vTest3.ExecTime := LTIME() - vTest3.OldTime;
+
+//------------CATCH RESULTS---------------------
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+
+vRunsCompleted := vRunsCompleted + 1;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>0d36a265-629d-4737-a080-598f91f7a935</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="x12_BoolArrayToByteArray" pouType="program">
+        <interface>
+          <localVars constant="true">
+            <variable name="cNrRuns">
+              <type>
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
+              </type>
+              <initialValue>
+                <simpleValue value="5" />
+              </initialValue>
+            </variable>
+            <variable name="cRepeatCalcTimes">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1000000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <localVars>
+            <variable name="vRunsCompleted">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="TRUE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest3">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest4">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest5">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest6">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest7">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="j">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="vBoolArr">
+              <type>
+                <array>
+                  <dimension lower="1" upper="32" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Test vars</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vBytes1">
+              <type>
+                <array>
+                  <dimension lower="1" upper="4" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vBytes2">
+              <type>
+                <array>
+                  <dimension lower="1" upper="4" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vBytes3">
+              <type>
+                <array>
+                  <dimension lower="1" upper="4" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vBytes4">
+              <type>
+                <array>
+                  <dimension lower="1" upper="4" />
+                  <baseType>
+                    <UINT />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vBytes5">
+              <type>
+                <array>
+                  <dimension lower="1" upper="4" />
+                  <baseType>
+                    <UINT />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vBytes6">
+              <type>
+                <array>
+                  <dimension lower="1" upper="4" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vBytes7">
+              <type>
+                <array>
+                  <dimension lower="1" upper="4" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
+	//Measurement done on 1 milion packs
+	//Time to pack bool array to 4 bytes, function
+	vTest1.AverageExecTime := calcAvg(vTest1.Results);
+	//Time to pack bool array to 4 bytes, flat
+	vTest2.AverageExecTime := calcAvg(vTest2.Results);
+	//Time to pack bool array to 4 bytes, bitmask
+	vTest3.AverageExecTime := calcAvg(vTest3.Results);
+	//Time to pack bool array to 4 bytes, bitmask function
+	vTest4.AverageExecTime := calcAvg(vTest4.Results);
+	//Time to pack bool array to 4 bytes, bitmask function in a loop
+	vTest5.AverageExecTime := calcAvg(vTest5.Results);
+	//Time to pack bool array to 4 bytes, clear + bitmask
+	vTest6.AverageExecTime := calcAvg(vTest6.Results);
+	//Time to pack bool array to 4 bytes, clear + bitmask, function
+	vTest7.AverageExecTime := calcAvg(vTest7.Results);
+	RETURN;
+END_IF
+
+//------------CALCULATION A -------------------
+vTest1.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vBytes1 := BOOLARR_TO_BYTES(vBoolArr);
+END_FOR
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
+
+//------------CALCULATION B -------------------
+vTest2.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vBytes2[1].0 := vBoolArr[1];
+	vBytes2[1].1 := vBoolArr[2];
+	vBytes2[1].2 := vBoolArr[3];
+	vBytes2[1].3 := vBoolArr[4];
+	vBytes2[1].4 := vBoolArr[5];
+	vBytes2[1].5 := vBoolArr[6];
+	vBytes2[1].6 := vBoolArr[7];
+	vBytes2[1].7 := vBoolArr[8];
+	
+	vBytes2[2].0 := vBoolArr[9];
+	vBytes2[2].1 := vBoolArr[10];
+	vBytes2[2].2 := vBoolArr[11];
+	vBytes2[2].3 := vBoolArr[12];
+	vBytes2[2].4 := vBoolArr[13];
+	vBytes2[2].5 := vBoolArr[14];
+	vBytes2[2].6 := vBoolArr[15];
+	vBytes2[2].7 := vBoolArr[16];
+	
+	vBytes2[3].0 := vBoolArr[17];
+	vBytes2[3].1 := vBoolArr[18];
+	vBytes2[3].2 := vBoolArr[19];
+	vBytes2[3].3 := vBoolArr[20];
+	vBytes2[3].4 := vBoolArr[21];
+	vBytes2[3].5 := vBoolArr[22];
+	vBytes2[3].6 := vBoolArr[23];
+	vBytes2[3].7 := vBoolArr[24];
+	
+	vBytes2[4].0 := vBoolArr[25];
+	vBytes2[4].1 := vBoolArr[26];
+	vBytes2[4].2 := vBoolArr[27];
+	vBytes2[4].3 := vBoolArr[28];
+	vBytes2[4].4 := vBoolArr[29];
+	vBytes2[4].5 := vBoolArr[30];
+	vBytes2[4].6 := vBoolArr[31];
+	vBytes2[4].7 := vBoolArr[32];
+END_FOR
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
+
+//------------CALCULATION C -------------------
+vTest3.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	FOR j:=1 TO 4 DO
+		vBytes3[j].0 := vBoolArr[1 + ((j-1) * 8)]; //1,9, 17, 25
+		vBytes3[j].1 := vBoolArr[2 + ((j-1) * 8)];
+		vBytes3[j].2 := vBoolArr[3 + ((j-1) * 8)];
+		vBytes3[j].3 := vBoolArr[4 + ((j-1) * 8)];
+		vBytes3[j].4 := vBoolArr[5 + ((j-1) * 8)];
+		vBytes3[j].5 := vBoolArr[6 + ((j-1) * 8)]; //6, 14, 22, 30
+		vBytes3[j].6 := vBoolArr[7 + ((j-1) * 8)]; //7, 15, 23, 31
+		vBytes3[j].7 := vBoolArr[8 + ((j-1) * 8)]; //8, 16, 24, 32
+	END_FOR
+END_FOR
+vTest3.ExecTime := LTIME() - vTest3.OldTime;
+
+vTest4.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	setBitToValue_bitmask(vBytes4[1], 1, vBoolArr[1]);
+	setBitToValue_bitmask(vBytes4[1], 2 ,vBoolArr[2]);
+	setBitToValue_bitmask(vBytes4[1], 3,vBoolArr[3]);
+	setBitToValue_bitmask(vBytes4[1], 4,vBoolArr[4]);
+	setBitToValue_bitmask(vBytes4[1], 5,vBoolArr[5]);
+	setBitToValue_bitmask(vBytes4[1], 6,vBoolArr[6]);
+	setBitToValue_bitmask(vBytes4[1], 7,vBoolArr[7]);
+	setBitToValue_bitmask(vBytes4[1], 8,vBoolArr[8]);
+	
+	setBitToValue_bitmask(vBytes4[2], 1,vBoolArr[9]);
+	setBitToValue_bitmask(vBytes4[2], 2,vBoolArr[10]);
+	setBitToValue_bitmask(vBytes4[2], 3,vBoolArr[11]);
+	setBitToValue_bitmask(vBytes4[2], 4,vBoolArr[12]);
+	setBitToValue_bitmask(vBytes4[2], 5,vBoolArr[13]);
+	setBitToValue_bitmask(vBytes4[2], 6,vBoolArr[14]);
+	setBitToValue_bitmask(vBytes4[2], 7,vBoolArr[15]);
+	setBitToValue_bitmask(vBytes4[2], 8,vBoolArr[16]);
+	
+	setBitToValue_bitmask(vBytes4[3], 1,vBoolArr[17]);
+	setBitToValue_bitmask(vBytes4[3], 2,vBoolArr[18]);
+	setBitToValue_bitmask(vBytes4[3], 3,vBoolArr[19]);
+	setBitToValue_bitmask(vBytes4[3], 4,vBoolArr[20]);
+	setBitToValue_bitmask(vBytes4[3], 5,vBoolArr[21]);
+	setBitToValue_bitmask(vBytes4[3], 6,vBoolArr[22]);
+	setBitToValue_bitmask(vBytes4[3], 7,vBoolArr[23]);
+	setBitToValue_bitmask(vBytes4[3], 8,vBoolArr[24]);
+	
+	setBitToValue_bitmask(vBytes4[4], 1,vBoolArr[25]);
+	setBitToValue_bitmask(vBytes4[4], 2,vBoolArr[26]);
+	setBitToValue_bitmask(vBytes4[4], 3,vBoolArr[27]);
+	setBitToValue_bitmask(vBytes4[4], 4,vBoolArr[28]);
+	setBitToValue_bitmask(vBytes4[4], 5,vBoolArr[29]);
+	setBitToValue_bitmask(vBytes4[4], 6,vBoolArr[30]);
+	setBitToValue_bitmask(vBytes4[4], 7,vBoolArr[31]);
+	setBitToValue_bitmask(vBytes4[4], 8,vBoolArr[32]);
+END_FOR
+vTest4.ExecTime := LTIME() - vTest4.OldTime;
+
+vTest5.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+    FOR j:=1 TO 4 DO
+        setBitToValue_bitmask(vBytes5[j], 1, vBoolArr[1 + ((j-1) * 8)]);
+        setBitToValue_bitmask(vBytes5[j], 2, vBoolArr[2 + ((j-1) * 8)]);
+        setBitToValue_bitmask(vBytes5[j], 3, vBoolArr[3 + ((j-1) * 8)]);
+        setBitToValue_bitmask(vBytes5[j], 4, vBoolArr[4 + ((j-1) * 8)]);
+        setBitToValue_bitmask(vBytes5[j], 5, vBoolArr[5 + ((j-1) * 8)]);
+        setBitToValue_bitmask(vBytes5[j], 6, vBoolArr[6 + ((j-1) * 8)]);
+        setBitToValue_bitmask(vBytes5[j], 7, vBoolArr[7 + ((j-1) * 8)]);
+        setBitToValue_bitmask(vBytes5[j], 8, vBoolArr[8 + ((j-1) * 8)]);
+    END_FOR
+END_FOR
+vTest5.ExecTime := LTIME() - vTest5.OldTime;
+
+
+vTest6.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+    vBytes6[1] := 0;
+    vBytes6[2] := 0;
+    vBytes6[3] := 0;
+    vBytes6[4] := 0;
+
+	vBytes6[1] := vBytes6[1] OR SHL(BOOL_TO_USINT(vBoolArr[1]),0);
+	vBytes6[1] := vBytes6[1] OR SHL(BOOL_TO_USINT(vBoolArr[2]),1);
+	vBytes6[1] := vBytes6[1] OR SHL(BOOL_TO_USINT(vBoolArr[3]),2);
+	vBytes6[1] := vBytes6[1] OR SHL(BOOL_TO_USINT(vBoolArr[4]),3);
+	vBytes6[1] := vBytes6[1] OR SHL(BOOL_TO_USINT(vBoolArr[5]),4);
+	vBytes6[1] := vBytes6[1] OR SHL(BOOL_TO_USINT(vBoolArr[6]),5);
+	vBytes6[1] := vBytes6[1] OR SHL(BOOL_TO_USINT(vBoolArr[7]),6);
+	vBytes6[1] := vBytes6[1] OR SHL(BOOL_TO_USINT(vBoolArr[8]),7);
+	
+	vBytes6[2] := vBytes6[2] OR SHL(BOOL_TO_USINT(vBoolArr[9]) ,0);
+	vBytes6[2] := vBytes6[2] OR SHL(BOOL_TO_USINT(vBoolArr[10]),1);
+	vBytes6[2] := vBytes6[2] OR SHL(BOOL_TO_USINT(vBoolArr[11]),2);
+	vBytes6[2] := vBytes6[2] OR SHL(BOOL_TO_USINT(vBoolArr[12]),3);
+	vBytes6[2] := vBytes6[2] OR SHL(BOOL_TO_USINT(vBoolArr[13]),4);
+	vBytes6[2] := vBytes6[2] OR SHL(BOOL_TO_USINT(vBoolArr[14]),5);
+	vBytes6[2] := vBytes6[2] OR SHL(BOOL_TO_USINT(vBoolArr[15]),6);
+	vBytes6[2] := vBytes6[2] OR SHL(BOOL_TO_USINT(vBoolArr[16]),7);
+	
+	vBytes6[3] := vBytes6[3] OR SHL(BOOL_TO_USINT(vBoolArr[17]),0);
+	vBytes6[3] := vBytes6[3] OR SHL(BOOL_TO_USINT(vBoolArr[18]),1);
+	vBytes6[3] := vBytes6[3] OR SHL(BOOL_TO_USINT(vBoolArr[19]),2);
+	vBytes6[3] := vBytes6[3] OR SHL(BOOL_TO_USINT(vBoolArr[20]),3);
+	vBytes6[3] := vBytes6[3] OR SHL(BOOL_TO_USINT(vBoolArr[21]),4);
+	vBytes6[3] := vBytes6[3] OR SHL(BOOL_TO_USINT(vBoolArr[22]),5);
+	vBytes6[3] := vBytes6[3] OR SHL(BOOL_TO_USINT(vBoolArr[23]),6);
+	vBytes6[3] := vBytes6[3] OR SHL(BOOL_TO_USINT(vBoolArr[24]),7);
+	
+	vBytes6[4] := vBytes6[4] OR SHL(BOOL_TO_USINT(vBoolArr[25]),0);
+	vBytes6[4] := vBytes6[4] OR SHL(BOOL_TO_USINT(vBoolArr[26]),1);
+	vBytes6[4] := vBytes6[4] OR SHL(BOOL_TO_USINT(vBoolArr[27]),2);
+	vBytes6[4] := vBytes6[4] OR SHL(BOOL_TO_USINT(vBoolArr[28]),3);
+	vBytes6[4] := vBytes6[4] OR SHL(BOOL_TO_USINT(vBoolArr[29]),4);
+	vBytes6[4] := vBytes6[4] OR SHL(BOOL_TO_USINT(vBoolArr[30]),5);
+	vBytes6[4] := vBytes6[4] OR SHL(BOOL_TO_USINT(vBoolArr[31]),6);
+	vBytes6[4] := vBytes6[4] OR SHL(BOOL_TO_USINT(vBoolArr[32]),7);
+END_FOR
+vTest6.ExecTime := LTIME() - vTest6.OldTime;
+
+vTest7.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vBytes7 := BOOLARR_TO_BYTES2(vBoolArr);
+END_FOR
+vTest7.ExecTime := LTIME() - vTest7.OldTime;
+
+//------------CATCH RESULTS---------------------
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+vTest4.Results[vRunsCompleted] := vTest4.ExecTime;
+vTest5.Results[vRunsCompleted] := vTest5.ExecTime;
+vTest6.Results[vRunsCompleted] := vTest6.ExecTime;
+vTest7.Results[vRunsCompleted] := vTest7.ExecTime;
+
+vRunsCompleted := vRunsCompleted + 1;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>2eab04f9-8124-4db4-ae4b-22d6bb09d6ea</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="BOOLARR_TO_BYTES" pouType="function">
+        <interface>
+          <returnType>
+            <array>
+              <dimension lower="1" upper="4" />
+              <baseType>
+                <USINT />
+              </baseType>
+            </array>
+          </returnType>
+          <inOutVars>
+            <variable name="Data">
+              <type>
+                <array>
+                  <dimension lower="1" upper="32" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+          </inOutVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">BOOLARR_TO_BYTES[1].0 := Data[1];
+BOOLARR_TO_BYTES[1].1 := Data[2];
+BOOLARR_TO_BYTES[1].2 := Data[3];
+BOOLARR_TO_BYTES[1].3 := Data[4];
+BOOLARR_TO_BYTES[1].4 := Data[5];
+BOOLARR_TO_BYTES[1].5 := Data[6];
+BOOLARR_TO_BYTES[1].6 := Data[7];
+BOOLARR_TO_BYTES[1].7 := Data[8];
+
+BOOLARR_TO_BYTES[2].0 := Data[9];
+BOOLARR_TO_BYTES[2].1 := Data[10];
+BOOLARR_TO_BYTES[2].2 := Data[11];
+BOOLARR_TO_BYTES[2].3 := Data[12];
+BOOLARR_TO_BYTES[2].4 := Data[13];
+BOOLARR_TO_BYTES[2].5 := Data[14];
+BOOLARR_TO_BYTES[2].6 := Data[15];
+BOOLARR_TO_BYTES[2].7 := Data[16];
+
+BOOLARR_TO_BYTES[3].0 := Data[17];
+BOOLARR_TO_BYTES[3].1 := Data[18];
+BOOLARR_TO_BYTES[3].2 := Data[19];
+BOOLARR_TO_BYTES[3].3 := Data[20];
+BOOLARR_TO_BYTES[3].4 := Data[21];
+BOOLARR_TO_BYTES[3].5 := Data[22];
+BOOLARR_TO_BYTES[3].6 := Data[23];
+BOOLARR_TO_BYTES[3].7 := Data[24];
+
+BOOLARR_TO_BYTES[4].0 := Data[25];
+BOOLARR_TO_BYTES[4].1 := Data[26];
+BOOLARR_TO_BYTES[4].2 := Data[27];
+BOOLARR_TO_BYTES[4].3 := Data[28];
+BOOLARR_TO_BYTES[4].4 := Data[29];
+BOOLARR_TO_BYTES[4].5 := Data[30];
+BOOLARR_TO_BYTES[4].6 := Data[31];
+BOOLARR_TO_BYTES[4].7 := Data[32];</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>3e0a25b4-756e-4815-81c0-36745d28e14a</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="BOOLARR_TO_BYTES2" pouType="function">
+        <interface>
+          <returnType>
+            <array>
+              <dimension lower="1" upper="4" />
+              <baseType>
+                <USINT />
+              </baseType>
+            </array>
+          </returnType>
+          <inOutVars>
+            <variable name="Data">
+              <type>
+                <array>
+                  <dimension lower="1" upper="32" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+          </inOutVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">BOOLARR_TO_BYTES2[1] := BOOLARR_TO_BYTES2[1] OR SHL(BOOL_TO_USINT(Data[1]),0);
+BOOLARR_TO_BYTES2[1] := BOOLARR_TO_BYTES2[1] OR SHL(BOOL_TO_USINT(Data[2]),1);
+BOOLARR_TO_BYTES2[1] := BOOLARR_TO_BYTES2[1] OR SHL(BOOL_TO_USINT(Data[3]),2);
+BOOLARR_TO_BYTES2[1] := BOOLARR_TO_BYTES2[1] OR SHL(BOOL_TO_USINT(Data[4]),3);
+BOOLARR_TO_BYTES2[1] := BOOLARR_TO_BYTES2[1] OR SHL(BOOL_TO_USINT(Data[5]),4);
+BOOLARR_TO_BYTES2[1] := BOOLARR_TO_BYTES2[1] OR SHL(BOOL_TO_USINT(Data[6]),5);
+BOOLARR_TO_BYTES2[1] := BOOLARR_TO_BYTES2[1] OR SHL(BOOL_TO_USINT(Data[7]),6);
+BOOLARR_TO_BYTES2[1] := BOOLARR_TO_BYTES2[1] OR SHL(BOOL_TO_USINT(Data[8]),7);
+	
+BOOLARR_TO_BYTES2[2] := BOOLARR_TO_BYTES2[2] OR SHL(BOOL_TO_USINT(Data[9]) ,0);
+BOOLARR_TO_BYTES2[2] := BOOLARR_TO_BYTES2[2] OR SHL(BOOL_TO_USINT(Data[10]),1);
+BOOLARR_TO_BYTES2[2] := BOOLARR_TO_BYTES2[2] OR SHL(BOOL_TO_USINT(Data[11]),2);
+BOOLARR_TO_BYTES2[2] := BOOLARR_TO_BYTES2[2] OR SHL(BOOL_TO_USINT(Data[12]),3);
+BOOLARR_TO_BYTES2[2] := BOOLARR_TO_BYTES2[2] OR SHL(BOOL_TO_USINT(Data[13]),4);
+BOOLARR_TO_BYTES2[2] := BOOLARR_TO_BYTES2[2] OR SHL(BOOL_TO_USINT(Data[14]),5);
+BOOLARR_TO_BYTES2[2] := BOOLARR_TO_BYTES2[2] OR SHL(BOOL_TO_USINT(Data[15]),6);
+BOOLARR_TO_BYTES2[2] := BOOLARR_TO_BYTES2[2] OR SHL(BOOL_TO_USINT(Data[16]),7);
+	
+BOOLARR_TO_BYTES2[3] := BOOLARR_TO_BYTES2[3] OR SHL(BOOL_TO_USINT(Data[17]),0);
+BOOLARR_TO_BYTES2[3] := BOOLARR_TO_BYTES2[3] OR SHL(BOOL_TO_USINT(Data[18]),1);
+BOOLARR_TO_BYTES2[3] := BOOLARR_TO_BYTES2[3] OR SHL(BOOL_TO_USINT(Data[19]),2);
+BOOLARR_TO_BYTES2[3] := BOOLARR_TO_BYTES2[3] OR SHL(BOOL_TO_USINT(Data[20]),3);
+BOOLARR_TO_BYTES2[3] := BOOLARR_TO_BYTES2[3] OR SHL(BOOL_TO_USINT(Data[21]),4);
+BOOLARR_TO_BYTES2[3] := BOOLARR_TO_BYTES2[3] OR SHL(BOOL_TO_USINT(Data[22]),5);
+BOOLARR_TO_BYTES2[3] := BOOLARR_TO_BYTES2[3] OR SHL(BOOL_TO_USINT(Data[23]),6);
+BOOLARR_TO_BYTES2[3] := BOOLARR_TO_BYTES2[3] OR SHL(BOOL_TO_USINT(Data[24]),7);
+	
+BOOLARR_TO_BYTES2[4] := BOOLARR_TO_BYTES2[4] OR SHL(BOOL_TO_USINT(Data[25]),0);
+BOOLARR_TO_BYTES2[4] := BOOLARR_TO_BYTES2[4] OR SHL(BOOL_TO_USINT(Data[26]),1);
+BOOLARR_TO_BYTES2[4] := BOOLARR_TO_BYTES2[4] OR SHL(BOOL_TO_USINT(Data[27]),2);
+BOOLARR_TO_BYTES2[4] := BOOLARR_TO_BYTES2[4] OR SHL(BOOL_TO_USINT(Data[28]),3);
+BOOLARR_TO_BYTES2[4] := BOOLARR_TO_BYTES2[4] OR SHL(BOOL_TO_USINT(Data[29]),4);
+BOOLARR_TO_BYTES2[4] := BOOLARR_TO_BYTES2[4] OR SHL(BOOL_TO_USINT(Data[30]),5);
+BOOLARR_TO_BYTES2[4] := BOOLARR_TO_BYTES2[4] OR SHL(BOOL_TO_USINT(Data[31]),6);
+BOOLARR_TO_BYTES2[4] := BOOLARR_TO_BYTES2[4] OR SHL(BOOL_TO_USINT(Data[32]),7);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>51f99054-eb38-4f39-9943-263b385d74f8</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="x13_ByteArrayToBool32" pouType="program">
+        <interface>
+          <localVars constant="true">
+            <variable name="cNrRuns">
+              <type>
+                <subrangeSigned>
+                  <range lower="0" upper="9" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </subrangeSigned>
+              </type>
+              <initialValue>
+                <simpleValue value="5" />
+              </initialValue>
+            </variable>
+            <variable name="cRepeatCalcTimes">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1000000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <localVars>
+            <variable name="vRunsCompleted">
+              <type>
+                <USINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="vStartTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vTotalTime">
+              <type>
+                <derived name="LTIME" />
+              </type>
+            </variable>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="TRUE" />
+              </initialValue>
+            </variable>
+            <variable name="vTest1">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest2">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest3">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest4">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="j">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="vBoolArr1">
+              <type>
+                <array>
+                  <dimension lower="1" upper="32" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Test vars</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vBoolArr2">
+              <type>
+                <array>
+                  <dimension lower="1" upper="32" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vBoolArr3">
+              <type>
+                <array>
+                  <dimension lower="1" upper="32" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vBoolArr4">
+              <type>
+                <array>
+                  <dimension lower="1" upper="32" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="vBytes">
+              <type>
+                <array>
+                  <dimension lower="1" upper="4" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </array>
+              </type>
+              <initialValue>
+                <arrayValue>
+                  <value>
+                    <simpleValue value="16#FF" />
+                  </value>
+                  <value>
+                    <simpleValue value="16#85" />
+                  </value>
+                  <value>
+                    <simpleValue value="16#0" />
+                  </value>
+                  <value>
+                    <simpleValue value="16#AB" />
+                  </value>
+                </arrayValue>
+              </initialValue>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
+	vStartTime := LTIME();
+	vStart := FALSE;
+END_IF
+IF vRunsCompleted &gt; cNrRuns THEN
+	IF vTotalTime = LTIME#0S THEN
+		vTotalTime := LTIME() - vStartTime;
+	END_IF
+	//Measurement done on 1 milion unpacks
+	//Time to upack 4 bytes to bool array, function
+	vTest1.AverageExecTime := calcAvg(vTest1.Results);
+	//Time to upack 4 bytes to bool array, flat
+	vTest2.AverageExecTime := calcAvg(vTest2.Results);
+	//Time to upack 4 bytes to bool array, bitmask function
+	vTest3.AverageExecTime := calcAvg(vTest3.Results);
+	//Time to upack 4 bytes to bool array, bitmask
+	vTest4.AverageExecTime := calcAvg(vTest4.Results);
+	RETURN;
+END_IF
+
+//------------CALCULATION A -------------------
+vTest1.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vBoolArr1 := UnpackBytesToBool32(vBytes);
+END_FOR
+vTest1.ExecTime := LTIME() - vTest1.OldTime;
+
+//------------CALCULATION B -------------------
+vTest2.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vBoolArr2[1] := vBytes[1].0;
+	vBoolArr2[2] := vBytes[1].1;
+	vBoolArr2[3] := vBytes[1].2;
+	vBoolArr2[4] := vBytes[1].3;
+	vBoolArr2[5] := vBytes[1].4;
+	vBoolArr2[6] := vBytes[1].5;
+	vBoolArr2[7] := vBytes[1].6;
+	vBoolArr2[8] := vBytes[1].7;
+	
+	vBoolArr2[9] :=  vBytes[2].0;
+	vBoolArr2[10] := vBytes[2].1;
+	vBoolArr2[11] := vBytes[2].2;
+	vBoolArr2[12] := vBytes[2].3;
+	vBoolArr2[13] := vBytes[2].4;
+	vBoolArr2[14] := vBytes[2].5;
+	vBoolArr2[15] := vBytes[2].6;
+	vBoolArr2[16] := vBytes[2].7;
+	
+	vBoolArr2[17] := vBytes[3].0;
+	vBoolArr2[18] := vBytes[3].1;
+	vBoolArr2[19] := vBytes[3].2;
+	vBoolArr2[20] := vBytes[3].3;
+	vBoolArr2[21] := vBytes[3].4;
+	vBoolArr2[22] := vBytes[3].5;
+	vBoolArr2[23] := vBytes[3].6;
+	vBoolArr2[24] := vBytes[3].7;
+	
+	vBoolArr2[25] := vBytes[4].0;
+	vBoolArr2[26] := vBytes[4].1;
+	vBoolArr2[27] := vBytes[4].2;
+	vBoolArr2[28] := vBytes[4].3;
+	vBoolArr2[29] := vBytes[4].4;
+	vBoolArr2[30] := vBytes[4].5;
+	vBoolArr2[31] := vBytes[4].6;
+	vBoolArr2[32] := vBytes[4].7;
+
+END_FOR
+vTest2.ExecTime := LTIME() - vTest2.OldTime;
+
+//------------CALCULATION C -------------------
+vTest3.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vBoolArr3 := UnpackBytesToBool32_2(vBytes);
+END_FOR
+vTest3.ExecTime := LTIME() - vTest3.OldTime;
+
+vTest4.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vBoolArr4[1] := (vBytes[1] AND 1) &lt;&gt; 0;
+	vBoolArr4[2] := (vBytes[1] AND 2) &lt;&gt; 0;
+	vBoolArr4[3] := (vBytes[1] AND 4) &lt;&gt; 0;
+	vBoolArr4[4] := (vBytes[1] AND 8) &lt;&gt; 0;
+	vBoolArr4[5] := (vBytes[1] AND 16) &lt;&gt; 0;
+	vBoolArr4[6] := (vBytes[1] AND 32) &lt;&gt; 0;
+	vBoolArr4[7] := (vBytes[1] AND 64) &lt;&gt; 0;
+	vBoolArr4[8] := (vBytes[1] AND 128) &lt;&gt; 0;
+	
+	vBoolArr4[9] := (vBytes[2] AND  1) &lt;&gt; 0;
+	vBoolArr4[10] := (vBytes[2] AND 2) &lt;&gt; 0;
+	vBoolArr4[11] := (vBytes[2] AND 4) &lt;&gt; 0;
+	vBoolArr4[12] := (vBytes[2] AND 8) &lt;&gt; 0;
+	vBoolArr4[13] := (vBytes[2] AND 16) &lt;&gt; 0;
+	vBoolArr4[14] := (vBytes[2] AND 32) &lt;&gt; 0;
+	vBoolArr4[15] := (vBytes[2] AND 64) &lt;&gt; 0;
+	vBoolArr4[16] := (vBytes[2] AND 128) &lt;&gt; 0;
+	
+	vBoolArr4[17] := (vBytes[3] AND 1) &lt;&gt; 0;
+	vBoolArr4[18] := (vBytes[3] AND 2) &lt;&gt; 0;
+	vBoolArr4[19] := (vBytes[3] AND 4) &lt;&gt; 0;
+	vBoolArr4[20] := (vBytes[3] AND 8) &lt;&gt; 0;
+	vBoolArr4[21] := (vBytes[3] AND 16) &lt;&gt; 0;
+	vBoolArr4[22] := (vBytes[3] AND 32) &lt;&gt; 0;
+	vBoolArr4[23] := (vBytes[3] AND 64) &lt;&gt; 0;
+	vBoolArr4[24] := (vBytes[3] AND 128) &lt;&gt; 0;
+	
+	vBoolArr4[25] := (vBytes[4] AND 1) &lt;&gt; 0;
+	vBoolArr4[26] := (vBytes[4] AND 2) &lt;&gt; 0;
+	vBoolArr4[27] := (vBytes[4] AND 4) &lt;&gt; 0;
+	vBoolArr4[28] := (vBytes[4] AND 8) &lt;&gt; 0;
+	vBoolArr4[29] := (vBytes[4] AND 16) &lt;&gt; 0;
+	vBoolArr4[30] := (vBytes[4] AND 32) &lt;&gt; 0;
+	vBoolArr4[31] := (vBytes[4] AND 64) &lt;&gt; 0;
+	vBoolArr4[32] := (vBytes[4] AND 128) &lt;&gt; 0;
+
+END_FOR
+vTest4.ExecTime := LTIME() - vTest4.OldTime;
+
+//------------CATCH RESULTS---------------------
+vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+vTest4.Results[vRunsCompleted] := vTest4.ExecTime;
+
+vRunsCompleted := vRunsCompleted + 1;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>74f165ea-ef07-4399-81f4-5a22d69d1c4c</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="UnpackBytesToBool32" pouType="function">
+        <interface>
+          <returnType>
+            <array>
+              <dimension lower="1" upper="32" />
+              <baseType>
+                <BOOL />
+              </baseType>
+            </array>
+          </returnType>
+          <inOutVars>
+            <variable name="Bytes">
+              <type>
+                <array>
+                  <dimension lower="1" upper="4" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+          </inOutVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">UnpackBytesToBool32[1] := Bytes[1].0;
+UnpackBytesToBool32[2] := Bytes[1].1;
+UnpackBytesToBool32[3] := Bytes[1].2;
+UnpackBytesToBool32[4] := Bytes[1].3;
+UnpackBytesToBool32[5] := Bytes[1].4;
+UnpackBytesToBool32[6] := Bytes[1].5;
+UnpackBytesToBool32[7] := Bytes[1].6;
+UnpackBytesToBool32[8] := Bytes[1].7;
+
+UnpackBytesToBool32[9] := Bytes[2].0;
+UnpackBytesToBool32[10] := Bytes[2].1;
+UnpackBytesToBool32[11] := Bytes[2].2;
+UnpackBytesToBool32[12] := Bytes[2].3;
+UnpackBytesToBool32[13] := Bytes[2].4;
+UnpackBytesToBool32[14] := Bytes[2].5;
+UnpackBytesToBool32[15] := Bytes[2].6;
+UnpackBytesToBool32[16] := Bytes[2].7;
+
+UnpackBytesToBool32[17] := Bytes[3].0;
+UnpackBytesToBool32[18] := Bytes[3].1;
+UnpackBytesToBool32[19] := Bytes[3].2;
+UnpackBytesToBool32[20] := Bytes[3].3;
+UnpackBytesToBool32[21] := Bytes[3].4;
+UnpackBytesToBool32[22] := Bytes[3].5;
+UnpackBytesToBool32[23] := Bytes[3].6;
+UnpackBytesToBool32[24] := Bytes[3].7;
+
+UnpackBytesToBool32[25] := Bytes[4].0;
+UnpackBytesToBool32[26] := Bytes[4].1;
+UnpackBytesToBool32[27] := Bytes[4].2;
+UnpackBytesToBool32[28] := Bytes[4].3;
+UnpackBytesToBool32[29] := Bytes[4].4;
+UnpackBytesToBool32[30] := Bytes[4].5;
+UnpackBytesToBool32[31] := Bytes[4].6;
+UnpackBytesToBool32[32] := Bytes[4].7;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>6d3db079-17dd-4cb1-a422-91fc1faa4560</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="UnpackBytesToBool32_2" pouType="function">
+        <interface>
+          <returnType>
+            <array>
+              <dimension lower="1" upper="32" />
+              <baseType>
+                <BOOL />
+              </baseType>
+            </array>
+          </returnType>
+          <inOutVars>
+            <variable name="Bytes">
+              <type>
+                <array>
+                  <dimension lower="1" upper="4" />
+                  <baseType>
+                    <USINT />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+          </inOutVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">UnpackBytesToBool32_2[1] := (Bytes[1] AND 1) &lt;&gt; 0;
+UnpackBytesToBool32_2[2] := (Bytes[1] AND 2) &lt;&gt; 0;
+UnpackBytesToBool32_2[3] := (Bytes[1] AND 4) &lt;&gt; 0;
+UnpackBytesToBool32_2[4] := (Bytes[1] AND 8) &lt;&gt; 0;
+UnpackBytesToBool32_2[5] := (Bytes[1] AND 16) &lt;&gt; 0;
+UnpackBytesToBool32_2[6] := (Bytes[1] AND 32) &lt;&gt; 0;
+UnpackBytesToBool32_2[7] := (Bytes[1] AND 64) &lt;&gt; 0;
+UnpackBytesToBool32_2[8] := (Bytes[1] AND 128) &lt;&gt; 0;
+
+UnpackBytesToBool32_2[9] :=  (Bytes[2] AND 1) &lt;&gt; 0;;
+UnpackBytesToBool32_2[10] := (Bytes[2] AND 2) &lt;&gt; 0;
+UnpackBytesToBool32_2[11] := (Bytes[2] AND 4) &lt;&gt; 0;
+UnpackBytesToBool32_2[12] := (Bytes[2] AND 8) &lt;&gt; 0;
+UnpackBytesToBool32_2[13] := (Bytes[2] AND 16) &lt;&gt; 0;
+UnpackBytesToBool32_2[14] := (Bytes[2] AND 32) &lt;&gt; 0;
+UnpackBytesToBool32_2[15] := (Bytes[2] AND 64) &lt;&gt; 0;
+UnpackBytesToBool32_2[16] := (Bytes[2] AND 128) &lt;&gt; 0;
+
+UnpackBytesToBool32_2[17] := (Bytes[3] AND 1) &lt;&gt; 0;
+UnpackBytesToBool32_2[18] := (Bytes[3] AND 2) &lt;&gt; 0;
+UnpackBytesToBool32_2[19] := (Bytes[3] AND 4) &lt;&gt; 0;
+UnpackBytesToBool32_2[20] := (Bytes[3] AND 8) &lt;&gt; 0;
+UnpackBytesToBool32_2[21] := (Bytes[3] AND 16) &lt;&gt; 0;
+UnpackBytesToBool32_2[22] := (Bytes[3] AND 32) &lt;&gt; 0;
+UnpackBytesToBool32_2[23] := (Bytes[3] AND 64) &lt;&gt; 0;
+UnpackBytesToBool32_2[24] := (Bytes[3] AND 128) &lt;&gt; 0;
+
+UnpackBytesToBool32_2[25] := (Bytes[4] AND 1) &lt;&gt; 0;
+UnpackBytesToBool32_2[26] := (Bytes[4] AND 2) &lt;&gt; 0;
+UnpackBytesToBool32_2[27] := (Bytes[4] AND 4) &lt;&gt; 0;
+UnpackBytesToBool32_2[28] := (Bytes[4] AND 8) &lt;&gt; 0;
+UnpackBytesToBool32_2[29] := (Bytes[4] AND 16) &lt;&gt; 0;
+UnpackBytesToBool32_2[30] := (Bytes[4] AND 32) &lt;&gt; 0;
+UnpackBytesToBool32_2[31] := (Bytes[4] AND 64) &lt;&gt; 0;
+UnpackBytesToBool32_2[32] := (Bytes[4] AND 128) &lt;&gt; 0;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>00e46ab0-b561-402e-a609-aa635fec6ce7</ObjectId>
           </data>
         </addData>
       </pou>
@@ -4712,6 +5853,19 @@ calcFLOPS := vTestReal *  (1000000000.0 / LTIME_TO_REAL(vFLOPSExecTime));</xhtml
             <Object Name="VISU_TASK" ObjectId="8a1906e0-0313-4fe2-937c-29f0bb7b12c1" />
           </Object>
         </Object>
+        <Folder Name="11 - Calculation in FOR loop declaration">
+          <Object Name="x11_CalcInForLoppDecl" ObjectId="0d36a265-629d-4737-a080-598f91f7a935" />
+        </Folder>
+        <Folder Name="12 - Bool Array to ByteArray">
+          <Object Name="x12_BoolArrayToByteArray" ObjectId="2eab04f9-8124-4db4-ae4b-22d6bb09d6ea" />
+          <Object Name="BOOLARR_TO_BYTES" ObjectId="3e0a25b4-756e-4815-81c0-36745d28e14a" />
+          <Object Name="BOOLARR_TO_BYTES2" ObjectId="51f99054-eb38-4f39-9943-263b385d74f8" />
+        </Folder>
+        <Folder Name="13 - Byte array to Boolean32">
+          <Object Name="x13_ByteArrayToBool32" ObjectId="74f165ea-ef07-4399-81f4-5a22d69d1c4c" />
+          <Object Name="UnpackBytesToBool32" ObjectId="6d3db079-17dd-4cb1-a422-91fc1faa4560" />
+          <Object Name="UnpackBytesToBool32_2" ObjectId="00e46ab0-b561-402e-a609-aa635fec6ce7" />
+        </Folder>
       </ProjectStructure>
     </data>
   </addData>
