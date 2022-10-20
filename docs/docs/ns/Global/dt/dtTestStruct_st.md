@@ -3,6 +3,7 @@
 ## Documentation for struct dtTestStruct  
 
 ```pascal
+//  
 STRUCT dtTestStruct:
     dummy1 : USINT := 255;
     Elem1 : INT := -1;

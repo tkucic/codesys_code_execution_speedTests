@@ -3,6 +3,7 @@
 ## Documentation for struct dtBitStruct  
 
 ```pascal
+//  
 STRUCT dtBitStruct:
     bit1 : BIT;
     bit2 : BIT;

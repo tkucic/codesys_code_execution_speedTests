@@ -3,6 +3,7 @@
 ## Documentation for struct dtSpeedTest  
 
 ```pascal
+//  
 STRUCT dtSpeedTest:
     Results : ARRAY[0..9] OF LTIME;
     AverageExecTime : LTIME;
