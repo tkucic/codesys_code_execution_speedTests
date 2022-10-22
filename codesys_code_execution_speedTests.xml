@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 2" creationDateTime="2022-10-19T23:42:42.6533325" />
-  <contentHeader name="Codesys Code Execution Speed Tests" version="1.0" modificationDateTime="2022-10-19T23:42:26.4123666" organization="TK Automation" author="Toni Kucic">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 2" creationDateTime="2022-10-22T22:24:10.0097893" />
+  <contentHeader name="Codesys Code Execution Speed Tests" version="1.0" modificationDateTime="2022-10-22T22:23:56.6780329" organization="TK Automation" author="Toni Kucic">
     <Comment>A collection of programs that measure various execution speeds of code.</Comment>
     <coordinateInfo>
       <fbd>
@@ -211,6 +211,11 @@
                 </array>
               </type>
             </variable>
+            <variable name="Desc">
+              <type>
+                <string length="255" />
+              </type>
+            </variable>
             <variable name="AverageExecTime">
               <type>
                 <derived name="LTIME" />
@@ -264,7 +269,25 @@
               </documentation>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -282,14 +305,6 @@
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -439,30 +454,11 @@
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to add two integers 1 milion times
-	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to add two reals 1 milion times
-	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to add two DINTs (32b INT) 1 milion times
-	vTest4.AverageExecTime := calcAvg(vTest4.Results); //Time to multiply two integers 1 milion times
-	vTest5.AverageExecTime := calcAvg(vTest5.Results); //Time to multiply two reals 1 milion times
-	vTest6.AverageExecTime := calcAvg(vTest6.Results); //Time to multiply two DINTs (32b INT) 1 milion times
-	vTest7.AverageExecTime := calcAvg(vTest7.Results); //Time to divide two integers 1 milion times
-	vTest8.AverageExecTime := calcAvg(vTest8.Results); //Time to divide two reals 1 milion times
-	vTest9.AverageExecTime := calcAvg(vTest9.Results); //Time to divide two DINTs (32b INT) 1 milion times
-		
-	RETURN;
-END_IF
-
-//------------CALCULATION A -------------------
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
 vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult1 := vInteger1 + vInteger2;
@@ -535,8 +531,49 @@ vTest5.Results[vRunsCompleted] := vTest5.ExecTime;
 vTest6.Results[vRunsCompleted] := vTest6.ExecTime;
 vTest7.Results[vRunsCompleted] := vTest7.ExecTime;
 vTest8.Results[vRunsCompleted] := vTest8.ExecTime;
-vTest9.Results[vRunsCompleted] := vTest9.ExecTime;
-vRunsCompleted := vRunsCompleted + 1;
+vTest9.Results[vRunsCompleted] := vTest9.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>93cbcdca-7780-47a0-9980-34236baa48b9</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+vStartTime 	:= LTIME();
+
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc				:= 'Time to add two integers 1 milion times';
+vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
+vTest2.Desc				:= 'Time to add two reals 1 milion times';
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+vTest3.Desc				:= 'Time to add two DINTs (32b INT) 1 milion times';
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results);
+vTest4.Desc				:= 'Time to multiply two integers 1 milion times';
+vTest4.AverageExecTime 	:= calcAvg(vTest4.Results);
+vTest5.Desc				:= 'Time to multiply two reals 1 milion times';
+vTest5.AverageExecTime 	:= calcAvg(vTest5.Results);
+vTest6.Desc				:= 'Time to multiply two DINTs (32b INT) 1 milion times';
+vTest6.AverageExecTime 	:= calcAvg(vTest6.Results);
+vTest7.Desc				:= 'Time to divide two integers 1 milion times';
+vTest7.AverageExecTime 	:= calcAvg(vTest7.Results);
+vTest8.Desc				:= 'Time to divide two reals 1 milion times';
+vTest8.AverageExecTime 	:= calcAvg(vTest8.Results);
+vTest9.Desc				:= 'Time to divide two DINTs (32b INT) 1 milion times';
+vTest9.AverageExecTime 	:= calcAvg(vTest9.Results);
+	
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -603,7 +640,25 @@ vRunsCompleted := vRunsCompleted + 1;
               </documentation>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -621,14 +676,6 @@ vRunsCompleted := vRunsCompleted + 1;
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -686,24 +733,11 @@ vRunsCompleted := vRunsCompleted + 1;
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Operands
-	vTest2.AverageExecTime := calcAvg(vTest2.Results); //User function
-	vTest3.AverageExecTime := calcAvg(vTest3.Results); //PRG method
-	
-	RETURN;
-END_IF
-	
-//------------CALCULATION A -------------------
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
 vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult1 := vInt1 + vInt2;
@@ -727,8 +761,37 @@ vTest3.ExecTime := LTIME() - vTest3.OldTime;
 //------------CATCH RESULTS---------------------
 vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
 vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
-vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
-vRunsCompleted := vRunsCompleted + 1;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>21ab4a41-c502-42e4-bf95-e430fdaa73b7</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+vStartTime 	:= LTIME();
+
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc				:= 'Calculation using just operands, 1 milion times';
+vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
+vTest2.Desc				:= 'Calculation using function, 1 milion times';
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+vTest3.Desc				:= 'Calculation using PRG method, 1 milion times';
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results);
+	
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -793,7 +856,25 @@ vRunsCompleted := vRunsCompleted + 1;
               </documentation>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -811,14 +892,6 @@ vRunsCompleted := vRunsCompleted + 1;
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -892,29 +965,33 @@ vRunsCompleted := vRunsCompleted + 1;
                 </arrayValue>
               </initialValue>
             </variable>
-            <variable name="j">
+            <variable name="vTimes2">
               <type>
-                <USINT />
+                <array>
+                  <dimension lower="0" upper="9" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
               </type>
+              <initialValue>
+                <arrayValue>
+                  <value>
+                    <simpleValue value="LTIME#1ms0us0ns" />
+                  </value>
+                  <value>
+                    <simpleValue value="LTIME#2ms0us0ns" />
+                  </value>
+                </arrayValue>
+              </initialValue>
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	vTest1.AverageExecTime := calcAvg(vTest1.Results);
-	vTest2.AverageExecTime := calcAvg(vTest2.Results);
-	RETURN;
-END_IF
-	
-//------------CALCULATION A -------------------
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
 vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vAvgTimeFun := calcAvg(vTimes);
@@ -924,18 +1001,42 @@ vTest1.ExecTime := LTIME() - vTest1.OldTime;
 //------------CALCULATION B -------------------
 vTest2.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
-	vAvgTimeHardCoded := LTIME#0MS;
-	FOR j:= 0 TO 9 DO
-		vAvgTimeHardCoded := vAvgTimeHardCoded + vTimes[j];
-	END_FOR
-	vAvgTimeHardCoded := vAvgTimeHardCoded / j;
+	vAvgTimeHardCoded := calcAvgFixed(vTimes2);
 END_FOR
 vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
 //------------CATCH RESULTS---------------------
 vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
-vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
-vRunsCompleted := vRunsCompleted + 1;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>c675048f-5aa0-45c3-806e-fa3f7b6ccade</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+vStartTime 	:= LTIME();
+
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc				:= 'Time took to run a function using ARRAY[*], 1 milion times';
+vTest1.AverageExecTime  := calcAvg(vTest1.Results);
+
+vTest2.Desc				:= 'Time took to run a function using fixed ARRAY[0..9], 1 milion times';
+vTest2.AverageExecTime := calcAvg(vTest2.Results);
+
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -973,7 +1074,25 @@ vRunsCompleted := vRunsCompleted + 1;
               </documentation>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -991,14 +1110,6 @@ vRunsCompleted := vRunsCompleted + 1;
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -1070,24 +1181,11 @@ vRunsCompleted := vRunsCompleted + 1;
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	vTest1.AverageExecTime := calcAvg(vTest1.Results);
-	vTest2.AverageExecTime := calcAvg(vTest2.Results);
-
-	RETURN;
-END_IF
-	
-
-vTest1.OldTime := LTIME();
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	//Assemble an UINT from two USINTs using SHR operator
 	vSHRInteger := vBuffer[0] + SHL(vBuffer[1],8);
@@ -1103,8 +1201,35 @@ vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
 //Results
 vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
-vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
-vRunsCompleted := vRunsCompleted + 1;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>5664cb8f-8799-4292-bf51-fd94078c7af9</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+vStartTime 	:= LTIME();
+
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc				:= 'Assembling an integer from two bytes (SHL), 1 milion times';
+vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
+vTest2.Desc				:= 'Assembling an integer from two bytes (SysMemCpy), 1 milion times';
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+	
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -1198,7 +1323,25 @@ RETURN;</xhtml>
               </type>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -1216,14 +1359,6 @@ RETURN;</xhtml>
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -1255,23 +1390,11 @@ RETURN;</xhtml>
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	vTest1.AverageExecTime := calcAvg(vTest1.Results);
-	vTest2.AverageExecTime := calcAvg(vTest2.Results);
-	
-	RETURN;
-END_IF
-	
-//------------CALCULATION A -------------------
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
 vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	//RESET STRUCT WITH A EMPTY STRUCT
@@ -1289,8 +1412,34 @@ vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
 //------------CATCH RESULTS---------------------
 vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
-vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
-vRunsCompleted := vRunsCompleted + 1;
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>428e8d6f-6956-4294-8a2f-bf96435e2fa1</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+vStartTime 	:= LTIME();
+
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc				:= 'Setting a struct with an empty struct, 1 milion times';
+vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
+vTest2.Desc				:= 'Setting a struct with SysMemSet, 1 milion times';
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -1328,7 +1477,25 @@ vRunsCompleted := vRunsCompleted + 1;
               </documentation>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -1346,14 +1513,6 @@ vRunsCompleted := vRunsCompleted + 1;
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -1411,24 +1570,11 @@ vRunsCompleted := vRunsCompleted + 1;
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	vTest1.AverageExecTime := calcAvg(vTest1.Results); //User function Ladder
-	vTest2.AverageExecTime := calcAvg(vTest2.Results); //User function ST
-	vTest3.AverageExecTime := calcAvg(vTest3.Results); //User function FBD
-
-	RETURN;
-END_IF
-	
-//------------CALCULATION A -------------------
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
 vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult1 := addTwoIntsLadder(vInt1, vInt2);
@@ -1452,8 +1598,37 @@ vTest3.ExecTime := LTIME() - vTest3.OldTime;
 //------------CATCH RESULTS---------------------
 vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
 vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
-vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
-vRunsCompleted := vRunsCompleted + 1;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>b12f24c4-11bf-462f-bab6-6f9040d1116e</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+vStartTime 	:= LTIME();
+
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc				:= 'Time function completed in LADDER, 1 milion times';
+vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
+vTest2.Desc				:= 'Time function completed in ST, 1 milion times';
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results); //User function ST
+vTest3.Desc				:= 'Time function completed in FBD, 1 milion times';
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results); //User function FBD
+
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -1725,7 +1900,25 @@ vRunsCompleted := vRunsCompleted + 1;
               </documentation>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -1743,14 +1936,6 @@ vRunsCompleted := vRunsCompleted + 1;
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -1887,32 +2072,11 @@ vRunsCompleted := vRunsCompleted + 1;
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to copy a string[255] 1 Million times
-	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to copy a string 1 Million times
-	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to concatenate 1 Million times characters with STRING
-	vTest4.AverageExecTime := calcAvg(vTest4.Results); //Time to concatenate 1 Million times  characters with STRING[255]
-	vTest5.AverageExecTime := calcAvg(vTest5.Results); //Time to move a byte 1 Million times
-	vTest6.AverageExecTime := calcAvg(vTest6.Results); //Time to copy an array of 255 BYTE 1 Million times
-	
-	RETURN;
-END_IF
-
-vSizes[0] := SIZEOF(vString1); //Size is 255 characters + zero char
-vSizes[1] := SIZEOF(vString2); //Size is 80 characters + zero char, default if no size specified
-vSizes[2] := SIZEOF(vResult3); //Size is 81, even though we concatenated 1 Million characters. The rest were chopped off
-vSizes[3] := SIZEOF(vResult4); //Size is expected 256, other 744 characters chopped off
-
-//------------CALCULATION A -------------------
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
 vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult1 := vString1;
@@ -1960,8 +2124,49 @@ vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
 vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
 vTest4.Results[vRunsCompleted] := vTest4.ExecTime;
 vTest5.Results[vRunsCompleted] := vTest5.ExecTime;
-vTest6.Results[vRunsCompleted] := vTest6.ExecTime;
-vRunsCompleted := vRunsCompleted + 1;
+vTest6.Results[vRunsCompleted] := vTest6.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>8ab04792-ff24-45f9-8b1e-5e6d8d90039c</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+
+vSizes[0] := SIZEOF(vString1); //Size is 255 characters + zero char
+vSizes[1] := SIZEOF(vString2); //Size is 80 characters + zero char, default if no size specified
+vSizes[2] := SIZEOF(vResult3); //Size is 81, even though we concatenated 1 Million characters. The rest were chopped off
+vSizes[3] := SIZEOF(vResult4); //Size is expected 256, other 744 characters chopped off
+
+vStartTime 	:= LTIME();
+
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc				:= 'Time to copy a string[255] 1 Million times';
+vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
+vTest2.Desc				:= 'Time to copy a string 1 Million times';
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+vTest3.Desc				:= 'Time to concatenate 1 Million times characters with STRING';
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results);
+vTest4.Desc				:= 'Time to concatenate 1 Million times  characters with STRING[255]';
+vTest4.AverageExecTime 	:= calcAvg(vTest4.Results);
+vTest5.Desc				:= 'Time to move a byte 1 Million times';
+vTest5.AverageExecTime 	:= calcAvg(vTest5.Results);
+vTest6.Desc				:= 'Time to copy an array of 255 BYTE 1 Million times';
+vTest6.AverageExecTime 	:= calcAvg(vTest6.Results);
+	
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -1999,7 +2204,25 @@ vRunsCompleted := vRunsCompleted + 1;
               </documentation>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -2017,14 +2240,6 @@ vRunsCompleted := vRunsCompleted + 1;
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -2087,64 +2302,49 @@ vRunsCompleted := vRunsCompleted + 1;
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to run IF vBool = TRUE THEN 1 Million times
-	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to run IF vBool THEN 1 Million times
-	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to increment a counter using if sentence 1 Million times
-	vTest4.AverageExecTime := calcAvg(vTest4.Results); //Time to increment a counter using bool to UINT 1 Million times
-	vTest5.AverageExecTime := calcAvg(vTest5.Results); //Time to cast a bool to UINT 1 Million times
-	
-	RETURN;
-END_IF
-
-//------------CALCULATION A -------------------
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
 vTest1.OldTime := LTIME();
-//FOR i:= 0 TO cRepeatCalcTimes DO
+FOR i:= 0 TO cRepeatCalcTimes DO
 	IF vBool = TRUE THEN
 		vResult := vBool;
 	END_IF
-//END_FOR
+END_FOR
 vTest1.ExecTime := LTIME() - vTest1.OldTime;
 
 //------------CALCULATION B -------------------
 vTest2.OldTime := LTIME();
-//FOR i:= 0 TO cRepeatCalcTimes DO
+FOR i:= 0 TO cRepeatCalcTimes DO
 	IF vBool THEN
 		vResult := vBool;
 	END_IF
-//END_FOR
+END_FOR
 vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
 //------------CALCULATION C -------------------
 vTest3.OldTime := LTIME();
-//FOR i:= 0 TO cRepeatCalcTimes DO
+FOR i:= 0 TO cRepeatCalcTimes DO
 	IF vBool THEN
 		vCounter := vCounter + 1;
 	END_IF
-//END_FOR
+END_FOR
 vTest3.ExecTime := LTIME() - vTest3.OldTime;
 
 //------------CALCULATION D -------------------
 vTest4.OldTime := LTIME();
-//FOR i:= 0 TO cRepeatCalcTimes DO
+FOR i:= 0 TO cRepeatCalcTimes DO
 	vCounter := vCounter + BOOL_TO_UINT(vBool);
-//END_FOR
+END_FOR
 vTest4.ExecTime := LTIME() - vTest4.OldTime;
 
 //------------CALCULATION D -------------------
 vTest5.OldTime := LTIME();
-//FOR i:= 0 TO cRepeatCalcTimes DO
-	;vCastedUint := BOOL_TO_UINT(vBool);
-//END_FOR
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vCastedUint := BOOL_TO_UINT(vBool);
+END_FOR
 vTest5.ExecTime := LTIME() - vTest5.OldTime;
 
 //------------CATCH RESULTS---------------------
@@ -2152,8 +2352,41 @@ vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
 vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
 vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
 vTest4.Results[vRunsCompleted] := vTest4.ExecTime;
-vTest5.Results[vRunsCompleted] := vTest5.ExecTime;
-vRunsCompleted := vRunsCompleted + 1;
+vTest5.Results[vRunsCompleted] := vTest5.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>aab56a0a-5b36-4ad9-bd34-4e2ea44c6832</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+vStartTime 	:= LTIME();
+
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc				:= 'Time to run IF vBool = TRUE THEN 1 Million times';
+vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
+vTest2.Desc				:= 'Time to run IF vBool THEN 1 Million times';
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+vTest3.Desc				:= 'Time to increment a counter using if sentence 1 Million times';
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results);
+vTest4.Desc				:= 'Time to increment a counter using bool to UINT 1 Million times';
+vTest4.AverageExecTime 	:= calcAvg(vTest4.Results);
+vTest5.Desc				:= 'Time to cast a bool to UINT 1 Million times';
+vTest5.AverageExecTime 	:= calcAvg(vTest5.Results);
+	
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -2191,7 +2424,25 @@ vRunsCompleted := vRunsCompleted + 1;
               </documentation>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -2209,14 +2460,6 @@ vRunsCompleted := vRunsCompleted + 1;
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -2306,27 +2549,11 @@ vRunsCompleted := vRunsCompleted + 1;
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to run first branch of IF ELSIF 1 Million times
-	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to run middle branch of IF ELSIF 1 Million times
-	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to run last branch of IF ELSIF 1 Million times
-	vTest4.AverageExecTime := calcAvg(vTest4.Results); //Time to run first branch of CASE 1 Million times
-	vTest5.AverageExecTime := calcAvg(vTest5.Results); //Time to run middle branch of CASE 1 Million times
-	vTest6.AverageExecTime := calcAvg(vTest6.Results); //Time to run last branch of CASE 1 Million times
-	
-	RETURN;
-END_IF
-
-//------------CALCULATION A -------------------
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
 vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResultFirst := returnIndexIfElsif(vFirstIndex);
@@ -2374,9 +2601,43 @@ vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
 vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
 vTest4.Results[vRunsCompleted] := vTest4.ExecTime;
 vTest5.Results[vRunsCompleted] := vTest5.ExecTime;
-vTest6.Results[vRunsCompleted] := vTest6.ExecTime;
+vTest6.Results[vRunsCompleted] := vTest6.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>464e96a6-390f-402c-aa0c-5da13403ea1f</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+vStartTime 	:= LTIME();
 
-vRunsCompleted := vRunsCompleted + 1;
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc				:= 'Time to run first branch of IF ELSIF 1 Million times';
+vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
+vTest2.Desc				:= 'Time to run middle branch of IF ELSIF 1 Million times';
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+vTest3.Desc				:= 'Time to run last branch of IF ELSIF 1 Million times';
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results);
+vTest4.Desc				:= 'Time to run first branch of CASE 1 Million times';
+vTest4.AverageExecTime 	:= calcAvg(vTest4.Results);
+vTest5.Desc				:= 'Time to run middle branch of CASE 1 Million times';
+vTest5.AverageExecTime 	:= calcAvg(vTest5.Results);
+vTest6.Desc				:= 'Time to run last branch of CASE 1 Million times';
+vTest6.AverageExecTime 	:= calcAvg(vTest6.Results);
+	
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -3170,7 +3431,25 @@ END_CASE</xhtml>
               </documentation>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -3188,14 +3467,6 @@ END_CASE</xhtml>
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -3250,24 +3521,11 @@ END_CASE</xhtml>
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to access bit 3 1 Million times in codesys bit struct
-	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to access bit 3 1 Million times in normal integer using . notation
-	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to access bit 3 1 Million times in normal integer using bit masking
-	
-	RETURN;
-END_IF
-
-//------------CALCULATION A -------------------
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
 vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vResult1 := checkBit_bitStruct(vCodesysBits,2);
@@ -3291,9 +3549,37 @@ vTest3.ExecTime := LTIME() - vTest3.OldTime;
 //------------CATCH RESULTS---------------------
 vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
 vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
-vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>e45ffa84-7228-4c2f-81da-6b2a7f93ffb5</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+vStartTime 	:= LTIME();
 
-vRunsCompleted := vRunsCompleted + 1;
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc				:= 'Time to access bit 3 1 Million times in codesys bit struct';
+vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
+vTest2.Desc				:= 'Time to access bit 3 1 Million times in normal integer using . notation';
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+vTest3.Desc				:= 'Time to access bit 3 1 Million times in normal integer using bit masking';
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results);
+	
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -3331,7 +3617,25 @@ vRunsCompleted := vRunsCompleted + 1;
               </documentation>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -3349,14 +3653,6 @@ vRunsCompleted := vRunsCompleted + 1;
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -3425,24 +3721,11 @@ vRunsCompleted := vRunsCompleted + 1;
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to and two bits and save it to another bit 1 Million times using codesys bit struct
-	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to and two bits and save it to another bit 1 Million times using . notation
-	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to and two bits and save it to another bit 1 Million times using bit masking
-	
-	RETURN;
-END_IF
-
-//------------CALCULATION A -------------------
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
 vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	setBitToValue_bitStruct(vCodesysBits, 2, checkBit_bitStruct(vCodesysBits, 0) AND checkBit_bitStruct(vCodesysBits, 1));
@@ -3467,9 +3750,37 @@ vTest3.ExecTime := LTIME() - vTest3.OldTime;
 //------------CATCH RESULTS---------------------
 vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
 vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
-vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>d094627d-fd6c-43dc-b8a3-0d89f6559c41</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+vStartTime 	:= LTIME();
 
-vRunsCompleted := vRunsCompleted + 1;
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc				:= 'Time to and two bits and save it to another bit 1 Million times using codesys bit struct';
+vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
+vTest2.Desc				:= 'Time to and two bits and save it to another bit 1 Million times using . notation';
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+vTest3.Desc				:= 'Time to and two bits and save it to another bit 1 Million times using bit masking';
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results);
+	
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -3507,7 +3818,25 @@ vRunsCompleted := vRunsCompleted + 1;
               </documentation>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -3525,14 +3854,6 @@ vRunsCompleted := vRunsCompleted + 1;
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -3603,24 +3924,11 @@ vRunsCompleted := vRunsCompleted + 1;
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	vTest1.AverageExecTime := calcAvg(vTest1.Results); //Time to set bit 3 1 Million times in codesys bit struct
-	vTest2.AverageExecTime := calcAvg(vTest2.Results); //Time to set bit 3 1 Million times in normal integer using . notation
-	vTest3.AverageExecTime := calcAvg(vTest3.Results); //Time to set bit 3 1 Million times in normal integer using bit masking
-	
-	RETURN;
-END_IF
-
-//------------CALCULATION A -------------------
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
 vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	setBit_bitStruct(vCodesysBits, 2);
@@ -3644,9 +3952,37 @@ vTest3.ExecTime := LTIME() - vTest3.OldTime;
 //------------CATCH RESULTS---------------------
 vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
 vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
-vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>9ff6ba78-d184-45dc-bba4-a57f28868237</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+vStartTime 	:= LTIME();
 
-vRunsCompleted := vRunsCompleted + 1;
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc				:= 'Time to set bit 3, 1 Million times in codesys bit struct';
+vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
+vTest2.Desc				:= 'Time to set bit 3, 1 Million times in normal integer using . notation';
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+vTest3.Desc				:= 'Time to set bit 3, 1 Million times in normal integer using bit masking';
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results);
+	
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -4159,109 +4495,47 @@ END_IF</xhtml>
                 <derived name="LTIME" />
               </type>
             </variable>
-            <variable name="vMIPS">
+            <variable name="vRunAll">
               <type>
-                <REAL />
-              </type>
-            </variable>
-            <variable name="vFLOPS">
-              <type>
-                <REAL />
-              </type>
-            </variable>
-            <variable name="vkFLOPS">
-              <type>
-                <REAL />
-              </type>
-            </variable>
-            <variable name="vMFLOPS">
-              <type>
-                <REAL />
-              </type>
-            </variable>
-            <variable name="vGFLOPS">
-              <type>
-                <REAL />
+                <BOOL />
               </type>
             </variable>
           </localVars>
         </interface>
-        <actions>
-          <action name="calcFlopsMips">
-            <body>
-              <ST>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
-              </ST>
-            </body>
-            <addData>
-              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-                <ObjectId>5cc92120-421b-4895-87cf-4e927f78c7dc</ObjectId>
-              </data>
-            </addData>
-          </action>
-        </actions>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Run tests one by one*)
-x01_ImpactOfDynamicArrays();
-x02_ExecSpeedOfLanguageTypes();
-x03_FloatingPointOperations();
-x04_FunctionOverhead();
-x05_MemSetVsDataZeero();
-x06_ShlVsMemCpy();
-x07_StringOperations();
-x08_CheckingBools();
-x09_CaseVsIfElsif();
-x10_1_BitAccess();
-x10_2_BitSet();
-x10_3_BitMath();
-x11_CalcInForLoppDecl();
-x12_BoolArrayToByteArray();
-x13_ByteArrayToBool32();
-
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Run tests one by one from the visu*)
+(*or press the run all button*)
+(*When run all is pressed, we must re trigger the event loop
+also all these tests must run one by one
+if run cyclically it messes up the total time*)
+IF vRunAll THEN
+	x01_ImpactOfDynamicArrays.vStart 	:= NOT x01_ImpactOfDynamicArrays.vDone;
+	x02_ExecSpeedOfLanguageTypes.vStart := x01_ImpactOfDynamicArrays.vDone 		AND NOT x02_ExecSpeedOfLanguageTypes.vDone;
+	x03_FloatingPointOperations.vStart 	:= x02_ExecSpeedOfLanguageTypes.vDone 	AND NOT x03_FloatingPointOperations.vDone;
+	x04_FunctionOverhead.vStart 		:= x03_FloatingPointOperations.vDone 	AND NOT x04_FunctionOverhead.vDone;
+	x05_MemSetVsDataZeero.vStart 		:= x04_FunctionOverhead.vDone 			AND NOT x05_MemSetVsDataZeero.vDone;
+	x06_ShlVsMemCpy.vStart 				:= x05_MemSetVsDataZeero.vDone 			AND NOT x06_ShlVsMemCpy.vDone;
+	x07_StringOperations.vStart 		:= x06_ShlVsMemCpy.vDone 				AND NOT x07_StringOperations.vDone;
+	x08_CheckingBools.vStart 			:= x07_StringOperations.vDone			AND NOT x08_CheckingBools.vDone;
+	x09_CaseVsIfElsif.vStart 			:= x08_CheckingBools.vDone 				AND NOT x09_CaseVsIfElsif.vDone;
+	x10_1_BitAccess.vStart 				:= x09_CaseVsIfElsif.vDone 				AND NOT x10_1_BitAccess.vDone;
+	x10_2_BitSet.vStart 				:= x10_1_BitAccess.vDone 				AND NOT x10_2_BitSet.vDone;
+	x10_3_BitMath.vStart 				:= x10_2_BitSet.vDone 					AND NOT x10_3_BitMath.vDone;
+	x11_CalcInForLoppDecl.vStart 		:= x10_3_BitMath.vDone 					AND NOT x11_CalcInForLoppDecl.vDone;
+	x12_BoolArrayToByteArray.vStart 	:= x11_CalcInForLoppDecl.vDone 			AND NOT x12_BoolArrayToByteArray.vDone;
+	x13_ByteArrayToBool32.vStart 		:= x12_BoolArrayToByteArray.vDone 		AND NOT x13_ByteArrayToBool32.vDone;
+END_IF
 
 vTimeToRunTests :=  x01_ImpactOfDynamicArrays.vTotalTime + x02_ExecSpeedOfLanguageTypes.vTotalTime
-				+ x03_FloatingPointOperations.vTotalTime + x04_FunctionOverhead.vTotalTime
-				+ x05_MemSetVsDataZeero.vTotalTime + x06_ShlVsMemCpy.vTotalTime
-				+ x07_StringOperations.vTotalTime + x08_CheckingBools.vTotalTime
-				+ x09_CaseVsIfElsif.vTotalTime + x10_1_BitAccess.vTotalTime
-				+ x10_2_BitSet.vTotalTime + x10_3_BitMath.vTotalTime + x11_CalcInForLoppDecl.vTotalTime
-				+ x12_BoolArrayToByteArray.vTotalTime + x13_ByteArrayToBool32.vTotalTime;
-				
-(*If done running other tests, calculate MIPS and FLOPS of this machine
-	PS: These calcs are not 100% accurate but more to compare machine to machine*)
-(*
-System spec:
-- OS Name	Microsoft Windows 10 Home	
-- Version	10.0.19044 Build 19044	
-- OS Manufacturer	Microsoft Corporation	
-- System Manufacturer	SAMSUNG ELECTRONICS CO., LTD.	
-- System Model	3570R/370R/470R/450R/510R/4450RV	
-- System Type	x64-based PC	
-- Processor	Intel(R) Core(TM) i5-3210M CPU @ 2.50GHz, 2501 Mhz, 2 Core(s), 4 Logical Processor(s)	
-- Installed Physical Memory (RAM)	8,00 GB	
-- Total Physical Memory	7,89 GB	
-- Available Physical Memory	3,80 GB	
-- Total Virtual Memory	9,75 GB	
-- Available Virtual Memory	5,66 GB	
+					+ x03_FloatingPointOperations.vTotalTime + x04_FunctionOverhead.vTotalTime
+					+ x05_MemSetVsDataZeero.vTotalTime + x06_ShlVsMemCpy.vTotalTime
+					+ x07_StringOperations.vTotalTime + x08_CheckingBools.vTotalTime
+					+ x09_CaseVsIfElsif.vTotalTime + x10_1_BitAccess.vTotalTime
+					+ x10_2_BitSet.vTotalTime + x10_3_BitMath.vTotalTime + x11_CalcInForLoppDecl.vTotalTime
+					+ x12_BoolArrayToByteArray.vTotalTime + x13_ByteArrayToBool32.vTotalTime;
+					
 
-MIPS 	-&gt; 407
-FLOPS 	-&gt; 3.32e+08
-kFLOPS 	-&gt; 3.32e+05
-MFLOPS 	-&gt; 332
-GFLOPS 	-&gt; 0.332
-*)
-IF vTimeToRunTests &lt;&gt; LTIME#0S THEN
-	IF vMIPS &gt; 0 OR vFLOPS &gt; 0 THEN
-		RETURN;
-	ELSE
-		vMIPS 	:= calcMIPS();
-		vFLOPS	:= calcFLOPS();
-		vkFLOPS := vFLOPS / 1000.0;
-		vMFLOPS := vFLOPS / 1000000.0;
-		vGFLOPS := vFLOPS / (1000.0 * 1000000.0);
-	END_IF
-END_IF
 </xhtml>
           </ST>
         </body>
@@ -4391,14 +4665,32 @@ calcFLOPS := vTestReal *  (1000000000.0 / LTIME_TO_REAL(vFLOPSExecTime));</xhtml
                 <UDINT />
               </type>
               <initialValue>
-                <simpleValue value="1000000" />
+                <simpleValue value="10000" />
               </initialValue>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">1 Million times</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">10 thousand times</xhtml>
               </documentation>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -4416,14 +4708,6 @@ calcFLOPS := vTestReal *  (1000000000.0 / LTIME_TO_REAL(vFLOPSExecTime));</xhtml
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -4473,26 +4757,11 @@ calcFLOPS := vTestReal *  (1000000000.0 / LTIME_TO_REAL(vFLOPSExecTime));</xhtml
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	//Time to iterate over bytes of a string[100] using known size, milion times
-	vTest1.AverageExecTime := calcAvg(vTest1.Results);
-	//Time to iterate over bytes of a string[100] using calculation in declaration, milion times
-	vTest2.AverageExecTime := calcAvg(vTest2.Results);
-	//Time to iterate over bytes of a string[100] using calculation outside of the declaration, milion times
-	vTest3.AverageExecTime := calcAvg(vTest3.Results);
-	RETURN;
-END_IF
-
-//------------CALCULATION A -------------------
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
 vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	FOR j:= 0 TO 108 DO
@@ -4523,9 +4792,37 @@ vTest3.ExecTime := LTIME() - vTest3.OldTime;
 //------------CATCH RESULTS---------------------
 vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
 vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
-vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>c2344213-3d0a-494f-b6da-f0287613fd3e</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+vStartTime 	:= LTIME();
 
-vRunsCompleted := vRunsCompleted + 1;
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc 			:= 'Time to iterate over bytes of a string[108] using known size, 10 thousand times';
+vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
+vTest2.Desc 			:= 'Time to iterate over bytes of a string[108] using calculation in declaration, 10 thousand times';
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+vTest3.Desc 			:= 'Time to iterate over bytes of a STRING[108] using calculation outside OF the declaration, 10 thousand times';
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results);
+	
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -4563,7 +4860,25 @@ vRunsCompleted := vRunsCompleted + 1;
               </documentation>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -4581,14 +4896,6 @@ vRunsCompleted := vRunsCompleted + 1;
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -4720,35 +5027,11 @@ vRunsCompleted := vRunsCompleted + 1;
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	//Measurement done on 1 milion packs
-	//Time to pack bool array to 4 bytes, function
-	vTest1.AverageExecTime := calcAvg(vTest1.Results);
-	//Time to pack bool array to 4 bytes, flat
-	vTest2.AverageExecTime := calcAvg(vTest2.Results);
-	//Time to pack bool array to 4 bytes, bitmask
-	vTest3.AverageExecTime := calcAvg(vTest3.Results);
-	//Time to pack bool array to 4 bytes, bitmask function
-	vTest4.AverageExecTime := calcAvg(vTest4.Results);
-	//Time to pack bool array to 4 bytes, bitmask function in a loop
-	vTest5.AverageExecTime := calcAvg(vTest5.Results);
-	//Time to pack bool array to 4 bytes, clear + bitmask
-	vTest6.AverageExecTime := calcAvg(vTest6.Results);
-	//Time to pack bool array to 4 bytes, clear + bitmask, function
-	vTest7.AverageExecTime := calcAvg(vTest7.Results);
-	RETURN;
-END_IF
-
-//------------CALCULATION A -------------------
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
 vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vBytes1 := BOOLARR_TO_BYTES(vBoolArr);
@@ -4926,9 +5209,45 @@ vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
 vTest4.Results[vRunsCompleted] := vTest4.ExecTime;
 vTest5.Results[vRunsCompleted] := vTest5.ExecTime;
 vTest6.Results[vRunsCompleted] := vTest6.ExecTime;
-vTest7.Results[vRunsCompleted] := vTest7.ExecTime;
+vTest7.Results[vRunsCompleted] := vTest7.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>52f1730e-51c2-40cb-b751-f2b5ace875fe</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+vStartTime 	:= LTIME();
 
-vRunsCompleted := vRunsCompleted + 1;
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc 			:= 'Time to pack bool array to 4 bytes, function, milion times';
+vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
+vTest2.Desc 			:= 'Time to pack bool array to 4 bytes, flat, milion times';
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+vTest3.Desc 			:= 'Time TO pack bool array to 4 bytes, bitmask, milion times';
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results);
+vTest4.Desc 			:= 'Time to pack bool array to 4 bytes, bitmask function, milion times';
+vTest4.AverageExecTime 	:= calcAvg(vTest4.Results);
+vTest5.Desc 			:= 'Time TO pack bool array to 4 bytes, bitmask function in a loop, milion times';
+vTest5.AverageExecTime 	:= calcAvg(vTest5.Results);
+vTest6.Desc 			:= 'Time to pack bool array to 4 bytes, clear + bitmask, milion times';
+vTest6.AverageExecTime 	:= calcAvg(vTest6.Results);
+vTest7.Desc 			:= 'Time TO pack bool array to 4 bytes, clear + bitmask, function, milion times';
+vTest7.AverageExecTime 	:= calcAvg(vTest7.Results);
+	
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -5102,7 +5421,25 @@ BOOLARR_TO_BYTES2[4] := BOOLARR_TO_BYTES2[4] OR SHL(BOOL_TO_USINT(Data[32]),7);<
               </documentation>
             </variable>
           </localVars>
+          <inputVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
+          </inputVars>
           <localVars>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE" />
+              </initialValue>
+            </variable>
             <variable name="vRunsCompleted">
               <type>
                 <USINT />
@@ -5120,14 +5457,6 @@ BOOLARR_TO_BYTES2[4] := BOOLARR_TO_BYTES2[4] OR SHL(BOOL_TO_USINT(Data[32]),7);<
               <type>
                 <derived name="LTIME" />
               </type>
-            </variable>
-            <variable name="vStart">
-              <type>
-                <BOOL />
-              </type>
-              <initialValue>
-                <simpleValue value="TRUE" />
-              </initialValue>
             </variable>
             <variable name="vTest1">
               <type>
@@ -5230,29 +5559,11 @@ BOOLARR_TO_BYTES2[4] := BOOLARR_TO_BYTES2[4] OR SHL(BOOL_TO_USINT(Data[32]),7);<
             </variable>
           </localVars>
         </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF vStart THEN
-	vStartTime := LTIME();
-	vStart := FALSE;
-END_IF
-IF vRunsCompleted &gt; cNrRuns THEN
-	IF vTotalTime = LTIME#0S THEN
-		vTotalTime := LTIME() - vStartTime;
-	END_IF
-	//Measurement done on 1 milion unpacks
-	//Time to upack 4 bytes to bool array, function
-	vTest1.AverageExecTime := calcAvg(vTest1.Results);
-	//Time to upack 4 bytes to bool array, flat
-	vTest2.AverageExecTime := calcAvg(vTest2.Results);
-	//Time to upack 4 bytes to bool array, bitmask function
-	vTest3.AverageExecTime := calcAvg(vTest3.Results);
-	//Time to upack 4 bytes to bool array, bitmask
-	vTest4.AverageExecTime := calcAvg(vTest4.Results);
-	RETURN;
-END_IF
-
-//------------CALCULATION A -------------------
+        <actions>
+          <action name="Measure">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
 vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
 	vBoolArr1 := UnpackBytesToBool32(vBytes);
@@ -5353,9 +5664,39 @@ vTest4.ExecTime := LTIME() - vTest4.OldTime;
 vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
 vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
 vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
-vTest4.Results[vRunsCompleted] := vTest4.ExecTime;
+vTest4.Results[vRunsCompleted] := vTest4.ExecTime;</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>3bb16b62-a7d2-4e80-a5f5-d17bef7f2b0e</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Runs once on event's rising edge*)
+vDone 		:= FALSE;
+vStartTime 	:= LTIME();
 
-vRunsCompleted := vRunsCompleted + 1;
+FOR vRunsCompleted:=0 TO cNrRuns DO
+	Measure();
+END_FOR
+
+vTotalTime := LTIME() - vStartTime;
+
+vTest1.Desc 			:= 'Time to upack 4 bytes to bool array, function, milion times';
+vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
+vTest2.Desc 			:= 'Time to upack 4 bytes to bool array, flat, milion times, milion times';
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+vTest3.Desc 			:= 'Time to upack 4 bytes to bool array, bitmask function, milion times, milion times';
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results);
+vTest4.Desc 			:= 'Time to upack 4 bytes to bool array, bitmask, milion times, milion times';
+vTest4.AverageExecTime 	:= calcAvg(vTest4.Results);
+
+vDone := TRUE;
+vStart:= FALSE;
 </xhtml>
           </ST>
         </body>
@@ -5503,13 +5844,137 @@ UnpackBytesToBool32_2[32] := (Bytes[4] AND 128) &lt;&gt; 0;
           </data>
         </addData>
       </pou>
+      <pou name="x00_CalcMIPS_FLOPS" pouType="program">
+        <interface>
+          <localVars>
+            <variable name="vStart">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="vDone">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="vMIPS">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="vFLOPS">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="vkFLOPS">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="vMFLOPS">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="vGFLOPS">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">vDone := FALSE;
+(*Calculate MIPS and FLOPS of this machine
+	PS: These calcs are not 100% accurate but more to compare machine to machine*)
+(*
+	System spec:
+	- OS Name	Microsoft Windows 10 Home	
+	- Version	10.0.19044 Build 19044	
+	- OS Manufacturer	Microsoft Corporation	
+	- System Manufacturer	SAMSUNG ELECTRONICS CO., LTD.	
+	- System Model	3570R/370R/470R/450R/510R/4450RV	
+	- System Type	x64-based PC	
+	- Processor	Intel(R) Core(TM) i5-3210M CPU @ 2.50GHz, 2501 Mhz, 2 Core(s), 4 Logical Processor(s)	
+	- Installed Physical Memory (RAM)	8,00 GB	
+	- Total Physical Memory	7,89 GB	
+	- Available Physical Memory	3,80 GB	
+	- Total Virtual Memory	9,75 GB	
+	- Available Virtual Memory	5,66 GB	
+	
+	MIPS 	-&gt; 407
+	FLOPS 	-&gt; 3.32e+08
+	kFLOPS 	-&gt; 3.32e+05
+	MFLOPS 	-&gt; 332
+	GFLOPS 	-&gt; 0.332
+*)
+vMIPS 	:= calcMIPS();
+vFLOPS	:= calcFLOPS();
+vkFLOPS := vFLOPS / 1000.0;
+vMFLOPS := vFLOPS / 1000000.0;
+vGFLOPS := vFLOPS / (1000.0 * 1000000.0);
+
+vDone := TRUE;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>c49218d9-bfaa-4efe-9d56-b5df197b1a3b</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="calcAvgFixed" pouType="function">
+        <interface>
+          <returnType>
+            <derived name="LTIME" />
+          </returnType>
+          <inOutVars>
+            <variable name="Results">
+              <type>
+                <array>
+                  <dimension lower="0" upper="9" />
+                  <baseType>
+                    <derived name="LTIME" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+          </inOutVars>
+          <localVars>
+            <variable name="i">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">FOR i:=0 TO 9 DO
+	IF Results[i] = LTIME#0S THEN
+		EXIT;
+	END_IF
+	calcAvgFixed := calcAvgFixed + Results[i];
+END_FOR
+calcAvgFixed := calcAvgFixed / MAX(1,i);
+RETURN;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>a46ac05d-7c39-4a72-b333-457576105ddf</ObjectId>
+          </data>
+        </addData>
+      </pou>
     </pous>
   </types>
   <instances>
     <configurations>
       <configuration name="CODESYS_Control_Win_V3_x64">
         <resource name="Application">
-          <task name="Task" interval="PT0.2S" priority="1">
+          <task name="SpdRnnr" interval="PT0.2S" priority="16">
             <pouInstance name="speedRunner" typeName="">
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml" />
@@ -5526,7 +5991,7 @@ UnpackBytesToBool32_2[32] := (Bytes[4] AND 128) &lt;&gt; 0;
               </data>
             </addData>
           </task>
-          <task name="VISU_TASK" interval="PT0.1S" priority="31">
+          <task name="VISU_TASK" interval="PT0.2S" priority="31">
             <pouInstance name="VisuElems.Visu_Prg" typeName="">
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml" />
@@ -5534,12 +5999,284 @@ UnpackBytesToBool32_2[32] := (Bytes[4] AND 128) &lt;&gt; 0;
             </pouInstance>
             <addData>
               <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
-                <TaskSettings KindOfTask="Cyclic" Interval="100" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                <TaskSettings KindOfTask="Cyclic" Interval="200" IntervalUnit="ms" WithinSPSTimeSlicing="true">
                   <Watchdog Enabled="false" TimeUnit="ms" />
                 </TaskSettings>
               </data>
               <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
                 <ObjectId>80ce9d12-d3fa-4a2c-9e8f-7949dca4019a</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x01" single="x01_ImpactOfDynamicArrays.vStart" priority="1">
+            <pouInstance name="x01_ImpactOfDynamicArrays" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x01_ImpactOfDynamicArrays.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>997d4ea4-d037-4761-8e72-a1459a6cc9ee</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x02" single="x02_ExecSpeedOfLanguageTypes.vStart" priority="1">
+            <pouInstance name="x02_ExecSpeedOfLanguageTypes" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x02_ExecSpeedOfLanguageTypes.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>98b521f2-6844-4201-9f35-19b3a80f84fd</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x04" single="x04_FunctionOverhead.vStart" priority="1">
+            <pouInstance name="x04_FunctionOverhead" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x04_FunctionOverhead.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>1057b811-4448-402c-aaf8-7ab4e747d974</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x05" single="x05_MemSetVsDataZeero.vStart" priority="1">
+            <pouInstance name="x05_MemSetVsDataZeero" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x05_MemSetVsDataZeero.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>855f68d4-5402-4cf3-978e-5d9904afbb66</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x06" single="x06_ShlVsMemCpy.vStart" priority="1">
+            <pouInstance name="x06_ShlVsMemCpy" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x06_ShlVsMemCpy.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>ddc7248c-dd68-4c25-bf70-0678d6067836</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x07" single="x07_StringOperations.vStart" priority="1">
+            <pouInstance name="x07_StringOperations" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x07_StringOperations.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>59e326d3-8acb-481f-a4ff-4634aa63bbfc</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x08" single="x08_CheckingBools.vStart" priority="1">
+            <pouInstance name="x08_CheckingBools" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x08_CheckingBools.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>30f5c258-34d3-4159-90b1-ee1a3a1ba5e1</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x09" single="x09_CaseVsIfElsif.vStart" priority="1">
+            <pouInstance name="x09_CaseVsIfElsif" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x09_CaseVsIfElsif.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>f2e27f03-48a8-4461-b629-8b56dbbe44ae</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x10_1" single="x10_1_BitAccess.vStart" priority="1">
+            <pouInstance name="x10_1_BitAccess" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x10_1_BitAccess.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>02c028c3-3a12-4fb6-8a62-c0c556294c87</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x11" single="x11_CalcInForLoppDecl.vStart" priority="1">
+            <pouInstance name="x11_CalcInForLoppDecl" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x11_CalcInForLoppDecl.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>de137938-48f5-4ea4-a519-5afabd7a6531</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x03" single="x03_FloatingPointOperations.vStart" priority="1">
+            <pouInstance name="x03_FloatingPointOperations" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x03_FloatingPointOperations.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>5ff92bf5-274a-410c-a7a9-f72b118a853d</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x12" single="x12_BoolArrayToByteArray.vStart" priority="1">
+            <pouInstance name="x12_BoolArrayToByteArray" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x12_BoolArrayToByteArray.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>e50d90a9-58ed-4afe-9557-a7932f6fb92e</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x13" single="x13_ByteArrayToBool32.vStart" priority="1">
+            <pouInstance name="x13_ByteArrayToBool32" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x13_ByteArrayToBool32.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>a2a9fad0-3b27-4ae8-a1fe-650a949235e0</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x10_2" single="x10_2_BitSet.vStart" priority="1">
+            <pouInstance name="x10_2_BitSet" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x10_2_BitSet.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>f702bc47-368b-4739-90f8-919d419d832a</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x10_3" single="x10_3_BitMath.vStart" priority="1">
+            <pouInstance name="x10_3_BitMath" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x10_3_BitMath.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>cc3dd8e2-1d7a-4403-9411-f0fce93566f1</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x00" single="x00_CalcMIPS_FLOPS.vStart" priority="1">
+            <pouInstance name="x00_CalcMIPS_FLOPS" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="t#20ms" IntervalUnit="ms" Event="x00_CalcMIPS_FLOPS.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>00096b11-5ad3-43b3-b997-0b85a0532632</ObjectId>
               </data>
             </addData>
           </task>
@@ -5619,7 +6356,7 @@ UnpackBytesToBool32_2[32] := (Bytes[4] AND 128) &lt;&gt; 0;
       </configuration>
       <configuration name="CODESYS_Control_RTE_V3_x64">
         <resource name="Application">
-          <task name="Task" interval="PT0.2S" priority="1">
+          <task name="SpdRnnr" interval="PT0.2S" priority="16">
             <pouInstance name="speedRunner" typeName="">
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml" />
@@ -5632,11 +6369,11 @@ UnpackBytesToBool32_2[32] := (Bytes[4] AND 128) &lt;&gt; 0;
                 </TaskSettings>
               </data>
               <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-                <ObjectId>7bef0129-d2f5-4ad2-836a-24db0908f824</ObjectId>
+                <ObjectId>bffd86d5-f7f6-45b6-b1e2-b8a4bd04fcb5</ObjectId>
               </data>
             </addData>
           </task>
-          <task name="VISU_TASK" interval="PT0.1S" priority="31">
+          <task name="VISU_TASK" interval="PT0.2S" priority="31">
             <pouInstance name="VisuElems.Visu_Prg" typeName="">
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml" />
@@ -5644,12 +6381,284 @@ UnpackBytesToBool32_2[32] := (Bytes[4] AND 128) &lt;&gt; 0;
             </pouInstance>
             <addData>
               <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
-                <TaskSettings KindOfTask="Cyclic" Interval="100" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                <TaskSettings KindOfTask="Cyclic" Interval="200" IntervalUnit="ms" WithinSPSTimeSlicing="true">
                   <Watchdog Enabled="false" TimeUnit="ms" />
                 </TaskSettings>
               </data>
               <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-                <ObjectId>8a1906e0-0313-4fe2-937c-29f0bb7b12c1</ObjectId>
+                <ObjectId>0a985513-bde5-42f9-949f-b2695f84404b</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x01" single="x01_ImpactOfDynamicArrays.vStart" priority="1">
+            <pouInstance name="x01_ImpactOfDynamicArrays" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x01_ImpactOfDynamicArrays.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>624514e7-846d-4395-b0c9-cc8d643e4e7e</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x02" single="x02_ExecSpeedOfLanguageTypes.vStart" priority="1">
+            <pouInstance name="x02_ExecSpeedOfLanguageTypes" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x02_ExecSpeedOfLanguageTypes.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>5c43b717-d45d-46d0-9d7c-fe9b7781c205</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x04" single="x04_FunctionOverhead.vStart" priority="1">
+            <pouInstance name="x04_FunctionOverhead" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x04_FunctionOverhead.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>37f779ef-f9f4-4f8e-aa8f-2087bd9f1c83</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x05" single="x05_MemSetVsDataZeero.vStart" priority="1">
+            <pouInstance name="x05_MemSetVsDataZeero" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x05_MemSetVsDataZeero.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>e9539de3-8dad-4da7-bc06-773e6a8a249e</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x06" single="x06_ShlVsMemCpy.vStart" priority="1">
+            <pouInstance name="x06_ShlVsMemCpy" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x06_ShlVsMemCpy.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>9048ce15-c376-4ddd-af95-219f10c1fa36</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x07" single="x07_StringOperations.vStart" priority="1">
+            <pouInstance name="x07_StringOperations" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x07_StringOperations.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>d0ce08e0-f215-4412-a152-95c78bf403c8</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x08" single="x08_CheckingBools.vStart" priority="1">
+            <pouInstance name="x08_CheckingBools" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x08_CheckingBools.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>f39d1bd0-ed6d-4ead-94cd-837863ae9f63</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x09" single="x09_CaseVsIfElsif.vStart" priority="1">
+            <pouInstance name="x09_CaseVsIfElsif" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x09_CaseVsIfElsif.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>01f0d965-9640-4229-91ed-e5b76d977101</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x10_1" single="x10_1_BitAccess.vStart" priority="1">
+            <pouInstance name="x10_1_BitAccess" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x10_1_BitAccess.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>d43a3d5c-e4fc-4ceb-a2de-a1d3a1c18543</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x11" single="x11_CalcInForLoppDecl.vStart" priority="1">
+            <pouInstance name="x11_CalcInForLoppDecl" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x11_CalcInForLoppDecl.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>e24bea1d-d16c-461f-862f-2ddff6852951</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x03" single="x03_FloatingPointOperations.vStart" priority="1">
+            <pouInstance name="x03_FloatingPointOperations" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x03_FloatingPointOperations.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>b617d5fc-09c8-4ada-b38f-a4d466956dd0</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x12" single="x12_BoolArrayToByteArray.vStart" priority="1">
+            <pouInstance name="x12_BoolArrayToByteArray" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x12_BoolArrayToByteArray.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>1cf14ab6-6b0c-4260-af74-a1f6d07e15ba</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x13" single="x13_ByteArrayToBool32.vStart" priority="1">
+            <pouInstance name="x13_ByteArrayToBool32" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x13_ByteArrayToBool32.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>d97f8462-dc15-49d5-a1ad-a62c5009be6f</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x10_2" single="x10_2_BitSet.vStart" priority="1">
+            <pouInstance name="x10_2_BitSet" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x10_2_BitSet.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>3d2cca12-07fa-4f41-a972-3f46c5bafaf4</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x10_3" single="x10_3_BitMath.vStart" priority="1">
+            <pouInstance name="x10_3_BitMath" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x10_3_BitMath.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>0458cfee-014c-44a1-8231-ad30ebde6b4d</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x00" single="x00_CalcMIPS_FLOPS.vStart" priority="1">
+            <pouInstance name="x00_CalcMIPS_FLOPS" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="t#20ms" IntervalUnit="ms" Event="x00_CalcMIPS_FLOPS.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>590ef554-99b8-488e-b16a-5d9680197512</ObjectId>
               </data>
             </addData>
           </task>
@@ -5777,62 +6786,97 @@ UnpackBytesToBool32_2[32] := (Bytes[4] AND 128) &lt;&gt; 0;
         <Object Name="CODESYS_Control_Win_V3_x64" ObjectId="26264239-25d9-42f6-bfbc-405ae47d66cf">
           <Object Name="Application" ObjectId="9b73d673-0d3d-4761-a178-a18fbf2ba16b">
             <Object Name="Library Manager" ObjectId="2c026f2c-4f21-4d50-afba-ff7714b58459" />
-            <Object Name="Task" ObjectId="ee0318c6-770b-4de6-8bcd-235016305f87" />
+            <Object Name="SpdRnnr" ObjectId="ee0318c6-770b-4de6-8bcd-235016305f87" />
             <Object Name="VISU_TASK" ObjectId="80ce9d12-d3fa-4a2c-9e8f-7949dca4019a" />
+            <Object Name="x01" ObjectId="997d4ea4-d037-4761-8e72-a1459a6cc9ee" />
+            <Object Name="x02" ObjectId="98b521f2-6844-4201-9f35-19b3a80f84fd" />
+            <Object Name="x04" ObjectId="1057b811-4448-402c-aaf8-7ab4e747d974" />
+            <Object Name="x05" ObjectId="855f68d4-5402-4cf3-978e-5d9904afbb66" />
+            <Object Name="x06" ObjectId="ddc7248c-dd68-4c25-bf70-0678d6067836" />
+            <Object Name="x07" ObjectId="59e326d3-8acb-481f-a4ff-4634aa63bbfc" />
+            <Object Name="x08" ObjectId="30f5c258-34d3-4159-90b1-ee1a3a1ba5e1" />
+            <Object Name="x09" ObjectId="f2e27f03-48a8-4461-b629-8b56dbbe44ae" />
+            <Object Name="x10_1" ObjectId="02c028c3-3a12-4fb6-8a62-c0c556294c87" />
+            <Object Name="x11" ObjectId="de137938-48f5-4ea4-a519-5afabd7a6531" />
+            <Object Name="x03" ObjectId="5ff92bf5-274a-410c-a7a9-f72b118a853d" />
+            <Object Name="x12" ObjectId="e50d90a9-58ed-4afe-9557-a7932f6fb92e" />
+            <Object Name="x13" ObjectId="a2a9fad0-3b27-4ae8-a1fe-650a949235e0" />
+            <Object Name="x10_2" ObjectId="f702bc47-368b-4739-90f8-919d419d832a" />
+            <Object Name="x10_3" ObjectId="cc3dd8e2-1d7a-4403-9411-f0fce93566f1" />
+            <Object Name="x00" ObjectId="00096b11-5ad3-43b3-b997-0b85a0532632" />
           </Object>
         </Object>
         <Object Name="Library Manager" ObjectId="70bdb135-fcf9-4a3b-ac8e-dcd6fe2b15b6" />
         <Folder Name="03 - Floating point operations">
-          <Object Name="x03_FloatingPointOperations" ObjectId="8ed00d68-6d21-479d-9bfa-1cbb591fa9aa" />
+          <Object Name="x03_FloatingPointOperations" ObjectId="8ed00d68-6d21-479d-9bfa-1cbb591fa9aa">
+            <Object Name="Measure" ObjectId="93cbcdca-7780-47a0-9980-34236baa48b9" />
+          </Object>
         </Folder>
         <Folder Name="04 - Function overhead">
           <Object Name="addTwoInts" ObjectId="80915059-aa71-49ba-b84f-ffb0a9f75549" />
           <Object Name="x04_FunctionOverhead" ObjectId="832e84e3-169c-43aa-8871-b0ef2441ec37">
             <Object Name="addTwoNumbers" ObjectId="bec361a3-b449-4cbd-b51d-cb8c313049d9" />
+            <Object Name="Measure" ObjectId="21ab4a41-c502-42e4-bf95-e430fdaa73b7" />
           </Object>
         </Folder>
         <Folder Name="01 - Impact of dynamic arrays">
-          <Object Name="x01_ImpactOfDynamicArrays" ObjectId="c290fb28-c10d-4c88-ae7d-b83b30f2243a" />
+          <Object Name="x01_ImpactOfDynamicArrays" ObjectId="c290fb28-c10d-4c88-ae7d-b83b30f2243a">
+            <Object Name="Measure" ObjectId="c675048f-5aa0-45c3-806e-fa3f7b6ccade" />
+          </Object>
+          <Object Name="calcAvgFixed" ObjectId="a46ac05d-7c39-4a72-b333-457576105ddf" />
         </Folder>
         <Folder Name="06 - SHL over MemCpy">
-          <Object Name="x06_ShlVsMemCpy" ObjectId="b1c49280-5ef1-440e-9136-31fd5aa516dc" />
+          <Object Name="x06_ShlVsMemCpy" ObjectId="b1c49280-5ef1-440e-9136-31fd5aa516dc">
+            <Object Name="Measure" ObjectId="5664cb8f-8799-4292-bf51-fd94078c7af9" />
+          </Object>
         </Folder>
         <Folder Name="TestFramework">
           <Object Name="calcAVG" ObjectId="d361f96d-b405-4f02-94e9-f0734c3f1811" />
           <Object Name="dtSpeedTest" ObjectId="65385f20-c9b3-4afb-b91b-9f5b6a5e2eb7" />
-          <Object Name="speedRunner" ObjectId="45bae081-d3b4-42ae-ac00-ec9afd7d0163">
-            <Object Name="calcFlopsMips" ObjectId="5cc92120-421b-4895-87cf-4e927f78c7dc" />
-          </Object>
-          <Object Name="calcMIPS" ObjectId="62bde692-16ea-41fa-843c-03c01b127ac5" />
-          <Object Name="calcFLOPS" ObjectId="035c77cc-f4dd-431c-b736-ab56a3b26207" />
+          <Object Name="speedRunner" ObjectId="45bae081-d3b4-42ae-ac00-ec9afd7d0163" />
         </Folder>
         <Folder Name="05 - MemSet over Data Zero">
-          <Object Name="x05_MemSetVsDataZeero" ObjectId="b6f25e2b-ec5a-4a35-909a-0f893387acef" />
+          <Object Name="x05_MemSetVsDataZeero" ObjectId="b6f25e2b-ec5a-4a35-909a-0f893387acef">
+            <Object Name="Measure" ObjectId="428e8d6f-6956-4294-8a2f-bf96435e2fa1" />
+          </Object>
           <Object Name="dtTestStruct" ObjectId="974d87b5-4253-4dd8-af42-02d75fec12db" />
         </Folder>
         <Folder Name="02 - Execution speed of PLC languages">
-          <Object Name="x02_ExecSpeedOfLanguageTypes" ObjectId="8b838563-ffa0-4f7f-88df-fdf5ef838e0b" />
+          <Object Name="x02_ExecSpeedOfLanguageTypes" ObjectId="8b838563-ffa0-4f7f-88df-fdf5ef838e0b">
+            <Object Name="Measure" ObjectId="b12f24c4-11bf-462f-bab6-6f9040d1116e" />
+          </Object>
           <Object Name="addTwoIntsLadder" ObjectId="81976c27-bae7-4ac7-b3be-5a289cfec6a1" />
           <Object Name="addTwoIntsST" ObjectId="2b669961-88b5-4e2c-8aa0-fcd5ea1dc9c6" />
           <Object Name="addTwoIntsFBD" ObjectId="ff1bd7ca-f894-4734-8c56-cab7f420d3e0" />
         </Folder>
         <Folder Name="07 - String operations">
-          <Object Name="x07_StringOperations" ObjectId="51d6aac5-a3cf-4c60-a30b-f6b3d35ff875" />
+          <Object Name="x07_StringOperations" ObjectId="51d6aac5-a3cf-4c60-a30b-f6b3d35ff875">
+            <Object Name="Measure" ObjectId="8ab04792-ff24-45f9-8b1e-5e6d8d90039c" />
+          </Object>
         </Folder>
         <Folder Name="08 - Operations with booleans">
-          <Object Name="x08_CheckingBools" ObjectId="ed37ab8c-e858-41dc-a5e4-96d815c1c338" />
+          <Object Name="x08_CheckingBools" ObjectId="ed37ab8c-e858-41dc-a5e4-96d815c1c338">
+            <Object Name="Measure" ObjectId="aab56a0a-5b36-4ad9-bd34-4e2ea44c6832" />
+          </Object>
         </Folder>
         <Folder Name="09 - Case versus IF ELSIF">
           <Object Name="x09_CaseVsIfElsif" ObjectId="0f0586c3-201e-474f-b21b-0093897de039">
             <Object Name="returnIndexIfElsif" ObjectId="eb9df3a9-9018-4dac-98aa-4ff0ea2db28c" />
             <Object Name="returnIndexCase" ObjectId="7b9ab763-7b82-4534-9222-af160d259531" />
+            <Object Name="Measure" ObjectId="464e96a6-390f-402c-aa0c-5da13403ea1f" />
           </Object>
         </Folder>
         <Folder Name="10 - Bit operations">
-          <Object Name="x10_1_BitAccess" ObjectId="55b1e25e-0d71-42e6-8b7f-259c215c353b" />
+          <Object Name="x10_1_BitAccess" ObjectId="55b1e25e-0d71-42e6-8b7f-259c215c353b">
+            <Object Name="Measure" ObjectId="e45ffa84-7228-4c2f-81da-6b2a7f93ffb5" />
+          </Object>
           <Object Name="dtBitStruct" ObjectId="18cca70b-ac98-43f3-8ffb-8a51e2e4f4e7" />
-          <Object Name="x10_3_BitMath" ObjectId="07b9ee7c-3208-404a-96fe-4da4d87dcecd" />
-          <Object Name="x10_2_BitSet" ObjectId="ff2e3e10-a7bd-4ef8-992f-e201ee8b44f5" />
+          <Object Name="x10_3_BitMath" ObjectId="07b9ee7c-3208-404a-96fe-4da4d87dcecd">
+            <Object Name="Measure" ObjectId="d094627d-fd6c-43dc-b8a3-0d89f6559c41" />
+          </Object>
+          <Object Name="x10_2_BitSet" ObjectId="ff2e3e10-a7bd-4ef8-992f-e201ee8b44f5">
+            <Object Name="Measure" ObjectId="9ff6ba78-d184-45dc-bba4-a57f28868237" />
+          </Object>
           <Object Name="checkBit_bitmask" ObjectId="1410a64b-5933-4e93-81df-c546f078612e" />
           <Object Name="setBit_bitmask" ObjectId="08e5ad85-d29d-43b7-84f8-ef01e7d5504b" />
           <Object Name="clearBit_bitmask" ObjectId="a5ac315e-6fee-41fd-9fe0-b5d61f96492b" />
@@ -5849,20 +6893,47 @@ UnpackBytesToBool32_2[32] := (Bytes[4] AND 128) &lt;&gt; 0;
         <Object Name="CODESYS_Control_RTE_V3_x64" ObjectId="bc840afb-a9d6-47f1-b7d8-3629266ececc">
           <Object Name="Application" ObjectId="ac4c5ade-dbfe-4184-babc-18a2fa2912b0">
             <Object Name="Library Manager" ObjectId="7ba61702-9b9d-46af-bab0-2dbc535d117f" />
-            <Object Name="Task" ObjectId="7bef0129-d2f5-4ad2-836a-24db0908f824" />
-            <Object Name="VISU_TASK" ObjectId="8a1906e0-0313-4fe2-937c-29f0bb7b12c1" />
+            <Object Name="SpdRnnr" ObjectId="bffd86d5-f7f6-45b6-b1e2-b8a4bd04fcb5" />
+            <Object Name="VISU_TASK" ObjectId="0a985513-bde5-42f9-949f-b2695f84404b" />
+            <Object Name="x01" ObjectId="624514e7-846d-4395-b0c9-cc8d643e4e7e" />
+            <Object Name="x02" ObjectId="5c43b717-d45d-46d0-9d7c-fe9b7781c205" />
+            <Object Name="x04" ObjectId="37f779ef-f9f4-4f8e-aa8f-2087bd9f1c83" />
+            <Object Name="x05" ObjectId="e9539de3-8dad-4da7-bc06-773e6a8a249e" />
+            <Object Name="x06" ObjectId="9048ce15-c376-4ddd-af95-219f10c1fa36" />
+            <Object Name="x07" ObjectId="d0ce08e0-f215-4412-a152-95c78bf403c8" />
+            <Object Name="x08" ObjectId="f39d1bd0-ed6d-4ead-94cd-837863ae9f63" />
+            <Object Name="x09" ObjectId="01f0d965-9640-4229-91ed-e5b76d977101" />
+            <Object Name="x10_1" ObjectId="d43a3d5c-e4fc-4ceb-a2de-a1d3a1c18543" />
+            <Object Name="x11" ObjectId="e24bea1d-d16c-461f-862f-2ddff6852951" />
+            <Object Name="x03" ObjectId="b617d5fc-09c8-4ada-b38f-a4d466956dd0" />
+            <Object Name="x12" ObjectId="1cf14ab6-6b0c-4260-af74-a1f6d07e15ba" />
+            <Object Name="x13" ObjectId="d97f8462-dc15-49d5-a1ad-a62c5009be6f" />
+            <Object Name="x10_2" ObjectId="3d2cca12-07fa-4f41-a972-3f46c5bafaf4" />
+            <Object Name="x10_3" ObjectId="0458cfee-014c-44a1-8231-ad30ebde6b4d" />
+            <Object Name="x00" ObjectId="590ef554-99b8-488e-b16a-5d9680197512" />
           </Object>
         </Object>
+        <Folder Name="00 - MIPS - FLOPS">
+          <Object Name="x00_CalcMIPS_FLOPS" ObjectId="c49218d9-bfaa-4efe-9d56-b5df197b1a3b" />
+          <Object Name="calcFLOPS" ObjectId="035c77cc-f4dd-431c-b736-ab56a3b26207" />
+          <Object Name="calcMIPS" ObjectId="62bde692-16ea-41fa-843c-03c01b127ac5" />
+        </Folder>
         <Folder Name="11 - Calculation in FOR loop declaration">
-          <Object Name="x11_CalcInForLoppDecl" ObjectId="0d36a265-629d-4737-a080-598f91f7a935" />
+          <Object Name="x11_CalcInForLoppDecl" ObjectId="0d36a265-629d-4737-a080-598f91f7a935">
+            <Object Name="Measure" ObjectId="c2344213-3d0a-494f-b6da-f0287613fd3e" />
+          </Object>
         </Folder>
         <Folder Name="12 - Bool Array to ByteArray">
-          <Object Name="x12_BoolArrayToByteArray" ObjectId="2eab04f9-8124-4db4-ae4b-22d6bb09d6ea" />
+          <Object Name="x12_BoolArrayToByteArray" ObjectId="2eab04f9-8124-4db4-ae4b-22d6bb09d6ea">
+            <Object Name="Measure" ObjectId="52f1730e-51c2-40cb-b751-f2b5ace875fe" />
+          </Object>
           <Object Name="BOOLARR_TO_BYTES" ObjectId="3e0a25b4-756e-4815-81c0-36745d28e14a" />
           <Object Name="BOOLARR_TO_BYTES2" ObjectId="51f99054-eb38-4f39-9943-263b385d74f8" />
         </Folder>
         <Folder Name="13 - Byte array to Boolean32">
-          <Object Name="x13_ByteArrayToBool32" ObjectId="74f165ea-ef07-4399-81f4-5a22d69d1c4c" />
+          <Object Name="x13_ByteArrayToBool32" ObjectId="74f165ea-ef07-4399-81f4-5a22d69d1c4c">
+            <Object Name="Measure" ObjectId="3bb16b62-a7d2-4e80-a5f5-d17bef7f2b0e" />
+          </Object>
           <Object Name="UnpackBytesToBool32" ObjectId="6d3db079-17dd-4cb1-a422-91fc1faa4560" />
           <Object Name="UnpackBytesToBool32_2" ObjectId="00e46ab0-b561-402e-a609-aa635fec6ce7" />
         </Folder>
