@@ -7,88 +7,53 @@
 INTERFACE
     VAR 
         vTimeToRunTests : LTIME;
-        vMIPS : REAL;
-        vFLOPS : REAL;
-        vkFLOPS : REAL;
-        vMFLOPS : REAL;
-        vGFLOPS : REAL;
+        vRunAll : BOOL;
     END_VAR
 END_INTERFACE
 PROGRAM speedRunner:
-    (*Run tests one by one*)
-    x01_ImpactOfDynamicArrays();
-    x02_ExecSpeedOfLanguageTypes();
-    x03_FloatingPointOperations();
-    x04_FunctionOverhead();
-    x05_MemSetVsDataZeero();
-    x06_ShlVsMemCpy();
-    x07_StringOperations();
-    x08_CheckingBools();
-    x09_CaseVsIfElsif();
-    x10_1_BitAccess();
-    x10_2_BitSet();
-    x10_3_BitMath();
-    x11_CalcInForLoppDecl();
-    x12_BoolArrayToByteArray();
-    x13_ByteArrayToBool32();
-
-
-    vTimeToRunTests :=  x01_ImpactOfDynamicArrays.vTotalTime + x02_ExecSpeedOfLanguageTypes.vTotalTime
-    				+ x03_FloatingPointOperations.vTotalTime + x04_FunctionOverhead.vTotalTime
-    				+ x05_MemSetVsDataZeero.vTotalTime + x06_ShlVsMemCpy.vTotalTime
-    				+ x07_StringOperations.vTotalTime + x08_CheckingBools.vTotalTime
-    				+ x09_CaseVsIfElsif.vTotalTime + x10_1_BitAccess.vTotalTime
-    				+ x10_2_BitSet.vTotalTime + x10_3_BitMath.vTotalTime + x11_CalcInForLoppDecl.vTotalTime
-    				+ x12_BoolArrayToByteArray.vTotalTime + x13_ByteArrayToBool32.vTotalTime;
-    				
-    (*If done running other tests, calculate MIPS and FLOPS of this machine
-    	PS: These calcs are not 100% accurate but more to compare machine to machine*)
-    (*
-    System spec:
-    - OS Name	Microsoft Windows 10 Home	
-    - Version	10.0.19044 Build 19044	
-    - OS Manufacturer	Microsoft Corporation	
-    - System Manufacturer	SAMSUNG ELECTRONICS CO., LTD.	
-    - System Model	3570R/370R/470R/450R/510R/4450RV	
-    - System Type	x64-based PC	
-    - Processor	Intel(R) Core(TM) i5-3210M CPU @ 2.50GHz, 2501 Mhz, 2 Core(s), 4 Logical Processor(s)	
-    - Installed Physical Memory (RAM)	8,00 GB	
-    - Total Physical Memory	7,89 GB	
-    - Available Physical Memory	3,80 GB	
-    - Total Virtual Memory	9,75 GB	
-    - Available Virtual Memory	5,66 GB	
-
-    MIPS 	-> 407
-    FLOPS 	-> 3.32e+08
-    kFLOPS 	-> 3.32e+05
-    MFLOPS 	-> 332
-    GFLOPS 	-> 0.332
-    *)
-    IF vTimeToRunTests <> LTIME#0S THEN
-    	IF vMIPS > 0 OR vFLOPS > 0 THEN
-    		RETURN;
-    	ELSE
-    		vMIPS 	:= calcMIPS();
-    		vFLOPS	:= calcFLOPS();
-    		vkFLOPS := vFLOPS / 1000.0;
-    		vMFLOPS := vFLOPS / 1000000.0;
-    		vGFLOPS := vFLOPS / (1000.0 * 1000000.0);
-    	END_IF
+    (*Run tests one by one from the visu*)
+    (*or press the run all button*)
+    (*When run all is pressed, we must re trigger the event loop
+    also all these tests must run one by one
+    if run cyclically it messes up the total time*)
+    IF vRunAll THEN
+    	x01_ImpactOfDynamicArrays.vStart 	:= NOT x01_ImpactOfDynamicArrays.vDone;
+    	x02_ExecSpeedOfLanguageTypes.vStart := x01_ImpactOfDynamicArrays.vDone 		AND NOT x02_ExecSpeedOfLanguageTypes.vDone;
+    	x03_FloatingPointOperations.vStart 	:= x02_ExecSpeedOfLanguageTypes.vDone 	AND NOT x03_FloatingPointOperations.vDone;
+    	x04_FunctionOverhead.vStart 		:= x03_FloatingPointOperations.vDone 	AND NOT x04_FunctionOverhead.vDone;
+    	x05_MemSetVsDataZeero.vStart 		:= x04_FunctionOverhead.vDone 			AND NOT x05_MemSetVsDataZeero.vDone;
+    	x06_ShlVsMemCpy.vStart 				:= x05_MemSetVsDataZeero.vDone 			AND NOT x06_ShlVsMemCpy.vDone;
+    	x07_StringOperations.vStart 		:= x06_ShlVsMemCpy.vDone 				AND NOT x07_StringOperations.vDone;
+    	x08_CheckingBools.vStart 			:= x07_StringOperations.vDone			AND NOT x08_CheckingBools.vDone;
+    	x09_CaseVsIfElsif.vStart 			:= x08_CheckingBools.vDone 				AND NOT x09_CaseVsIfElsif.vDone;
+    	x10_1_BitAccess.vStart 				:= x09_CaseVsIfElsif.vDone 				AND NOT x10_1_BitAccess.vDone;
+    	x10_2_BitSet.vStart 				:= x10_1_BitAccess.vDone 				AND NOT x10_2_BitSet.vDone;
+    	x10_3_BitMath.vStart 				:= x10_2_BitSet.vDone 					AND NOT x10_3_BitMath.vDone;
+    	x11_CalcInForLoppDecl.vStart 		:= x10_3_BitMath.vDone 					AND NOT x11_CalcInForLoppDecl.vDone;
+    	x12_BoolArrayToByteArray.vStart 	:= x11_CalcInForLoppDecl.vDone 			AND NOT x12_BoolArrayToByteArray.vDone;
+    	x13_ByteArrayToBool32.vStart 		:= x12_BoolArrayToByteArray.vDone 		AND NOT x13_ByteArrayToBool32.vDone;
     END_IF
 
+    vTimeToRunTests :=  x01_ImpactOfDynamicArrays.vTotalTime + x02_ExecSpeedOfLanguageTypes.vTotalTime
+    					+ x03_FloatingPointOperations.vTotalTime + x04_FunctionOverhead.vTotalTime
+    					+ x05_MemSetVsDataZeero.vTotalTime + x06_ShlVsMemCpy.vTotalTime
+    					+ x07_StringOperations.vTotalTime + x08_CheckingBools.vTotalTime
+    					+ x09_CaseVsIfElsif.vTotalTime + x10_1_BitAccess.vTotalTime
+    					+ x10_2_BitSet.vTotalTime + x10_3_BitMath.vTotalTime + x11_CalcInForLoppDecl.vTotalTime
+    					+ x12_BoolArrayToByteArray.vTotalTime + x13_ByteArrayToBool32.vTotalTime;
+    					
+
+
 END_PROGRAM
-ACTION calcFlopsMips:
-    
-END_ACTION
 ```
 
 ## Metrics  
 
-- VAR : 6
+- VAR : 2
 
 | Actions | Methods | Lines of code | Lines of comments | Lines in total | Maintainable size |
 | ------- | ------- | ------------- | ----------------- | -------------- | ----------------- |
-| 1 | 0 | 33 |24 |60 | 39 |
+| 0 | 0 | 24 |5 |32 | 26 |
 
 ---
 Autogenerated with [ia_tools](https://github.com/tkucic/ia_tools)  
