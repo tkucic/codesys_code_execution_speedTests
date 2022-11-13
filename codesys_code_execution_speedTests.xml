@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 2" creationDateTime="2022-10-22T22:24:10.0097893" />
-  <contentHeader name="Codesys Code Execution Speed Tests" version="1.0" modificationDateTime="2022-10-22T22:23:56.6780329" organization="TK Automation" author="Toni Kucic">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 2" creationDateTime="2022-11-13T22:10:39.9455479" />
+  <contentHeader name="Codesys Code Execution Speed Tests" version="1.0" modificationDateTime="2022-11-13T22:10:25.2848728" organization="TK Automation" author="Toni Kucic">
     <Comment>A collection of programs that measure various execution speeds of code.</Comment>
     <coordinateInfo>
       <fbd>
@@ -1529,6 +1529,11 @@ vStart:= FALSE;
                 <derived name="dtSpeedTest" />
               </type>
             </variable>
+            <variable name="vTest4">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
             <variable name="i">
               <type>
                 <UDINT />
@@ -1568,6 +1573,11 @@ vStart:= FALSE;
                 <INT />
               </type>
             </variable>
+            <variable name="vResult4">
+              <type>
+                <INT />
+              </type>
+            </variable>
           </localVars>
         </interface>
         <actions>
@@ -1595,10 +1605,18 @@ FOR i:= 0 TO cRepeatCalcTimes DO
 END_FOR
 vTest3.ExecTime := LTIME() - vTest3.OldTime;
 
+//------------CALCULATION D -------------------
+vTest4.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult4 := addTwoIntsCFC(vInt1, vInt2);
+END_FOR
+vTest4.ExecTime := LTIME() - vTest4.OldTime;
+
 //------------CATCH RESULTS---------------------
 vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
 vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
-vTest3.Results[vRunsCompleted] := vTest3.ExecTime;</xhtml>
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+vTest4.Results[vRunsCompleted] := vTest4.ExecTime;</xhtml>
               </ST>
             </body>
             <addData>
@@ -1623,9 +1641,11 @@ vTotalTime := LTIME() - vStartTime;
 vTest1.Desc				:= 'Time function completed in LADDER, 1 milion times';
 vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
 vTest2.Desc				:= 'Time function completed in ST, 1 milion times';
-vTest2.AverageExecTime 	:= calcAvg(vTest2.Results); //User function ST
+vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
 vTest3.Desc				:= 'Time function completed in FBD, 1 milion times';
-vTest3.AverageExecTime 	:= calcAvg(vTest3.Results); //User function FBD
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results);
+vTest4.Desc				:= 'Time function completed in CFC, 1 milion times';
+vTest4.AverageExecTime 	:= calcAvg(vTest3.Results);
 
 vDone := TRUE;
 vStart:= FALSE;
@@ -4781,8 +4801,8 @@ vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
 //------------CALCULATION C -------------------
 vTest3.OldTime := LTIME();
-vLenOfString := LEN(vLongString);
 FOR i:= 0 TO cRepeatCalcTimes DO
+	vLenOfString := LEN(vLongString);
 	FOR j:= 0 TO vLenOfString DO
 		vResult := vLongString[j];
 	END_FOR
@@ -5968,6 +5988,112 @@ RETURN;</xhtml>
           </data>
         </addData>
       </pou>
+      <pou name="addTwoIntsCFC" pouType="function">
+        <interface>
+          <returnType>
+            <INT />
+          </returnType>
+          <inputVars>
+            <variable name="int1">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="int2">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </inputVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/cfc" handleUnknown="implementation">
+              <CFC>
+                <inVariable localId="4">
+                  <position x="2" y="3" />
+                  <connectionPointOut>
+                    <expression />
+                  </connectionPointOut>
+                  <expression>int1</expression>
+                </inVariable>
+                <connector localId="3" name="">
+                  <position x="0" y="0" />
+                  <connectionPointIn>
+                    <connection refLocalId="4" formalParameter="int1" />
+                  </connectionPointIn>
+                </connector>
+                <inVariable localId="6">
+                  <position x="2" y="4" />
+                  <connectionPointOut>
+                    <expression />
+                  </connectionPointOut>
+                  <expression>int2</expression>
+                </inVariable>
+                <connector localId="5" name="">
+                  <position x="0" y="0" />
+                  <connectionPointIn>
+                    <connection refLocalId="6" formalParameter="int2" />
+                  </connectionPointIn>
+                </connector>
+                <block localId="2" executionOrderId="2" typeName="ADD">
+                  <position x="7" y="2" />
+                  <inputVariables>
+                    <variable formalParameter="In1">
+                      <connectionPointIn>
+                        <relPosition x="0" y="0" />
+                        <connection refLocalId="3" />
+                      </connectionPointIn>
+                    </variable>
+                    <variable formalParameter="In2">
+                      <connectionPointIn>
+                        <relPosition x="0" y="1" />
+                        <connection refLocalId="5" />
+                      </connectionPointIn>
+                    </variable>
+                  </inputVariables>
+                  <inOutVariables />
+                  <outputVariables>
+                    <variable formalParameter="Out1">
+                      <connectionPointOut>
+                        <relPosition x="0" y="0" />
+                        <expression />
+                      </connectionPointOut>
+                    </variable>
+                  </outputVariables>
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/cfccalltype" handleUnknown="implementation">
+                      <CallType xmlns="">operator</CallType>
+                    </data>
+                  </addData>
+                </block>
+                <connector localId="1" name="">
+                  <position x="0" y="0" />
+                  <connectionPointIn>
+                    <connection refLocalId="2" formalParameter="" />
+                  </connectionPointIn>
+                </connector>
+                <outVariable localId="0" executionOrderId="1">
+                  <position x="11" y="3" />
+                  <connectionPointIn>
+                    <relPosition x="0" y="0" />
+                    <connection refLocalId="1" />
+                  </connectionPointIn>
+                  <expression>addTwoIntsCFC</expression>
+                </outVariable>
+              </CFC>
+            </data>
+          </addData>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>81fd9d15-6397-42fb-9239-c48bec1ad48d</ObjectId>
+          </data>
+        </addData>
+      </pou>
     </pous>
   </types>
   <instances>
@@ -6356,40 +6482,6 @@ RETURN;</xhtml>
       </configuration>
       <configuration name="CODESYS_Control_RTE_V3_x64">
         <resource name="Application">
-          <task name="SpdRnnr" interval="PT0.2S" priority="16">
-            <pouInstance name="speedRunner" typeName="">
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
-              </documentation>
-            </pouInstance>
-            <addData>
-              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
-                <TaskSettings KindOfTask="Cyclic" Interval="200" IntervalUnit="ms" WithinSPSTimeSlicing="true">
-                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
-                </TaskSettings>
-              </data>
-              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-                <ObjectId>bffd86d5-f7f6-45b6-b1e2-b8a4bd04fcb5</ObjectId>
-              </data>
-            </addData>
-          </task>
-          <task name="VISU_TASK" interval="PT0.2S" priority="31">
-            <pouInstance name="VisuElems.Visu_Prg" typeName="">
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
-              </documentation>
-            </pouInstance>
-            <addData>
-              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
-                <TaskSettings KindOfTask="Cyclic" Interval="200" IntervalUnit="ms" WithinSPSTimeSlicing="true">
-                  <Watchdog Enabled="false" TimeUnit="ms" />
-                </TaskSettings>
-              </data>
-              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-                <ObjectId>0a985513-bde5-42f9-949f-b2695f84404b</ObjectId>
-              </data>
-            </addData>
-          </task>
           <task name="x01" single="x01_ImpactOfDynamicArrays.vStart" priority="1">
             <pouInstance name="x01_ImpactOfDynamicArrays" typeName="">
               <documentation>
@@ -6404,23 +6496,6 @@ RETURN;</xhtml>
               </data>
               <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
                 <ObjectId>624514e7-846d-4395-b0c9-cc8d643e4e7e</ObjectId>
-              </data>
-            </addData>
-          </task>
-          <task name="x02" single="x02_ExecSpeedOfLanguageTypes.vStart" priority="1">
-            <pouInstance name="x02_ExecSpeedOfLanguageTypes" typeName="">
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
-              </documentation>
-            </pouInstance>
-            <addData>
-              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
-                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x02_ExecSpeedOfLanguageTypes.vStart" WithinSPSTimeSlicing="true">
-                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
-                </TaskSettings>
-              </data>
-              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-                <ObjectId>5c43b717-d45d-46d0-9d7c-fe9b7781c205</ObjectId>
               </data>
             </addData>
           </task>
@@ -6441,20 +6516,20 @@ RETURN;</xhtml>
               </data>
             </addData>
           </task>
-          <task name="x05" single="x05_MemSetVsDataZeero.vStart" priority="1">
-            <pouInstance name="x05_MemSetVsDataZeero" typeName="">
+          <task name="SpdRnnr" interval="PT0.2S" priority="16">
+            <pouInstance name="speedRunner" typeName="">
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml" />
               </documentation>
             </pouInstance>
             <addData>
               <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
-                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x05_MemSetVsDataZeero.vStart" WithinSPSTimeSlicing="true">
+                <TaskSettings KindOfTask="Cyclic" Interval="200" IntervalUnit="ms" WithinSPSTimeSlicing="true">
                   <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
                 </TaskSettings>
               </data>
               <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-                <ObjectId>e9539de3-8dad-4da7-bc06-773e6a8a249e</ObjectId>
+                <ObjectId>bffd86d5-f7f6-45b6-b1e2-b8a4bd04fcb5</ObjectId>
               </data>
             </addData>
           </task>
@@ -6472,6 +6547,40 @@ RETURN;</xhtml>
               </data>
               <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
                 <ObjectId>9048ce15-c376-4ddd-af95-219f10c1fa36</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x02" single="x02_ExecSpeedOfLanguageTypes.vStart" priority="1">
+            <pouInstance name="x02_ExecSpeedOfLanguageTypes" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x02_ExecSpeedOfLanguageTypes.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>5c43b717-d45d-46d0-9d7c-fe9b7781c205</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="VISU_TASK" interval="PT0.2S" priority="31">
+            <pouInstance name="VisuElems.Visu_Prg" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Cyclic" Interval="200" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>0a985513-bde5-42f9-949f-b2695f84404b</ObjectId>
               </data>
             </addData>
           </task>
@@ -6509,23 +6618,6 @@ RETURN;</xhtml>
               </data>
             </addData>
           </task>
-          <task name="x09" single="x09_CaseVsIfElsif.vStart" priority="1">
-            <pouInstance name="x09_CaseVsIfElsif" typeName="">
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
-              </documentation>
-            </pouInstance>
-            <addData>
-              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
-                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x09_CaseVsIfElsif.vStart" WithinSPSTimeSlicing="true">
-                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
-                </TaskSettings>
-              </data>
-              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-                <ObjectId>01f0d965-9640-4229-91ed-e5b76d977101</ObjectId>
-              </data>
-            </addData>
-          </task>
           <task name="x10_1" single="x10_1_BitAccess.vStart" priority="1">
             <pouInstance name="x10_1_BitAccess" typeName="">
               <documentation>
@@ -6543,37 +6635,37 @@ RETURN;</xhtml>
               </data>
             </addData>
           </task>
-          <task name="x11" single="x11_CalcInForLoppDecl.vStart" priority="1">
-            <pouInstance name="x11_CalcInForLoppDecl" typeName="">
+          <task name="x09" single="x09_CaseVsIfElsif.vStart" priority="1">
+            <pouInstance name="x09_CaseVsIfElsif" typeName="">
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml" />
               </documentation>
             </pouInstance>
             <addData>
               <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
-                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x11_CalcInForLoppDecl.vStart" WithinSPSTimeSlicing="true">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x09_CaseVsIfElsif.vStart" WithinSPSTimeSlicing="true">
                   <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
                 </TaskSettings>
               </data>
               <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-                <ObjectId>e24bea1d-d16c-461f-862f-2ddff6852951</ObjectId>
+                <ObjectId>01f0d965-9640-4229-91ed-e5b76d977101</ObjectId>
               </data>
             </addData>
           </task>
-          <task name="x03" single="x03_FloatingPointOperations.vStart" priority="1">
-            <pouInstance name="x03_FloatingPointOperations" typeName="">
+          <task name="x05" single="x05_MemSetVsDataZeero.vStart" priority="1">
+            <pouInstance name="x05_MemSetVsDataZeero" typeName="">
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml" />
               </documentation>
             </pouInstance>
             <addData>
               <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
-                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x03_FloatingPointOperations.vStart" WithinSPSTimeSlicing="true">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x05_MemSetVsDataZeero.vStart" WithinSPSTimeSlicing="true">
                   <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
                 </TaskSettings>
               </data>
               <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
-                <ObjectId>b617d5fc-09c8-4ada-b38f-a4d466956dd0</ObjectId>
+                <ObjectId>e9539de3-8dad-4da7-bc06-773e6a8a249e</ObjectId>
               </data>
             </addData>
           </task>
@@ -6608,6 +6700,40 @@ RETURN;</xhtml>
               </data>
               <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
                 <ObjectId>d97f8462-dc15-49d5-a1ad-a62c5009be6f</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x11" single="x11_CalcInForLoppDecl.vStart" priority="1">
+            <pouInstance name="x11_CalcInForLoppDecl" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x11_CalcInForLoppDecl.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>e24bea1d-d16c-461f-862f-2ddff6852951</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="x03" single="x03_FloatingPointOperations.vStart" priority="1">
+            <pouInstance name="x03_FloatingPointOperations" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x03_FloatingPointOperations.vStart" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>b617d5fc-09c8-4ada-b38f-a4d466956dd0</ObjectId>
               </data>
             </addData>
           </task>
@@ -6848,6 +6974,7 @@ RETURN;</xhtml>
           <Object Name="addTwoIntsLadder" ObjectId="81976c27-bae7-4ac7-b3be-5a289cfec6a1" />
           <Object Name="addTwoIntsST" ObjectId="2b669961-88b5-4e2c-8aa0-fcd5ea1dc9c6" />
           <Object Name="addTwoIntsFBD" ObjectId="ff1bd7ca-f894-4734-8c56-cab7f420d3e0" />
+          <Object Name="addTwoIntsCFC" ObjectId="81fd9d15-6397-42fb-9239-c48bec1ad48d" />
         </Folder>
         <Folder Name="07 - String operations">
           <Object Name="x07_StringOperations" ObjectId="51d6aac5-a3cf-4c60-a30b-f6b3d35ff875">
@@ -6893,30 +7020,30 @@ RETURN;</xhtml>
         <Object Name="CODESYS_Control_RTE_V3_x64" ObjectId="bc840afb-a9d6-47f1-b7d8-3629266ececc">
           <Object Name="Application" ObjectId="ac4c5ade-dbfe-4184-babc-18a2fa2912b0">
             <Object Name="Library Manager" ObjectId="7ba61702-9b9d-46af-bab0-2dbc535d117f" />
-            <Object Name="SpdRnnr" ObjectId="bffd86d5-f7f6-45b6-b1e2-b8a4bd04fcb5" />
-            <Object Name="VISU_TASK" ObjectId="0a985513-bde5-42f9-949f-b2695f84404b" />
             <Object Name="x01" ObjectId="624514e7-846d-4395-b0c9-cc8d643e4e7e" />
-            <Object Name="x02" ObjectId="5c43b717-d45d-46d0-9d7c-fe9b7781c205" />
             <Object Name="x04" ObjectId="37f779ef-f9f4-4f8e-aa8f-2087bd9f1c83" />
-            <Object Name="x05" ObjectId="e9539de3-8dad-4da7-bc06-773e6a8a249e" />
+            <Object Name="SpdRnnr" ObjectId="bffd86d5-f7f6-45b6-b1e2-b8a4bd04fcb5" />
             <Object Name="x06" ObjectId="9048ce15-c376-4ddd-af95-219f10c1fa36" />
+            <Object Name="x02" ObjectId="5c43b717-d45d-46d0-9d7c-fe9b7781c205" />
+            <Object Name="VISU_TASK" ObjectId="0a985513-bde5-42f9-949f-b2695f84404b" />
             <Object Name="x07" ObjectId="d0ce08e0-f215-4412-a152-95c78bf403c8" />
             <Object Name="x08" ObjectId="f39d1bd0-ed6d-4ead-94cd-837863ae9f63" />
-            <Object Name="x09" ObjectId="01f0d965-9640-4229-91ed-e5b76d977101" />
             <Object Name="x10_1" ObjectId="d43a3d5c-e4fc-4ceb-a2de-a1d3a1c18543" />
-            <Object Name="x11" ObjectId="e24bea1d-d16c-461f-862f-2ddff6852951" />
-            <Object Name="x03" ObjectId="b617d5fc-09c8-4ada-b38f-a4d466956dd0" />
+            <Object Name="x09" ObjectId="01f0d965-9640-4229-91ed-e5b76d977101" />
+            <Object Name="x05" ObjectId="e9539de3-8dad-4da7-bc06-773e6a8a249e" />
             <Object Name="x12" ObjectId="1cf14ab6-6b0c-4260-af74-a1f6d07e15ba" />
             <Object Name="x13" ObjectId="d97f8462-dc15-49d5-a1ad-a62c5009be6f" />
+            <Object Name="x11" ObjectId="e24bea1d-d16c-461f-862f-2ddff6852951" />
+            <Object Name="x03" ObjectId="b617d5fc-09c8-4ada-b38f-a4d466956dd0" />
             <Object Name="x10_2" ObjectId="3d2cca12-07fa-4f41-a972-3f46c5bafaf4" />
             <Object Name="x10_3" ObjectId="0458cfee-014c-44a1-8231-ad30ebde6b4d" />
             <Object Name="x00" ObjectId="590ef554-99b8-488e-b16a-5d9680197512" />
           </Object>
         </Object>
         <Folder Name="00 - MIPS - FLOPS">
-          <Object Name="x00_CalcMIPS_FLOPS" ObjectId="c49218d9-bfaa-4efe-9d56-b5df197b1a3b" />
-          <Object Name="calcFLOPS" ObjectId="035c77cc-f4dd-431c-b736-ab56a3b26207" />
           <Object Name="calcMIPS" ObjectId="62bde692-16ea-41fa-843c-03c01b127ac5" />
+          <Object Name="calcFLOPS" ObjectId="035c77cc-f4dd-431c-b736-ab56a3b26207" />
+          <Object Name="x00_CalcMIPS_FLOPS" ObjectId="c49218d9-bfaa-4efe-9d56-b5df197b1a3b" />
         </Folder>
         <Folder Name="11 - Calculation in FOR loop declaration">
           <Object Name="x11_CalcInForLoppDecl" ObjectId="0d36a265-629d-4737-a080-598f91f7a935">
