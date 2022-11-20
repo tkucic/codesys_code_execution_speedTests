@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 2" creationDateTime="2022-11-13T22:10:39.9455479" />
-  <contentHeader name="Codesys Code Execution Speed Tests" version="1.0" modificationDateTime="2022-11-13T22:10:25.2848728" organization="TK Automation" author="Toni Kucic">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 2" creationDateTime="2022-11-20T20:47:32.0555446" />
+  <contentHeader name="Codesys Code Execution Speed Tests" version="1.0" modificationDateTime="2022-11-20T20:38:51.788641" organization="TK Automation" author="Toni Kucic">
     <Comment>A collection of programs that measure various execution speeds of code.</Comment>
     <coordinateInfo>
       <fbd>
@@ -1046,7 +1046,7 @@ vStart:= FALSE;
           </data>
         </addData>
       </pou>
-      <pou name="x06_ShlVsMemCpy" pouType="program">
+      <pou name="x06_Combine2xByteToUint" pouType="program">
         <interface>
           <localVars constant="true">
             <variable name="cNrRuns">
@@ -1121,6 +1121,11 @@ vStart:= FALSE;
                 <derived name="dtSpeedTest" />
               </type>
             </variable>
+            <variable name="vTest3">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
             <variable name="i">
               <type>
                 <UDINT />
@@ -1135,6 +1140,11 @@ vStart:= FALSE;
               </documentation>
             </variable>
             <variable name="vMcpyInteger">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="vManualCpyInt">
               <type>
                 <UINT />
               </type>
@@ -1185,23 +1195,48 @@ vStart:= FALSE;
           <action name="Measure">
             <body>
               <ST>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">vTest1.OldTime := LTIME();
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//-------Assemble an UINT from two USINTs using SHL operator
+vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
-	//Assemble an UINT from two USINTs using SHR operator
 	vSHRInteger := vBuffer[0] + SHL(vBuffer[1],8);
 END_FOR
 vTest1.ExecTime := LTIME() - vTest1.OldTime;
 
+//-------Assemble an UINT from two USINTs using MemCpy
 vTest2.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
-	//Assemble an UINT from two USINTs using MemCpy
-	MEMUtils.MemCpy(pbyDest:= ADR(vMcpyInteger), pbySrc:= ADR(vBuffer) , dwSize:= SIZEOF(vMcpyInteger));
+	SysMemCpy(ADR(vMcpyInteger), ADR(vBuffer) , SIZEOF(vMcpyInteger));
 END_FOR
 vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
+//-------Assemble an UINT from two USINTs by manually copying bits
+vTest3.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vManualCpyInt.0 := vBuffer[0].0;
+	vManualCpyInt.1 := vBuffer[0].1;
+	vManualCpyInt.2 := vBuffer[0].2;
+	vManualCpyInt.3 := vBuffer[0].3;
+	vManualCpyInt.4 := vBuffer[0].4;
+	vManualCpyInt.5 := vBuffer[0].5;
+	vManualCpyInt.6 := vBuffer[0].6;
+	vManualCpyInt.7 := vBuffer[0].7;
+	
+	vManualCpyInt.8 := vBuffer[1].0;
+	vManualCpyInt.9 := vBuffer[1].1;
+	vManualCpyInt.10 := vBuffer[1].2;
+	vManualCpyInt.11 := vBuffer[1].3;
+	vManualCpyInt.12 := vBuffer[1].4;
+	vManualCpyInt.13 := vBuffer[1].5;
+	vManualCpyInt.14 := vBuffer[1].6;
+	vManualCpyInt.15 := vBuffer[1].7;
+
+END_FOR
+vTest3.ExecTime := LTIME() - vTest3.OldTime;
+
 //Results
 vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
-vTest2.Results[vRunsCompleted] := vTest2.ExecTime;</xhtml>
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;</xhtml>
               </ST>
             </body>
             <addData>
@@ -1227,6 +1262,8 @@ vTest1.Desc				:= 'Assembling an integer from two bytes (SHL), 1 milion times';
 vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
 vTest2.Desc				:= 'Assembling an integer from two bytes (SysMemCpy), 1 milion times';
 vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+vTest3.Desc				:= 'Assembling an integer from two bytes by manually copying bits, 1 milion times';
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results);
 	
 vDone := TRUE;
 vStart:= FALSE;
@@ -1290,7 +1327,7 @@ RETURN;</xhtml>
           </data>
         </addData>
       </pou>
-      <pou name="x05_MemSetVsDataZeero" pouType="program">
+      <pou name="x05_SysMemLib" pouType="program">
         <interface>
           <localVars constant="true">
             <variable name="cNrRuns">
@@ -1370,6 +1407,26 @@ RETURN;</xhtml>
                 <derived name="dtSpeedTest" />
               </type>
             </variable>
+            <variable name="vTest3">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest4">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest5">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
+            <variable name="vTest6">
+              <type>
+                <derived name="dtSpeedTest" />
+              </type>
+            </variable>
             <variable name="i">
               <type>
                 <UDINT />
@@ -1388,31 +1445,100 @@ RETURN;</xhtml>
                 <derived name="dtTestStruct" />
               </type>
             </variable>
+            <variable name="vResultStruct3">
+              <type>
+                <derived name="dtTestStruct" />
+              </type>
+            </variable>
+            <variable name="vResultStruct4">
+              <type>
+                <derived name="dtTestStruct" />
+              </type>
+            </variable>
+            <variable name="vResult5">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="vResult6">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
           </localVars>
         </interface>
         <actions>
           <action name="Measure">
             <body>
               <ST>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------CALCULATION A -------------------
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">//------------RESET STRUCT WITH A EMPTY STRUCT -------------------
 vTest1.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
-	//RESET STRUCT WITH A EMPTY STRUCT
 	vResultStruct1 := cEmptyStruct;
 END_FOR
 vTest1.ExecTime := LTIME() - vTest1.OldTime;
 
-//------------CALCULATION B -------------------
+//------------RESET STRUCT WITH MEM SET -------------------
 vTest2.OldTime := LTIME();
 FOR i:= 0 TO cRepeatCalcTimes DO
-	//RESET STRUCT WITH MEM SET
-	MEMUtils.MemSet(pbyBuffer:= ADR(vResultStruct2), byValue:= 16#0 , dwSize:= SIZEOF(vResultStruct2));
+	SysMemSet(ADR(vResultStruct2), 16#0 , SIZEOF(vResultStruct2));
 END_FOR
 vTest2.ExecTime := LTIME() - vTest2.OldTime;
 
+//------------COPY STRUCT TO ANOTHER STRUCT -------------------
+vTest3.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResultStruct3 := cEmptyStruct;
+END_FOR
+vTest3.ExecTime := LTIME() - vTest3.OldTime;
+
+//------------COPY STRUCT TO ANOTHER STRUCT MEMCPY -------------------
+vTest4.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	SysMemCpy(ADR(vResultStruct4), ADR(cEmptyStruct) , SIZEOF(cEmptyStruct));
+END_FOR
+vTest4.ExecTime := LTIME() - vTest4.OldTime;
+
+//------------COMPARE STRUCT TO ANOTHER STRUCT -------------------
+//NOTE: Codesys doesn't support complex struct comparing with = &lt;&gt;
+vTest5.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult5 := vResultStruct3.dummy1 = cEmptyStruct.dummy1
+			AND vResultStruct3.dummy2[0] = cEmptyStruct.dummy2[0]
+			AND vResultStruct3.dummy2[1] = cEmptyStruct.dummy2[1]
+			AND vResultStruct3.dummy2[2] = cEmptyStruct.dummy2[2]
+			AND vResultStruct3.dummy2[3] = cEmptyStruct.dummy2[3]
+			AND vResultStruct3.dummy2[4] = cEmptyStruct.dummy2[4]
+			AND vResultStruct3.dummy2[5] = cEmptyStruct.dummy2[5]
+			AND vResultStruct3.dummy2[6] = cEmptyStruct.dummy2[6]
+			AND vResultStruct3.dummy2[7] = cEmptyStruct.dummy2[7]
+			AND vResultStruct3.dummy2[8] = cEmptyStruct.dummy2[8]
+			AND vResultStruct3.dummy2[9] = cEmptyStruct.dummy2[9]
+			AND vResultStruct3.dummy2[10] = cEmptyStruct.dummy2[10]
+			AND vResultStruct3.dummy2[11] = cEmptyStruct.dummy2[11]
+			AND vResultStruct3.dummy4 = cEmptyStruct.dummy4
+			AND vResultStruct3.dummy5 = cEmptyStruct.dummy5
+			AND vResultStruct3.dummy6 = cEmptyStruct.dummy6
+			AND vResultStruct3.Elem1 = cEmptyStruct.Elem1
+			AND vResultStruct3.Id = cEmptyStruct.Id
+			AND vResultStruct3.IdText = cEmptyStruct.IdText;
+END_FOR
+vTest5.ExecTime := LTIME() - vTest5.OldTime;
+
+//------------COMPARE STRUCT TO ANOTHER STRUCT MEMCMP -------------------
+vTest6.OldTime := LTIME();
+FOR i:= 0 TO cRepeatCalcTimes DO
+	vResult6 := SysMemCmp(ADR(vResultStruct4), ADR(cEmptyStruct),SIZEOF(cEmptyStruct)) = 0;
+END_FOR
+vTest6.ExecTime := LTIME() - vTest6.OldTime;
+
 //------------CATCH RESULTS---------------------
 vTest1.Results[vRunsCompleted] := vTest1.ExecTime;
-vTest2.Results[vRunsCompleted] := vTest2.ExecTime;</xhtml>
+vTest2.Results[vRunsCompleted] := vTest2.ExecTime;
+vTest3.Results[vRunsCompleted] := vTest3.ExecTime;
+vTest4.Results[vRunsCompleted] := vTest4.ExecTime;
+vTest5.Results[vRunsCompleted] := vTest5.ExecTime;
+vTest6.Results[vRunsCompleted] := vTest6.ExecTime;</xhtml>
               </ST>
             </body>
             <addData>
@@ -1438,6 +1564,14 @@ vTest1.Desc				:= 'Setting a struct with an empty struct, 1 milion times';
 vTest1.AverageExecTime 	:= calcAvg(vTest1.Results);
 vTest2.Desc				:= 'Setting a struct with SysMemSet, 1 milion times';
 vTest2.AverageExecTime 	:= calcAvg(vTest2.Results);
+vTest3.Desc				:= 'Copy a struct to another struct, 1 milion times';
+vTest3.AverageExecTime 	:= calcAvg(vTest3.Results);
+vTest4.Desc				:= 'Copy a struct to another struct with memset, 1 milion times';
+vTest4.AverageExecTime 	:= calcAvg(vTest4.Results);
+vTest5.Desc				:= 'Compare a struct to another struct, 1 milion times';
+vTest5.AverageExecTime 	:= calcAvg(vTest5.Results);
+vTest6.Desc				:= 'Compare a struct to another struct with memcmp, 1 milion times';
+vTest6.AverageExecTime 	:= calcAvg(vTest6.Results);
 vDone := TRUE;
 vStart:= FALSE;
 </xhtml>
@@ -4534,9 +4668,9 @@ IF vRunAll THEN
 	x02_ExecSpeedOfLanguageTypes.vStart := x01_ImpactOfDynamicArrays.vDone 		AND NOT x02_ExecSpeedOfLanguageTypes.vDone;
 	x03_FloatingPointOperations.vStart 	:= x02_ExecSpeedOfLanguageTypes.vDone 	AND NOT x03_FloatingPointOperations.vDone;
 	x04_FunctionOverhead.vStart 		:= x03_FloatingPointOperations.vDone 	AND NOT x04_FunctionOverhead.vDone;
-	x05_MemSetVsDataZeero.vStart 		:= x04_FunctionOverhead.vDone 			AND NOT x05_MemSetVsDataZeero.vDone;
-	x06_ShlVsMemCpy.vStart 				:= x05_MemSetVsDataZeero.vDone 			AND NOT x06_ShlVsMemCpy.vDone;
-	x07_StringOperations.vStart 		:= x06_ShlVsMemCpy.vDone 				AND NOT x07_StringOperations.vDone;
+	x05_SysMemLib.vStart 		:= x04_FunctionOverhead.vDone 			AND NOT x05_SysMemLib.vDone;
+	x06_Combine2xByteToUint.vStart 				:= x05_SysMemLib.vDone 			AND NOT x06_Combine2xByteToUint.vDone;
+	x07_StringOperations.vStart 		:= x06_Combine2xByteToUint.vDone 				AND NOT x07_StringOperations.vDone;
 	x08_CheckingBools.vStart 			:= x07_StringOperations.vDone			AND NOT x08_CheckingBools.vDone;
 	x09_CaseVsIfElsif.vStart 			:= x08_CheckingBools.vDone 				AND NOT x09_CaseVsIfElsif.vDone;
 	x10_1_BitAccess.vStart 				:= x09_CaseVsIfElsif.vDone 				AND NOT x10_1_BitAccess.vDone;
@@ -4549,7 +4683,7 @@ END_IF
 
 vTimeToRunTests :=  x01_ImpactOfDynamicArrays.vTotalTime + x02_ExecSpeedOfLanguageTypes.vTotalTime
 					+ x03_FloatingPointOperations.vTotalTime + x04_FunctionOverhead.vTotalTime
-					+ x05_MemSetVsDataZeero.vTotalTime + x06_ShlVsMemCpy.vTotalTime
+					+ x05_SysMemLib.vTotalTime + x06_Combine2xByteToUint.vTotalTime
 					+ x07_StringOperations.vTotalTime + x08_CheckingBools.vTotalTime
 					+ x09_CaseVsIfElsif.vTotalTime + x10_1_BitAccess.vTotalTime
 					+ x10_2_BitSet.vTotalTime + x10_3_BitMath.vTotalTime + x11_CalcInForLoppDecl.vTotalTime
@@ -6185,15 +6319,15 @@ RETURN;</xhtml>
               </data>
             </addData>
           </task>
-          <task name="x05" single="x05_MemSetVsDataZeero.vStart" priority="1">
-            <pouInstance name="x05_MemSetVsDataZeero" typeName="">
+          <task name="x05" single="x05_SysMemLib.vStart" priority="1">
+            <pouInstance name="x05_SysMemLib" typeName="">
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml" />
               </documentation>
             </pouInstance>
             <addData>
               <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
-                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x05_MemSetVsDataZeero.vStart" WithinSPSTimeSlicing="true">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x05_SysMemLib.vStart" WithinSPSTimeSlicing="true">
                   <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
                 </TaskSettings>
               </data>
@@ -6202,15 +6336,15 @@ RETURN;</xhtml>
               </data>
             </addData>
           </task>
-          <task name="x06" single="x06_ShlVsMemCpy.vStart" priority="1">
-            <pouInstance name="x06_ShlVsMemCpy" typeName="">
+          <task name="x06" single="x06_Combine2xByteToUint.vStart" priority="1">
+            <pouInstance name="x06_Combine2xByteToUint" typeName="">
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml" />
               </documentation>
             </pouInstance>
             <addData>
               <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
-                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x06_ShlVsMemCpy.vStart" WithinSPSTimeSlicing="true">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x06_Combine2xByteToUint.vStart" WithinSPSTimeSlicing="true">
                   <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
                 </TaskSettings>
               </data>
@@ -6533,15 +6667,15 @@ RETURN;</xhtml>
               </data>
             </addData>
           </task>
-          <task name="x06" single="x06_ShlVsMemCpy.vStart" priority="1">
-            <pouInstance name="x06_ShlVsMemCpy" typeName="">
+          <task name="x06" single="x06_Combine2xByteToUint.vStart" priority="1">
+            <pouInstance name="x06_Combine2xByteToUint" typeName="">
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml" />
               </documentation>
             </pouInstance>
             <addData>
               <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
-                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x06_ShlVsMemCpy.vStart" WithinSPSTimeSlicing="true">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x06_Combine2xByteToUint.vStart" WithinSPSTimeSlicing="true">
                   <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
                 </TaskSettings>
               </data>
@@ -6652,15 +6786,15 @@ RETURN;</xhtml>
               </data>
             </addData>
           </task>
-          <task name="x05" single="x05_MemSetVsDataZeero.vStart" priority="1">
-            <pouInstance name="x05_MemSetVsDataZeero" typeName="">
+          <task name="x05" single="x05_SysMemLib.vStart" priority="1">
+            <pouInstance name="x05_SysMemLib" typeName="">
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml" />
               </documentation>
             </pouInstance>
             <addData>
               <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
-                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x05_MemSetVsDataZeero.vStart" WithinSPSTimeSlicing="true">
+                <TaskSettings KindOfTask="Event" Interval="200" IntervalUnit="ms" Event="x05_SysMemLib.vStart" WithinSPSTimeSlicing="true">
                   <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
                 </TaskSettings>
               </data>
@@ -6795,7 +6929,6 @@ RETURN;</xhtml>
                 <Library Name="#3SLicense" Namespace="_3S_LICENSE" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="3SLicense, 0.0.0.0 (3S - Smart Software Solutions GmbH)" ResolverGuid="97c3b452-d9fa-4ac2-9d0c-3d420aa6d95b" />
                 <Library Name="#CAA Device Diagnosis" Namespace="DED" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="CAA Device Diagnosis, 3.5.18.0 (CAA Technical Workgroup)" />
                 <Library Name="#BreakpointLogging" Namespace="BPLog" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="Breakpoint Logging Functions, * (3S - Smart Software Solutions GmbH)" />
-                <Library Name="MemoryUtils, 3.5.18.0 (3S - Smart Software Solutions GmbH)" Namespace="MEMUtils" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" />
                 <Library Name="#System_VisuElems" Namespace="VisuElems" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElems, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
                 <Library Name="#System_VisuElemMeter" Namespace="VisuElemMeter" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemMeter, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
                 <Library Name="#System_VisuElemsSpecialControls" Namespace="VisuElemsSpecialControls" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsSpecialControls, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
@@ -6899,6 +7032,13 @@ RETURN;</xhtml>
         <Library Name="#System_VisuElemXYChart" Namespace="VisuElemXYChart" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemXYChart, 4.1.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
         <Library Name="#system_visuinputs" Namespace="visuinputs" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="visuinputs, 4.1.0.0 (system)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
         <Library Name="#VisuDialogs" Namespace="VisuDialogs" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="VisuDialogs, * (System)" />
+        <Library Name="#SysMem" Namespace="SysMem" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="SysMem, * (System)" />
+        <Library Name="#Util" Namespace="Util" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Util, * (System)">
+          <Parameters>
+            <Parameter Name="IBLOCKSIZE" Value="22800" />
+          </Parameters>
+        </Library>
+        <Library Name="#Standard64" Namespace="Standard64" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Standard64, * (System)" />
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
             <ObjectId>70bdb135-fcf9-4a3b-ac8e-dcd6fe2b15b6</ObjectId>
@@ -6951,8 +7091,8 @@ RETURN;</xhtml>
           </Object>
           <Object Name="calcAvgFixed" ObjectId="a46ac05d-7c39-4a72-b333-457576105ddf" />
         </Folder>
-        <Folder Name="06 - SHL over MemCpy">
-          <Object Name="x06_ShlVsMemCpy" ObjectId="b1c49280-5ef1-440e-9136-31fd5aa516dc">
+        <Folder Name="06 - Combine 2 Bytes To a Uint">
+          <Object Name="x06_Combine2xByteToUint" ObjectId="b1c49280-5ef1-440e-9136-31fd5aa516dc">
             <Object Name="Measure" ObjectId="5664cb8f-8799-4292-bf51-fd94078c7af9" />
           </Object>
         </Folder>
@@ -6961,8 +7101,8 @@ RETURN;</xhtml>
           <Object Name="dtSpeedTest" ObjectId="65385f20-c9b3-4afb-b91b-9f5b6a5e2eb7" />
           <Object Name="speedRunner" ObjectId="45bae081-d3b4-42ae-ac00-ec9afd7d0163" />
         </Folder>
-        <Folder Name="05 - MemSet over Data Zero">
-          <Object Name="x05_MemSetVsDataZeero" ObjectId="b6f25e2b-ec5a-4a35-909a-0f893387acef">
+        <Folder Name="05 - SysMemLib">
+          <Object Name="x05_SysMemLib" ObjectId="b6f25e2b-ec5a-4a35-909a-0f893387acef">
             <Object Name="Measure" ObjectId="428e8d6f-6956-4294-8a2f-bf96435e2fa1" />
           </Object>
           <Object Name="dtTestStruct" ObjectId="974d87b5-4253-4dd8-af42-02d75fec12db" />
