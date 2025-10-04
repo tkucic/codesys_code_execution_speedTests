@@ -70,8 +70,8 @@ ACTION Measure:
 
     //------------CALCULATION C -------------------
     vTest3.OldTime := LTIME();
-    vLenOfString := LEN(vLongString);
     FOR i:= 0 TO cRepeatCalcTimes DO
+    	vLenOfString := LEN(vLongString);
     	FOR j:= 0 TO vLenOfString DO
     		vResult := vLongString[j];
     	END_FOR

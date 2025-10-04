@@ -21,9 +21,9 @@ PROGRAM speedRunner:
     	x02_ExecSpeedOfLanguageTypes.vStart := x01_ImpactOfDynamicArrays.vDone 		AND NOT x02_ExecSpeedOfLanguageTypes.vDone;
     	x03_FloatingPointOperations.vStart 	:= x02_ExecSpeedOfLanguageTypes.vDone 	AND NOT x03_FloatingPointOperations.vDone;
     	x04_FunctionOverhead.vStart 		:= x03_FloatingPointOperations.vDone 	AND NOT x04_FunctionOverhead.vDone;
-    	x05_MemSetVsDataZeero.vStart 		:= x04_FunctionOverhead.vDone 			AND NOT x05_MemSetVsDataZeero.vDone;
-    	x06_ShlVsMemCpy.vStart 				:= x05_MemSetVsDataZeero.vDone 			AND NOT x06_ShlVsMemCpy.vDone;
-    	x07_StringOperations.vStart 		:= x06_ShlVsMemCpy.vDone 				AND NOT x07_StringOperations.vDone;
+    	x05_SysMemLib.vStart 		:= x04_FunctionOverhead.vDone 			AND NOT x05_SysMemLib.vDone;
+    	x06_Combine2xByteToUint.vStart 				:= x05_SysMemLib.vDone 			AND NOT x06_Combine2xByteToUint.vDone;
+    	x07_StringOperations.vStart 		:= x06_Combine2xByteToUint.vDone 				AND NOT x07_StringOperations.vDone;
     	x08_CheckingBools.vStart 			:= x07_StringOperations.vDone			AND NOT x08_CheckingBools.vDone;
     	x09_CaseVsIfElsif.vStart 			:= x08_CheckingBools.vDone 				AND NOT x09_CaseVsIfElsif.vDone;
     	x10_1_BitAccess.vStart 				:= x09_CaseVsIfElsif.vDone 				AND NOT x10_1_BitAccess.vDone;
@@ -36,7 +36,7 @@ PROGRAM speedRunner:
 
     vTimeToRunTests :=  x01_ImpactOfDynamicArrays.vTotalTime + x02_ExecSpeedOfLanguageTypes.vTotalTime
     					+ x03_FloatingPointOperations.vTotalTime + x04_FunctionOverhead.vTotalTime
-    					+ x05_MemSetVsDataZeero.vTotalTime + x06_ShlVsMemCpy.vTotalTime
+    					+ x05_SysMemLib.vTotalTime + x06_Combine2xByteToUint.vTotalTime
     					+ x07_StringOperations.vTotalTime + x08_CheckingBools.vTotalTime
     					+ x09_CaseVsIfElsif.vTotalTime + x10_1_BitAccess.vTotalTime
     					+ x10_2_BitSet.vTotalTime + x10_3_BitMath.vTotalTime + x11_CalcInForLoppDecl.vTotalTime
